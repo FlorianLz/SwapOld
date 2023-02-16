@@ -14,6 +14,7 @@ import {supabase} from './src/lib/initSupabase';
 import Account from './src/components/Account';
 import Auth from './src/components/Login';
 import {Session} from '@supabase/supabase-js';
+import Menu from "./src/components/Menu";
 
 type ArticleData = {
   id: number;
@@ -54,6 +55,7 @@ const App = () => {
           ) : (
             <Auth />
           )}
+          <Menu isConnected={true}></Menu>
         </View>
       </ScrollView>
     </SafeAreaView>
