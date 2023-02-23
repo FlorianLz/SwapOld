@@ -9,26 +9,19 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, ScrollView, Text, View} from 'react-native';
 import {supabase} from './src/lib/initSupabase';
-import Account from './src/components/Account';
 import Auth from './src/components/Login';
 import {Session} from '@supabase/supabase-js';
-import Menu from "./src/components/Menu";
+import {NavigationContainer} from '@react-navigation/native';
+import Home from './src/pages/Home';
+import Profil from './src/pages/Profil';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Messagerie from './src/pages/Messagerie';
+import HubPublication from './src/pages/HubPublication';
+import Favoris from './src/pages/Favoris';
 
-type ArticleData = {
-  id: number;
-  title: string;
-  created_at: Date;
-};
 const App = () => {
-  const [articles, setArticles] = useState<ArticleData[] | []>([]);
   const [session, setSession] = useState<Session | null>(null);
-
-  async function fetchArticles() {
-    const {data} = await supabase.from('articles').select('*');
-    return data;
-  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session}}) => {
@@ -38,27 +31,42 @@ const App = () => {
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
-    fetchArticles().then(resul => {
-      setArticles(resul as ArticleData[]);
-    });
   }, []);
-
+  const Tab = createBottomTabNavigator();
+  console.log(typeof session);
   return (
-    <SafeAreaView>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View>
-          {articles.map((article, index) => (
-            <Text key={index}>{article.title}</Text>
-          ))}
-          {session && session.user ? (
-            <Account key={session.user.id} session={session} />
-          ) : (
-            <Auth />
-          )}
-          <Menu isConnected={true}></Menu>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={Home} />
+        {session && session.user ? (
+          <>
+            <Tab.Screen
+              name="Messagerie"
+              children={() => <Messagerie session={session} />}
+            />
+            <Tab.Screen
+              name="HubPublication"
+              children={() => <HubPublication session={session} />}
+            />
+            <Tab.Screen
+              name="Favoris"
+              children={() => <Favoris session={session} />}
+            />
+            <Tab.Screen
+              name="Profil"
+              children={() => <Profil session={session} />}
+            />
+          </>
+        ) : (
+          <>
+            <Tab.Screen name="Messagerie" component={Auth} />
+            <Tab.Screen name="HubPublication" component={Auth} />
+            <Tab.Screen name="Favoris" component={Auth} />
+            <Tab.Screen name="Profil" component={Auth} />
+          </>
+        )}
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 };
 
