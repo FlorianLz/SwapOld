@@ -1,13 +1,15 @@
-import {Image, StyleSheet, Text, View, Pressable} from 'react-native';
+import { Image, StyleSheet, Text, View, Pressable, Button } from "react-native";
 import React, {useEffect, useState} from 'react';
 import articleService from '../../services/article.service';
 import {supabase} from '../../lib/initSupabase';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {IArticleData} from '../../interfaces/articleInterface';
+import SingleArticleCard from "./SingleArticleCard";
 export default function ListArticles() {
   const [articles, setArticles] = useState<IArticleData[] | []>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const [modeAffichage, setModeAffichage] = useState<string>('mode1');
 
   useEffect(() => {
     // a supp
@@ -19,33 +21,18 @@ export default function ListArticles() {
 
   return (
     <View style={styles.container}>
-      <Text>Home</Text>
-      {articles.map(article => (
-        <Pressable
-          onPress={() => navigation.navigate('SingleArticle')}
-          key={article.id}>
-          <Text>{article.title}</Text>
-          <Text>{article.description}</Text>
-          <Text>Latitude : {article.location.latitude}</Text>
-          <Text>Longitude : {article.location.longitude}</Text>
-          <Text>
-            Mis en ligne par {article.articles_profiles[0].profiles.username} le
-            {' ' + new Date(article.created_at).toLocaleDateString()}
-          </Text>
-          {article.articles_images.map(item => (
-            <React.Fragment key={item.id}>
-              <Image
-                source={{
-                  uri: supabase.storage
-                    .from('swapold')
-                    .getPublicUrl(item.image_name).data.publicUrl,
-                }}
-                style={{width: 500, height: 200, resizeMode: 'cover'}}
-              />
-            </React.Fragment>
-          ))}
-        </Pressable>
-      ))}
+      <View>
+        <Text>Les derniers ajouts</Text>
+        <View>
+          <Button title={'Mode 1'} onPress={() => setModeAffichage('mode1')} />
+          <Button title={'Mode 2'} onPress={() => setModeAffichage('mode2')} />
+        </View>
+      </View>
+      <View>
+        {articles.map(article => (
+          <SingleArticleCard modeAffichage={modeAffichage} article={article} navigation={navigation} />
+        ))}
+      </View>
     </View>
   );
 }

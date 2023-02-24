@@ -46,7 +46,8 @@ const App = () => {
         />
         <Stack.Screen
           name="SingleArticle"
-          children={() => <SingleArticle session={session} />}
+          initialParams={{params: {session: session}}}
+          component={SingleArticle}
         />
       </Stack.Navigator>
     </NavigationContainer>
