@@ -1,7 +1,6 @@
-import {Image, StyleSheet, Text, View, Pressable, Button} from 'react-native';
+import {ScrollView, StyleSheet, Text, View, Button} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import articleService from '../../services/article.service';
-import {supabase} from '../../lib/initSupabase';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {IArticleData} from '../../interfaces/articleInterface';
@@ -20,7 +19,7 @@ export default function ListArticles() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View>
         <Text>Les derniers ajouts</Text>
         <View>
@@ -38,7 +37,7 @@ export default function ListArticles() {
           />
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
