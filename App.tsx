@@ -56,7 +56,7 @@ const App = () => {
     const Tab = createBottomTabNavigator();
     return (
       <Tab.Navigator>
-        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="HomePage" component={Home} />
         {session && session.user ? (
           <>
             <Tab.Screen
