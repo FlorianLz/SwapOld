@@ -21,7 +21,7 @@ export default function Account({session}: {session: Session}) {
 
       let {data, error, status} = await supabase
         .from('profiles')
-        .select(`username, avatar_url`)
+        .select(`username, avatar_url, full_name`)
         .eq('id', session?.user.id)
         .single();
       console.log('data', data);
