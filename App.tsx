@@ -19,6 +19,8 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Messagerie from './src/pages/Messagerie';
 import HubPublication from './src/pages/HubPublication';
 import Favoris from './src/pages/Favoris';
+import SingleArticle from './src/pages/SingleArticle';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -32,10 +34,27 @@ const App = () => {
       setSession(session);
     });
   }, []);
-  const Tab = createBottomTabNavigator();
-  console.log(typeof session);
+
+  const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          options={{headerShown: false}}
+          component={HomeTabs}
+        />
+        <Stack.Screen
+          name="SingleArticle"
+          children={() => <SingleArticle session={session} />}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+
+  function HomeTabs() {
+    const Tab = createBottomTabNavigator();
+    return (
       <Tab.Navigator>
         <Tab.Screen name="Home" component={Home} />
         {session && session.user ? (
@@ -66,8 +85,7 @@ const App = () => {
           </>
         )}
       </Tab.Navigator>
-    </NavigationContainer>
-  );
+    );
+  }
 };
-
 export default App;
