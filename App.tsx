@@ -48,6 +48,7 @@ const App = () => {
           name="SingleArticle"
           initialParams={{params: {session: session}}}
           component={SingleArticle}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>
