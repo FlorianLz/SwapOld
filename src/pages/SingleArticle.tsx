@@ -28,7 +28,8 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
           <Text>Latitude : {article.location?.latitude}</Text>
           <Text>Longitude : {article.location?.longitude}</Text>
           <Text>
-            Mis en ligne par {article?.articles_profiles[0].profiles.username} le
+            Mis en ligne par {article?.articles_profiles[0].profiles.username}{' '}
+            le
             {' ' + new Date(article?.created_at).toLocaleDateString()}
           </Text>
           {article.articles_images.map(item => (

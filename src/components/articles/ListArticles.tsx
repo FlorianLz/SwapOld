@@ -1,11 +1,11 @@
-import { Image, StyleSheet, Text, View, Pressable, Button } from "react-native";
+import {Image, StyleSheet, Text, View, Pressable, Button} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import articleService from '../../services/article.service';
 import {supabase} from '../../lib/initSupabase';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {IArticleData} from '../../interfaces/articleInterface';
-import SingleArticleCard from "./SingleArticleCard";
+import SingleArticleCard from './SingleArticleCard';
 export default function ListArticles() {
   const [articles, setArticles] = useState<IArticleData[] | []>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -30,7 +30,12 @@ export default function ListArticles() {
       </View>
       <View>
         {articles.map(article => (
-          <SingleArticleCard modeAffichage={modeAffichage} article={article} navigation={navigation} />
+          <SingleArticleCard
+            key={article.id}
+            modeAffichage={modeAffichage}
+            article={article}
+            navigation={navigation}
+          />
         ))}
       </View>
     </View>
