@@ -6,8 +6,9 @@ const articleService = {
     const rawArticles = await articleRepository.getAllArticles();
     return articleFactory.getAllArticles(rawArticles);
   },
-  getArticleById: (id: number) => {
-    return articleRepository.getArticleById(id);
+  getArticleById: async (id: number) => {
+    const rawArticle = await articleRepository.getArticleById(id);
+    return articleFactory.getArticleById(rawArticle);
   },
 };
 export default articleService;

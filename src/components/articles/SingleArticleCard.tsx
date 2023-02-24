@@ -10,7 +10,7 @@ export default function SingleArticleCard({
   article: any;
   modeAffichage: string;
 }) {
-  console.log('article', article);
+  //console.log('article', article);
   return (
     <Pressable
       onPress={() => navigation.navigate('SingleArticle', {id: article.id})}

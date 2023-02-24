@@ -8,8 +8,7 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import articleService from '../services/article.service';
-import {IArticleData} from '../interfaces/articleInterface';
-import {supabase} from '../lib/initSupabase';
+import IArticleData from '../interfaces/articleInterface';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
@@ -21,8 +20,6 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
-    // a supp
-    // @ts-ignore
     articleService.getArticleById(id).then((result: IArticleData) => {
       setArticle(result as IArticleData);
       setLoading(true);
@@ -41,29 +38,33 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
             <Text style={styles.Title}>{article.title}</Text>
           </Pressable>
           <View style={styles.Top}>
-            {article.articles_images.map(item => (
-              <React.Fragment key={item.id}>
-                <Image
-                  source={{
-                    uri: supabase.storage
-                      .from('swapold')
-                      .getPublicUrl(item.image_name).data.publicUrl,
-                  }}
-                  style={styles.Image}
-                />
-              </React.Fragment>
-            ))}
+            <Image
+              source={{
+                uri: article.images[0],
+              }}
+              style={styles.Image}
+            />
             <View style={styles.RightImage}>
-              <Text style={styles.ImageMinify} />
-              <Text style={styles.ImageMinify} />
-              <Text style={styles.ImageMinify} />
-              <Text style={styles.ImageMinify} />
+              {typeof article.images !== 'string'
+                ? article.images?.map((image: string, index: number) => {
+                    if (index > 0 && index < 5) {
+                      return (
+                        <Image
+                          style={styles.ImageMinify}
+                          source={{uri: article.images[1]}}
+                        />
+                      );
+                    }
+                  })
+                : null}
             </View>
           </View>
           <View style={styles.Bottom}>
             <View>
               <Text style={styles.TextTitle}>Localisation</Text>
-              <Text style={styles.TextSubtitle}>Lille, 3km</Text>
+              <Text style={styles.TextSubtitle}>
+                {article.location_name} ({article.distance} km)
+              </Text>
             </View>
             <View>
               <Text style={styles.TextTitle}>Description</Text>
@@ -72,7 +73,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
             <View>
               <Text style={styles.TextTitle}>Posté par</Text>
               <Text style={styles.TextSubtitle}>
-                {article?.articles_profiles[0].profiles.username} le{' '}
+                {article?.username} le
                 {' ' + new Date(article?.created_at).toLocaleDateString()}
               </Text>
             </View>
