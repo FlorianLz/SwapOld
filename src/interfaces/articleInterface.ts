@@ -1,9 +1,12 @@
-export interface IArticleData {
+export default interface IArticleData {
   id: number;
   title: string;
   description: string;
   created_at: Date;
   location: {latitude: number; longitude: number};
-  articles_images: [{id: number; image_name: string}];
-  articles_profiles: [{id_profile: number; profiles: {username: string}}];
+  location_name: string;
+  images: string | string[];
+  id_profile: number;
+  username: string;
+  distance: number;
 }

@@ -1,10 +1,9 @@
-import {Image, StyleSheet, Text, View, Pressable, Button} from 'react-native';
+import {Text, View, Button, ScrollView} from "react-native";
 import React, {useEffect, useState} from 'react';
 import articleService from '../../services/article.service';
-import {supabase} from '../../lib/initSupabase';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {IArticleData} from '../../interfaces/articleInterface';
+import IArticleData from '../../interfaces/articleInterface';
 import SingleArticleCard from './SingleArticleCard';
 export default function ListArticles() {
   const [articles, setArticles] = useState<IArticleData[] | []>([]);
@@ -12,15 +11,13 @@ export default function ListArticles() {
   const [modeAffichage, setModeAffichage] = useState<string>('mode1');
 
   useEffect(() => {
-    // a supp
-    // @ts-ignore
-    articleService.getAllArticles().then((resul: IArticleData[]) => {
-      setArticles(resul as IArticleData[]);
+    articleService.getAllArticles().then((result: IArticleData[]) => {
+      setArticles(result as IArticleData[]);
     });
   }, []);
 
   return (
-    <View style={styles.container}>
+    <ScrollView>
       <View>
         <Text>Les derniers ajouts</Text>
         <View>
@@ -38,12 +35,6 @@ export default function ListArticles() {
           />
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 50,
-  },
-});
