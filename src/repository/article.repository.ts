@@ -1,8 +1,8 @@
-import { supabase } from "../lib/initSupabase";
+import {supabase} from '../lib/initSupabase';
 
 const articleRepository = {
   getAllArticles: async () => {
-    const { data } = await supabase.from("articles").select(`
+    const {data} = await supabase.from('articles').select(`
     *,
     articles_images (
       id,
