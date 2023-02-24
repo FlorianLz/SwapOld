@@ -1,4 +1,5 @@
 {
   "name": "SwapOld",
-  "displayName": "SwapOld"
+  "displayName": "SwapOld",
+  "orientation": "portrait"
 }
