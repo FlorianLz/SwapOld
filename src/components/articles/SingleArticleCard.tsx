@@ -1,6 +1,5 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {supabase} from '../../lib/initSupabase';
 
 export default function SingleArticleCard({
   navigation,
@@ -11,6 +10,7 @@ export default function SingleArticleCard({
   article: any;
   modeAffichage: string;
 }) {
+  console.log('article', article);
   return (
     <Pressable
       onPress={() => navigation.navigate('SingleArticle', {id: article.id})}
@@ -22,36 +22,28 @@ export default function SingleArticleCard({
             : styles.affichageMode2
         }>
         <Text>{article.title}</Text>
-        {article.articles_images.map(
-          (item: {id: React.Key | null | undefined; image_name: string}) => (
-            <React.Fragment key={item.id}>
-              <Image
-                source={{
-                  uri: supabase.storage
-                    .from('swapold')
-                    .getPublicUrl(item.image_name).data.publicUrl,
-                }}
-                style={{width: 500, height: 200, resizeMode: 'cover'}}
-              />
-            </React.Fragment>
-          ),
-        )}
+        <Text>
+          {article.location_name} ({article.distance} km)
+        </Text>
+        <Image
+          source={{
+            uri: article.images,
+          }}
+          style={{width: 500, height: 200, resizeMode: 'cover'}}
+        />
       </View>
     </Pressable>
   );
 }
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 50,
-  },
   affichageMode1: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
   },
   affichageMode2: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'space-between',
   },
 });
