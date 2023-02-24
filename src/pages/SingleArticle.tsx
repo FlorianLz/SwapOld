@@ -26,8 +26,6 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
     });
   }, [id]);
 
-  console.log('article', article);
-
   return (
     <ScrollView style={styles.container}>
       {loading ? (
@@ -50,6 +48,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
                     if (index > 0 && index < 5) {
                       return (
                         <Image
+                          key={index}
                           style={styles.ImageMinify}
                           source={{uri: article.images[1]}}
                         />

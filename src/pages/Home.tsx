@@ -1,10 +1,15 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
 import ListArticles from '../components/articles/ListArticles';
+import { useIsFocused } from "@react-navigation/native";
+import { useEffect } from "react";
 export default function Home() {
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    // Refresh the screen when the user comes back to it
+  } , [isFocused]);
   return (
     <View style={styles.container}>
-      <ListArticles />
+      {isFocused ? <ListArticles /> : null}
     </View>
   );
 }

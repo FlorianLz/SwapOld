@@ -58,12 +58,16 @@ const App = () => {
     const Tab = createBottomTabNavigator();
     return (
       <Tab.Navigator>
-        <Tab.Screen name="HomePage" component={Home} />
+        <Tab.Screen
+          name="HomePage"
+          component={Home}
+          options={{unmountOnBlur: true}}
+        />
         {session && session.user ? (
           <>
             <Tab.Screen
               name="Messagerie"
-              children={() => <Messagerie session={session} />}
+              children={() => <Messagerie session={session}/>}
             />
             <Tab.Screen
               name="HubPublication"

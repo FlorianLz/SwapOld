@@ -1,4 +1,4 @@
-import {Text, View, Button, ScrollView} from "react-native";
+import {Text, View, Button, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import articleService from '../../services/article.service';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
