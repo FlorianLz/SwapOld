@@ -21,9 +21,11 @@ import HubPublication from './src/pages/HubPublication';
 import Favoris from './src/pages/Favoris';
 import SingleArticle from './src/pages/SingleArticle';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session}}) => {
@@ -32,6 +34,13 @@ const App = () => {
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+    });
+    RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
+      interval: 10000,
+      fastInterval: 5000,
+    }).then(() => {
+      //Reload the app with the location on
+      setLoading(true);
     });
   }, []);
 
@@ -67,7 +76,7 @@ const App = () => {
           <>
             <Tab.Screen
               name="Messagerie"
-              children={() => <Messagerie session={session}/>}
+              children={() => <Messagerie session={session} />}
             />
             <Tab.Screen
               name="HubPublication"

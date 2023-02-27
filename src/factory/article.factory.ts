@@ -1,17 +1,18 @@
-import IArticleData from "../interfaces/articleInterface";
-import imagesHelper from "../helpers/images.helper";
-import locationHelper from "../helpers/location.helper";
+import IArticleData from '../interfaces/articleInterface';
+import imagesHelper from '../helpers/images.helper';
+import locationHelper from '../helpers/location.helper';
 
 const articleFactory = {
-  getAllArticles: (rawArticles: any) => {
+  getAllArticles: async (rawArticles: any) => {
     let articles: IArticleData[] = [];
+    let location = await locationHelper.getUserLocation();
     rawArticles.map((article: any) => {
       articles.push(<IArticleData>{
         id: article.id,
         title: article.title,
         distance: locationHelper.getDistanceFromLatLonInKm(
-          locationHelper.getUserLocation().latitude,
-          locationHelper.getUserLocation().longitude,
+          location.coords.latitude,
+          location.coords.longitude,
           article.location.latitude,
           article.location.longitude,
         ),
@@ -24,19 +25,20 @@ const articleFactory = {
     articles.sort((a, b) => a.distance - b.distance);
     return articles;
   },
-  getArticleById: (rawArticle: any) => {
+  getArticleById: async (rawArticle: any) => {
     let images: string[] = [];
     rawArticle.articles_images.map((image: any) => {
       images.push(imagesHelper.getPublicUrlByImageName(image.image_name));
     });
+    let location = await locationHelper.getUserLocation();
     return <IArticleData>{
       id: rawArticle.id,
       title: rawArticle.title,
       created_at: rawArticle.created_at,
       description: rawArticle.description,
       distance: locationHelper.getDistanceFromLatLonInKm(
-        locationHelper.getUserLocation().latitude,
-        locationHelper.getUserLocation().longitude,
+        location.coords.latitude,
+        location.coords.longitude,
         rawArticle.location.latitude,
         rawArticle.location.longitude,
       ),
