@@ -34,6 +34,15 @@ export default function SingleArticleCard({
             </Text>
           </View>
         </View>
+        <View
+          style={modeAffichage === 'mode1' ? styles.favoris : styles.favoris2}>
+          <Pressable
+            onPress={() => {
+              console.log('favoris');
+            }}>
+            <Text style={styles.AddFav} />
+          </Pressable>
+        </View>
       </Pressable>
     </View>
   );
@@ -54,6 +63,7 @@ const styles = StyleSheet.create({
     elevation: 8,
     width: '47%',
     marginBottom: 15,
+    position: 'relative',
   },
   AffichageMode2: {
     display: 'flex',
@@ -67,12 +77,32 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 8,
     padding: 2,
+    position: 'relative',
   },
   Affichage2: {
     display: 'flex',
     flexDirection: 'row',
     backgroundColor: 'white',
     borderRadius: 16,
+  },
+  favoris: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+  },
+  favoris2: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 10,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  AddFav: {
+    backgroundColor: 'red',
+    width: 30,
+    height: 30,
   },
   Infos: {
     alignItems: 'flex-start',
