@@ -67,7 +67,7 @@ const App = () => {
           <>
             <Tab.Screen
               name="Messagerie"
-              children={() => <Messagerie session={session}/>}
+              children={() => <Messagerie session={session} />}
             />
             <Tab.Screen
               name="HubPublication"

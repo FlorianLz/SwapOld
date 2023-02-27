@@ -1,6 +1,6 @@
-import IArticleData from "../interfaces/articleInterface";
-import imagesHelper from "../helpers/images.helper";
-import locationHelper from "../helpers/location.helper";
+import IArticleData from '../interfaces/articleInterface';
+import imagesHelper from '../helpers/images.helper';
+import locationHelper from '../helpers/location.helper';
 
 const articleFactory = {
   getAllArticles: (rawArticles: any) => {
