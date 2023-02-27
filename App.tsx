@@ -12,7 +12,7 @@ import React, {useEffect, useState} from 'react';
 import {supabase} from './src/lib/initSupabase';
 import Auth from './src/components/Login';
 import {Session} from '@supabase/supabase-js';
-import {NavigationContainer} from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import Home from './src/pages/Home';
 import Profil from './src/pages/Profil';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -22,6 +22,7 @@ import Favoris from './src/pages/Favoris';
 import SingleArticle from './src/pages/SingleArticle';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+import { StyleSheet } from "react-native";
 
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -44,9 +45,18 @@ const App = () => {
     });
   }, []);
 
+  const SwapOldTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: 'rgb(255, 45, 85)',
+      background: '#fff',
+      card: '#fff',
+    },
+  };
   const Stack = createNativeStackNavigator();
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={SwapOldTheme}>
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
@@ -70,13 +80,14 @@ const App = () => {
         <Tab.Screen
           name="HomePage"
           component={Home}
-          options={{unmountOnBlur: true}}
+          options={{unmountOnBlur: true, headerShown: false}}
         />
         {session && session.user ? (
           <>
             <Tab.Screen
               name="Messagerie"
               children={() => <Messagerie session={session} />}
+              options={{tabBarBadge: 3}}
             />
             <Tab.Screen
               name="HubPublication"
@@ -104,3 +115,9 @@ const App = () => {
   }
 };
 export default App;
+
+const styles = StyleSheet.create({
+  bg: {
+    backgroundColor: '#fff',
+  },
+});
