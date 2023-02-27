@@ -1,8 +1,8 @@
 import Geolocation from '@react-native-community/geolocation';
 import ICoordData from '../interfaces/locationInterface';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { json } from "stream/consumers";
-import { supabase } from "../lib/initSupabase";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {json} from 'stream/consumers';
+import {supabase} from '../lib/initSupabase';
 const locationHelper = {
   getDistanceFromLatLonInKm: (
     lat1: number,
