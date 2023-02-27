@@ -6,6 +6,9 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import IArticleData from '../../interfaces/articleInterface';
 import SingleArticleCard from './SingleArticleCard';
 import locationHelper from '../../helpers/location.helper';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import IconIon from 'react-native-vector-icons/Ionicons';
+
 export default function ListArticles() {
   const [articles, setArticles] = useState<IArticleData[] | []>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -25,10 +28,18 @@ export default function ListArticles() {
         <Text style={styles.Title}>Les derniers ajouts</Text>
         <View style={styles.ModeAffichageContainer}>
           <Pressable onPress={() => setModeAffichage('mode1')}>
-            <Text style={styles.Mode1}>1</Text>
+            <IconIon
+              name="ios-grid"
+              size={20}
+              color={modeAffichage === 'mode1' ? '#000' : '#D4D4D4'}
+            />
           </Pressable>
           <Pressable onPress={() => setModeAffichage('mode2')}>
-            <Text style={styles.Mode1}>2</Text>
+            <Icon
+              name="list-ul"
+              size={20}
+              color={modeAffichage === 'mode2' ? '#000' : '#D4D4D4'}
+            />
           </Pressable>
         </View>
       </View>
@@ -58,21 +69,13 @@ const styles = StyleSheet.create({
   ModeAffichageContainer: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
   Title: {
     color: '#000',
     fontWeight: 'bold',
     fontSize: 12,
-  },
-  Mode1: {
-    color: '#000',
-    width: 20,
-    height: 20,
-  },
-  Mode2: {
-    color: '#000',
-    width: 20,
-    height: 20,
   },
   ListArticle: {
     display: 'flex',
