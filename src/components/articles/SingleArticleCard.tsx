@@ -1,6 +1,7 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-
+import Icon from 'react-native-vector-icons/EvilIcons';
+import IconIon from 'react-native-vector-icons/Ionicons';
 export default function SingleArticleCard({
   navigation,
   article,
@@ -30,6 +31,7 @@ export default function SingleArticleCard({
             style={modeAffichage === 'mode1' ? styles.Infos : styles.Infos2}>
             <Text style={styles.Title}>{article.title}</Text>
             <Text style={styles.Localisation}>
+              <Icon name="location" size={10} color="#696969" />
               {article.location_name} ({article.distance} km)
             </Text>
           </View>
@@ -40,7 +42,9 @@ export default function SingleArticleCard({
             onPress={() => {
               console.log('favoris');
             }}>
-            <Text style={styles.AddFav} />
+            <View style={styles.AddFav}>
+              <IconIon name="ios-bookmark-outline" size={24} color="#000" />
+            </View>
           </Pressable>
         </View>
       </Pressable>
@@ -100,9 +104,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   AddFav: {
-    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
     width: 30,
     height: 30,
+    borderRadius: 15,
   },
   Infos: {
     alignItems: 'flex-start',

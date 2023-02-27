@@ -11,6 +11,9 @@ import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import Icon from 'react-native-vector-icons/EvilIcons';
+import IconAnt from 'react-native-vector-icons/AntDesign';
+import IconIon from 'react-native-vector-icons/Ionicons';
 
 export default ({route}: {params: {session: object; id: number}} | any) => {
   const {id} = route.params;
@@ -32,7 +35,12 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
         <>
           <View style={styles.Figure} />
           <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
-            <Text style={styles.Icon}> ← </Text>
+            <IconAnt
+              style={styles.Icon}
+              name="arrowleft"
+              size={24}
+              color="#000"
+            />
             <Text style={styles.Title}>{article.title}</Text>
           </Pressable>
           <View style={styles.Top}>
@@ -43,25 +51,42 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
               style={styles.Image}
             />
             <View style={styles.RightImage}>
-              {typeof article.images !== 'string'
-                ? article.images?.map((image: string, index: number) => {
-                    if (index > 0 && index < 5) {
-                      return (
-                        <Image
-                          key={index}
-                          style={styles.ImageMinify}
-                          source={{uri: article.images[1]}}
-                        />
-                      );
-                    }
-                  })
-                : null}
+              <View style={styles.RightImageIcon}>
+                <IconIon
+                  style={styles.Icon}
+                  name="ios-bookmark-outline"
+                  size={24}
+                  color="#000"
+                />
+                <IconAnt
+                  style={styles.Icon}
+                  name="sharealt"
+                  size={24}
+                  color="#000"
+                />
+              </View>
+              <View>
+                {typeof article.images !== 'string'
+                  ? article.images?.map((image: string, index: number) => {
+                      if (index > 0 && index < 5) {
+                        return (
+                          <Image
+                            key={index}
+                            style={styles.ImageMinify}
+                            source={{uri: article.images[1]}}
+                          />
+                        );
+                      }
+                    })
+                  : null}
+              </View>
             </View>
           </View>
           <View style={styles.Bottom}>
             <View>
               <Text style={styles.TextTitle}>Localisation</Text>
               <Text style={styles.TextSubtitle}>
+                <Icon name="location" size={16} color="#696969" />
                 {article.location_name} ({article.distance} km)
               </Text>
             </View>
@@ -110,8 +135,8 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   Icon: {
-    color: '#000',
-    fontSize: 28,
+    marginLeft: 20,
+    marginRight: 20,
   },
 
   container: {
@@ -133,7 +158,10 @@ const styles = StyleSheet.create({
   RightImage: {
     width: '20%',
     alignItems: 'center',
-    marginTop: 150,
+  },
+  RightImageIcon: {
+    gap: 20,
+    marginBottom: 75,
   },
   ImageMinify: {
     backgroundColor: 'grey',

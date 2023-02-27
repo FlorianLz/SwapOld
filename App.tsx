@@ -22,6 +22,10 @@ import Favoris from './src/pages/Favoris';
 import SingleArticle from './src/pages/SingleArticle';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconFont from 'react-native-vector-icons/Fontisto';
+import IconFea from 'react-native-vector-icons/Feather';
+import IconOti from 'react-native-vector-icons/Octicons';
 
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -66,7 +70,52 @@ const App = () => {
   function HomeTabs() {
     const Tab = createBottomTabNavigator();
     return (
-      <Tab.Navigator>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          tabBarShowLabel: false,
+          tabBarIcon: focused => {
+            const icons = {
+              HomePage: (
+                <IconOti
+                  name={'home'}
+                  color={focused.focused ? '#000' : '#ccc'}
+                  size={24}
+                />
+              ),
+              Messagerie: (
+                <IconMat
+                  name={'message-processing-outline'}
+                  color={focused.focused ? '#000' : '#ccc'}
+                  size={24}
+                />
+              ),
+              HubPublication: (
+                <IconFont
+                  name={'arrow-swap'}
+                  color={focused.focused ? '#000' : '#ccc'}
+                  size={24}
+                  style={{transform: [{rotateY: '180deg'}]}}
+                />
+              ),
+              Favoris: (
+                <IconFea
+                  name={'bookmark'}
+                  color={focused.focused ? '#000' : '#ccc'}
+                  size={24}
+                />
+              ),
+              Profil: (
+                <IconFea
+                  name={'user'}
+                  color={focused.focused ? '#000' : '#ccc'}
+                  size={24}
+                />
+              ),
+            };
+
+            return icons[route.name];
+          },
+        })}>
         <Tab.Screen
           name="HomePage"
           component={Home}
