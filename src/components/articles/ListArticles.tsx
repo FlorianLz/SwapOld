@@ -7,6 +7,7 @@ import IArticleData from '../../interfaces/articleInterface';
 import SingleArticleCard from './SingleArticleCard';
 import locationHelper from "../../helpers/location.helper";
 import Geolocation from "@react-native-community/geolocation";
+import RNAndroidLocationEnabler from "react-native-android-location-enabler";
 export default function ListArticles() {
   const [articles, setArticles] = useState<IArticleData[] | []>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -17,9 +18,7 @@ export default function ListArticles() {
       setArticles(result as IArticleData[]);
     });
 
-    locationHelper.setUserDefaultLocation().then(() => {
-      Geolocation.requestAuthorization();
-    });
+    locationHelper.setUserDefaultLocation();
   }, []);
 
   return (
