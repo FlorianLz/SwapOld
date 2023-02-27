@@ -12,7 +12,7 @@ import React, {useEffect, useState} from 'react';
 import {supabase} from './src/lib/initSupabase';
 import Auth from './src/components/Login';
 import {Session} from '@supabase/supabase-js';
-import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import Home from './src/pages/Home';
 import Profil from './src/pages/Profil';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -22,7 +22,7 @@ import Favoris from './src/pages/Favoris';
 import SingleArticle from './src/pages/SingleArticle';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
-import { StyleSheet } from "react-native";
+import {StyleSheet} from 'react-native';
 
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
