@@ -14,6 +14,6 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
+    marginTop: 10,
   },
 });
