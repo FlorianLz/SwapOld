@@ -10,5 +10,9 @@ const articleService = {
     const rawArticle = await articleRepository.getArticleById(id);
     return articleFactory.getArticleById(rawArticle);
   },
+  getFavoriteArticles: async (userId: number) => {
+    const rawArticles = await articleRepository.getFavoriteArticles(userId);
+    return articleFactory.getAllArticles(rawArticles);
+  },
 };
 export default articleService;
