@@ -21,6 +21,7 @@ import HubPublication from './src/pages/HubPublication';
 import Favoris from './src/pages/Favoris';
 import SingleArticle from './src/pages/SingleArticle';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import locationHelper from "./src/helpers/location.helper";
 
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -67,7 +68,7 @@ const App = () => {
           <>
             <Tab.Screen
               name="Messagerie"
-              children={() => <Messagerie session={session}/>}
+              children={() => <Messagerie session={session} />}
             />
             <Tab.Screen
               name="HubPublication"
