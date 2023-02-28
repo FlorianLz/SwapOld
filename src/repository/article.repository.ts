@@ -1,4 +1,6 @@
 import {supabase} from '../lib/initSupabase';
+import IArticleData from '../interfaces/articleInterface';
+import internal from 'stream';
 
 const articleRepository = {
   getAllArticles: async (userId: any) => {
@@ -142,6 +144,20 @@ const articleRepository = {
       )
       .ilike('title', `%${search}%`);
     return data;
+  },
+  addArticle: async (idUser: string, title: string, description: string) => {
+    const {data, error} = await supabase.rpc('insert_articles', {
+      title,
+      description,
+      location: {latitude: 0, longitude: 0},
+      id_profile: idUser,
+    });
+    // @ts-ignore
+    if (data !== null && data === 1) {
+      return {error: false};
+    } else {
+      return {error: true, message: error?.message};
+    }
   },
 };
 export default articleRepository;

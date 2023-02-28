@@ -21,7 +21,7 @@ const articleFactory = {
         ),
         location_name: article.location.cityName,
         images: imagesHelper.getPublicUrlByImageName(
-          article.articles_images[0].image_name,
+          article.articles_images[0]?.image_name ?? 'default/default.png',
         ),
         isLiked: article.articles_favorites?.length > 0,
       };
@@ -30,10 +30,13 @@ const articleFactory = {
     return articles;
   },
   getArticleById: async (rawArticle: any) => {
-    let images: string[] = [];
-    rawArticle.articles_images.map((image: any) => {
-      images.push(imagesHelper.getPublicUrlByImageName(image.image_name));
-    });
+    const images =
+      rawArticle.articles_images.length > 0
+        ? rawArticle.articles_images.map((image: any) => {
+            return imagesHelper.getPublicUrlByImageName(image.image_name);
+          })
+        : [imagesHelper.getPublicUrlByImageName('default/default.png')];
+    console.log(images);
     let location = await locationHelper.getUserLocation();
     return <IArticleData>{
       id: rawArticle.id,
