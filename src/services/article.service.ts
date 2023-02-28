@@ -22,5 +22,12 @@ const articleService = {
     const rawArticles = await articleRepository.searchArticles(search);
     return articleFactory.getAllArticles(rawArticles);
   },
+  getAllMyPublishedArticles: async (userId: string) => {
+    const rawArticles = await articleRepository.getAllMyPublishedArticles(
+      userId,
+    );
+    const articles = await articleFactory.getAllArticles(rawArticles);
+    return articles.reverse();
+  },
 };
 export default articleService;

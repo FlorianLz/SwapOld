@@ -8,11 +8,13 @@ export default function SingleArticleCard({
   article,
   modeAffichage,
   session,
+  hideLike = false,
 }: {
   navigation: any;
   article: any;
   modeAffichage: string;
   session: any;
+  hideLike?: boolean;
 }) {
   const [isLiked, setIsLiked] = React.useState<boolean>(article.isLiked);
   return (
@@ -51,7 +53,7 @@ export default function SingleArticleCard({
                   }
                 });
             }}>
-            {session?.user && (
+            {session?.user && !hideLike && (
               <View
                 style={
                   isLiked ? [styles.AddFav, styles.isLiked] : styles.AddFav

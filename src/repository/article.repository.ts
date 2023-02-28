@@ -1,6 +1,4 @@
 import {supabase} from '../lib/initSupabase';
-import IArticleData from '../interfaces/articleInterface';
-import internal from 'stream';
 
 const articleRepository = {
   getAllArticles: async (userId: any) => {
@@ -158,6 +156,27 @@ const articleRepository = {
     } else {
       return {error: true, message: error?.message};
     }
+  },
+  getAllMyPublishedArticles: async (idUser: string) => {
+    const {data} = await supabase
+      .from('articles')
+      .select(
+        `
+    *,
+    articles_images (
+      id,
+      image_name
+    ),
+    articles_profiles (
+      id_profile,
+      profiles (
+        username
+        )
+    )
+  `,
+      )
+      .eq('articles_profiles.id_profile', idUser);
+    return data;
   },
 };
 export default articleRepository;

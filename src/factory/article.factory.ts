@@ -36,7 +36,6 @@ const articleFactory = {
             return imagesHelper.getPublicUrlByImageName(image.image_name);
           })
         : [imagesHelper.getPublicUrlByImageName('default/default.png')];
-    console.log(images);
     let location = await locationHelper.getUserLocation();
     return <IArticleData>{
       id: rawArticle.id,

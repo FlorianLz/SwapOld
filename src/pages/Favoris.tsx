@@ -9,7 +9,6 @@ import articleService from '../services/article.service';
 import SingleArticleCard from '../components/articles/SingleArticleCard';
 import IArticleData from '../interfaces/articleInterface';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {supabase} from '../lib/initSupabase';
 export default function Favoris({session}: {session: any}) {
   const isFocused = useIsFocused();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();

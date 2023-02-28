@@ -10,4 +10,5 @@ export default interface IArticleData {
   username: string;
   distance: number;
   isLiked: boolean;
+  hideLike: boolean;
 }
