@@ -1,6 +1,5 @@
 import {Text, View, Pressable, ScrollView, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import articleService from '../../services/article.service';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import IArticleData from '../../interfaces/articleInterface';
@@ -9,18 +8,23 @@ import locationHelper from '../../helpers/location.helper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconIon from 'react-native-vector-icons/Ionicons';
 
-export default function ListArticles({session}: {session: any}) {
-  const [articles, setArticles] = useState<IArticleData[] | []>([]);
+export default function ListArticles({
+  session,
+  articles,
+  searchTermText,
+}: {
+  session: any;
+  articles: IArticleData[];
+  searchTermText: string;
+}) {
+  const [articlesTab, setArticlesTab] = useState<IArticleData[] | []>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [modeAffichage, setModeAffichage] = useState<string>('mode1');
 
   useEffect(() => {
-    articleService.getAllArticles().then((result: IArticleData[]) => {
-      setArticles(result as IArticleData[]);
-    });
-
+    setArticlesTab(articles as IArticleData[]);
     locationHelper.setUserDefaultLocation();
-  }, []);
+  }, [articles]);
 
   return (
     <ScrollView>
@@ -44,15 +48,23 @@ export default function ListArticles({session}: {session: any}) {
         </View>
       </View>
       <View style={styles.ListArticle}>
-        {articles.map(article => (
-          <SingleArticleCard
-            key={article.id}
-            modeAffichage={modeAffichage}
-            article={article}
-            navigation={navigation}
-            session={session}
-          />
-        ))}
+        {articlesTab.length > 0 ? (
+          articlesTab.map(article => (
+            <SingleArticleCard
+              key={article.id}
+              modeAffichage={modeAffichage}
+              article={article}
+              navigation={navigation}
+              session={session}
+            />
+          ))
+        ) : searchTermText.trim() === '' ? (
+          <Text>Aucun article trouvé</Text>
+        ) : (
+          <Text>
+            Aucun article trouvé pour votre recherche {searchTermText}
+          </Text>
+        )}
       </View>
     </ScrollView>
   );

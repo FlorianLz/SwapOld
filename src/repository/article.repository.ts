@@ -74,5 +74,29 @@ const articleRepository = {
       ]);
     }
   },
+  searchArticles: async (search: string) => {
+    const {data} = await supabase
+      .from('articles')
+      .select(
+        `
+    *,
+    articles_images (
+      id,
+      image_name
+    ),
+    articles_profiles (
+      id_profile,
+      profiles (
+        username
+        )
+    ),
+    articles_favorites (
+      id_profile
+    )
+  `,
+      )
+      .ilike('title', `%${search}%`);
+    return data;
+  },
 };
 export default articleRepository;

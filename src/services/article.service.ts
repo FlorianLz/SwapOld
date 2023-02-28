@@ -18,5 +18,9 @@ const articleService = {
     const like = await articleRepository.toggleLikeArticle(articleId, userId);
     return articleFactory.toggleLikeArticle(like);
   },
+  searchArticles: async (search: string) => {
+    const rawArticles = await articleRepository.searchArticles(search);
+    return articleFactory.getAllArticles(rawArticles);
+  },
 };
 export default articleService;
