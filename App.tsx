@@ -26,7 +26,6 @@ import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconFont from 'react-native-vector-icons/Fontisto';
 import IconFea from 'react-native-vector-icons/Feather';
 import IconOti from 'react-native-vector-icons/Octicons';
-import {StyleSheet} from 'react-native';
 
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -123,6 +122,7 @@ const App = () => {
               ),
             };
 
+            // @ts-ignore
             return icons[route.name];
           },
         })}>
@@ -164,9 +164,3 @@ const App = () => {
   }
 };
 export default App;
-
-const styles = StyleSheet.create({
-  bg: {
-    backgroundColor: '#fff',
-  },
-});
