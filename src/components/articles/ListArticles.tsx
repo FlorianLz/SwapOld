@@ -58,13 +58,11 @@ export default function ListArticles({
               session={session}
             />
           ))
-        ) : searchTermText.trim() === '' ? (
-          <Text>Aucun article trouvé</Text>
-        ) : (
+        ) : searchTermText !== '' ? (
           <Text>
             Aucun article trouvé pour votre recherche {searchTermText}
           </Text>
-        )}
+        ) : null}
       </View>
     </ScrollView>
   );
