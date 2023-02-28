@@ -9,6 +9,7 @@ import articleService from '../services/article.service';
 import SingleArticleCard from '../components/articles/SingleArticleCard';
 import IArticleData from '../interfaces/articleInterface';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {supabase} from '../lib/initSupabase';
 export default function Favoris({session}: {session: any}) {
   const isFocused = useIsFocused();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -20,6 +21,19 @@ export default function Favoris({session}: {session: any}) {
       .then((result: IArticleData[]) => {
         setArticles(result as IArticleData[]);
       });
+    /*supabase
+      .channel('value-db-changes-' + session.user.id)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'articles_favorites',
+          filter: 'id_profile=eq.' + session.user.id,
+        },
+        payload => console.log(payload),
+      )
+      .subscribe();*/
   }, [isFocused, session.user.id]);
   return (
     <ScrollView>
@@ -31,6 +45,7 @@ export default function Favoris({session}: {session: any}) {
               modeAffichage={'mode2'}
               article={article}
               navigation={navigation}
+              session={session}
             />
           ))}
         </View>
@@ -42,7 +57,7 @@ export default function Favoris({session}: {session: any}) {
 const styles = StyleSheet.create({
   ModeAffichage: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     paddingRight: 20,
     paddingLeft: 20,

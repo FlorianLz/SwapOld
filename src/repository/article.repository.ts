@@ -13,6 +13,9 @@ const articleRepository = {
       profiles (
         username
         )
+    ),
+    articles_favorites (
+      id_profile
     )
   `);
     return data;
@@ -32,6 +35,9 @@ const articleRepository = {
       profiles (
         username
         )
+    ),
+    articles_favorites (
+      id_profile
     )
   `,
       )
@@ -46,6 +52,27 @@ const articleRepository = {
       )
       .eq('articles_favorites.id_profile', userId);
     return data;
+  },
+  toggleLikeArticle: async (articleId: number, userId: number) => {
+    const {data} = await supabase
+      .from('articles_favorites')
+      .select('id')
+      .eq('id_article', articleId)
+      .eq('id_profile', userId);
+    if (data && data.length > 0) {
+      return supabase
+        .from('articles_favorites')
+        .delete()
+        .eq('id_article', articleId)
+        .eq('id_profile', userId);
+    } else {
+      return supabase.from('articles_favorites').insert([
+        {
+          id_article: articleId,
+          id_profile: userId,
+        },
+      ]);
+    }
   },
 };
 export default articleRepository;

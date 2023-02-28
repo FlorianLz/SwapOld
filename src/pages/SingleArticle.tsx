@@ -16,16 +16,18 @@ import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconIon from 'react-native-vector-icons/Ionicons';
 
 export default ({route}: {params: {session: object; id: number}} | any) => {
-  const {id} = route.params;
+  const {id, session} = route.params;
   const [article, setArticle] = React.useState<IArticleData>(
     {} as IArticleData,
   );
   const [loading, setLoading] = React.useState<boolean>(false);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const [isLiked, setIsLiked] = React.useState<boolean>(false);
   useEffect(() => {
     articleService.getArticleById(id).then((result: IArticleData) => {
       setArticle(result as IArticleData);
       setLoading(true);
+      setIsLiked(result.isLiked);
     });
   }, [id]);
 
@@ -52,12 +54,32 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
             />
             <View style={styles.RightImage}>
               <View style={styles.RightImageIcon}>
-                <IconIon
-                  style={styles.Icon}
-                  name="ios-bookmark-outline"
-                  size={24}
-                  color="#000"
-                />
+                <Pressable
+                  onPress={() => {
+                    articleService
+                      .toggleLikeArticle(article.id, session.user.id)
+                      .then(result => {
+                        if (!result.error) {
+                          setIsLiked(result.isLiked);
+                        }
+                      });
+                  }}>
+                  {isLiked ? (
+                    <IconIon
+                      style={styles.Icon}
+                      name="ios-bookmark"
+                      size={24}
+                      color="#000"
+                    />
+                  ) : (
+                    <IconIon
+                      style={styles.Icon}
+                      name="ios-bookmark-outline"
+                      size={24}
+                      color="#000"
+                    />
+                  )}
+                </Pressable>
                 <IconAnt
                   style={styles.Icon}
                   name="sharealt"

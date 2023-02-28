@@ -69,7 +69,7 @@ const App = () => {
         />
         <Stack.Screen
           name="SingleArticle"
-          initialParams={{params: {session: session}}}
+          initialParams={{session: session}}
           component={SingleArticle}
           options={{headerShown: false}}
         />
@@ -123,12 +123,13 @@ const App = () => {
               ),
             };
 
+            // @ts-ignore
             return icons[route.name];
           },
         })}>
         <Tab.Screen
           name="HomePage"
-          component={Home}
+          children={() => <Home session={session} />}
           options={{unmountOnBlur: true, headerShown: false}}
         />
         {session && session.user ? (
@@ -164,9 +165,3 @@ const App = () => {
   }
 };
 export default App;
-
-const styles = StyleSheet.create({
-  bg: {
-    backgroundColor: '#fff',
-  },
-});

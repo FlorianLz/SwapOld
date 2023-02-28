@@ -14,5 +14,9 @@ const articleService = {
     const rawArticles = await articleRepository.getFavoriteArticles(userId);
     return articleFactory.getAllArticles(rawArticles);
   },
+  toggleLikeArticle: async (articleId: number, userId: number) => {
+    const like = await articleRepository.toggleLikeArticle(articleId, userId);
+    return articleFactory.toggleLikeArticle(like);
+  },
 };
 export default articleService;

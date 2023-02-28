@@ -20,6 +20,7 @@ const articleFactory = {
         images: imagesHelper.getPublicUrlByImageName(
           article.articles_images[0].image_name,
         ),
+        isLiked: article.articles_favorites.length > 0,
       });
     });
     articles.sort((a, b) => a.distance - b.distance);
@@ -46,7 +47,16 @@ const articleFactory = {
       images: images,
       id_profile: rawArticle.articles_profiles[0].id_profile,
       username: rawArticle.articles_profiles[0].profiles.username,
+      isLiked: rawArticle.articles_favorites.length > 0,
     };
+  },
+  toggleLikeArticle: async (like: any) => {
+    if (like.status === 204) {
+      return {isLiked: false, error: false};
+    } else if (like.status === 201) {
+      return {isLiked: true, error: false};
+    }
+    return {error: true, isLiked: false};
   },
 };
 export default articleFactory;

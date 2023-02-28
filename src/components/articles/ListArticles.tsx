@@ -9,7 +9,7 @@ import locationHelper from '../../helpers/location.helper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconIon from 'react-native-vector-icons/Ionicons';
 
-export default function ListArticles() {
+export default function ListArticles({session}: {session: any}) {
   const [articles, setArticles] = useState<IArticleData[] | []>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [modeAffichage, setModeAffichage] = useState<string>('mode1');
@@ -50,6 +50,7 @@ export default function ListArticles() {
             modeAffichage={modeAffichage}
             article={article}
             navigation={navigation}
+            session={session}
           />
         ))}
       </View>

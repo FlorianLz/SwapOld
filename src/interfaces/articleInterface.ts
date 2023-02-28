@@ -9,4 +9,5 @@ export default interface IArticleData {
   id_profile: number;
   username: string;
   distance: number;
+  isLiked: boolean;
 }

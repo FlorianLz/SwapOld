@@ -2,16 +2,19 @@ import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import IconIon from 'react-native-vector-icons/Ionicons';
+import articleService from '../../services/article.service';
 export default function SingleArticleCard({
   navigation,
   article,
   modeAffichage,
+  session,
 }: {
   navigation: any;
   article: any;
   modeAffichage: string;
+  session: any;
 }) {
-  //console.log('article', article);
+  const [isLiked, setIsLiked] = React.useState<boolean>(article.isLiked);
   return (
     <View
       style={
@@ -40,10 +43,21 @@ export default function SingleArticleCard({
           style={modeAffichage === 'mode1' ? styles.favoris : styles.favoris2}>
           <Pressable
             onPress={() => {
-              console.log('favoris');
+              articleService
+                .toggleLikeArticle(article.id, session.user.id)
+                .then(result => {
+                  if (!result.error) {
+                    setIsLiked(result.isLiked);
+                  }
+                });
             }}>
-            <View style={styles.AddFav}>
-              <IconIon name="ios-bookmark-outline" size={24} color="#000" />
+            <View
+              style={isLiked ? [styles.AddFav, styles.isLiked] : styles.AddFav}>
+              {!isLiked ? (
+                <IconIon name="ios-bookmark-outline" size={24} color="#000" />
+              ) : (
+                <IconIon name="ios-bookmark" size={24} color="#000" />
+              )}
             </View>
           </Pressable>
         </View>
@@ -110,6 +124,9 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
+  },
+  isLiked: {
+    backgroundColor: 'rgba(255, 255, 255, 1)',
   },
   Infos: {
     alignItems: 'flex-start',
