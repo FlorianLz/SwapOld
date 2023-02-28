@@ -1,8 +1,9 @@
 import {supabase} from '../lib/initSupabase';
 
 const articleRepository = {
-  getAllArticles: async () => {
-    const {data} = await supabase.from('articles').select(`
+  getAllArticles: async (userId: any) => {
+    if (!userId) {
+      const {data} = await supabase.from('articles').select(`
     *,
     articles_images (
       id,
@@ -13,18 +14,14 @@ const articleRepository = {
       profiles (
         username
         )
-    ),
-    articles_favorites (
-      id_profile
     )
   `);
-    return data;
-  },
-  getArticleById: async (id: number) => {
-    const {data} = await supabase
-      .from('articles')
-      .select(
-        `
+      return data;
+    } else {
+      const {data} = await supabase
+        .from('articles')
+        .select(
+          `
     *,
     articles_images (
       id,
@@ -40,9 +37,57 @@ const articleRepository = {
       id_profile
     )
   `,
-      )
-      .eq('id', id);
-    return data ? data[0] : {};
+        )
+        .eq('articles_favorites.id_profile', userId);
+      return data;
+    }
+  },
+  getArticleById: async (id: number, userId: any) => {
+    if (!userId) {
+      const {data} = await supabase
+        .from('articles')
+        .select(
+          `
+    *,
+    articles_images (
+      id,
+      image_name
+    ),
+    articles_profiles (
+      id_profile,
+      profiles (
+        username
+        )
+    )
+  `,
+        )
+        .eq('id', id);
+      return data ? data[0] : {};
+    } else {
+      const {data} = await supabase
+        .from('articles')
+        .select(
+          `
+    *,
+    articles_images (
+      id,
+      image_name
+    ),
+    articles_profiles (
+      id_profile,
+      profiles (
+        username
+        )
+    ),
+    articles_favorites (
+      id_profile
+    )
+  `,
+        )
+        .eq('id', id)
+        .eq('articles_favorites.id_profile', userId);
+      return data ? data[0] : {};
+    }
   },
   getFavoriteArticles: async (userId: number) => {
     const {data} = await supabase

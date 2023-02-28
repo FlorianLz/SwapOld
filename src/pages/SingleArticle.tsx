@@ -24,11 +24,13 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
   useEffect(() => {
-    articleService.getArticleById(id).then((result: IArticleData) => {
-      setArticle(result as IArticleData);
-      setLoading(true);
-      setIsLiked(result.isLiked);
-    });
+    articleService
+      .getArticleById(id, session?.user.id)
+      .then((result: IArticleData) => {
+        setArticle(result as IArticleData);
+        setLoading(true);
+        setIsLiked(result.isLiked);
+      });
   }, [id]);
 
   return (
@@ -54,32 +56,41 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
             />
             <View style={styles.RightImage}>
               <View style={styles.RightImageIcon}>
-                <Pressable
-                  onPress={() => {
-                    articleService
-                      .toggleLikeArticle(article.id, session.user.id)
-                      .then(result => {
-                        if (!result.error) {
-                          setIsLiked(result.isLiked);
-                        }
-                      });
-                  }}>
-                  {isLiked ? (
-                    <IconIon
-                      style={styles.Icon}
-                      name="ios-bookmark"
-                      size={24}
-                      color="#000"
-                    />
-                  ) : (
-                    <IconIon
-                      style={styles.Icon}
-                      name="ios-bookmark-outline"
-                      size={24}
-                      color="#000"
-                    />
-                  )}
-                </Pressable>
+                {session?.user ? (
+                  <Pressable
+                    onPress={() => {
+                      articleService
+                        .toggleLikeArticle(article.id, session.user.id)
+                        .then(result => {
+                          if (!result.error) {
+                            setIsLiked(result.isLiked);
+                          }
+                        });
+                    }}>
+                    {isLiked ? (
+                      <IconIon
+                        style={styles.Icon}
+                        name="ios-bookmark"
+                        size={24}
+                        color="#000"
+                      />
+                    ) : (
+                      <IconIon
+                        style={styles.Icon}
+                        name="ios-bookmark-outline"
+                        size={24}
+                        color="#000"
+                      />
+                    )}
+                  </Pressable>
+                ) : (
+                  <IconIon
+                    style={[styles.Icon, styles.Hide]}
+                    name="ios-bookmark"
+                    size={24}
+                    color="#000"
+                  />
+                )}
                 <IconAnt
                   style={styles.Icon}
                   name="sharealt"
@@ -224,5 +235,9 @@ const styles = StyleSheet.create({
     color: '#000',
     fontFamily: 'Roboto',
     fontSize: 16,
+  },
+  Hide: {
+    backfaceVisibility: 'hidden',
+    opacity: 0,
   },
 });

@@ -13,10 +13,12 @@ export default function Home({session}: {session: any}) {
   const isFocused = useIsFocused();
   useEffect(() => {
     // Refresh the screen when the user comes back to it
-    articleService.getAllArticles().then((result: IArticleData[]) => {
-      setArticles(result as IArticleData[]);
-      setAllArticles(result as IArticleData[]);
-    });
+    articleService
+      .getAllArticles(session?.user.id)
+      .then((result: IArticleData[]) => {
+        setArticles(result as IArticleData[]);
+        setAllArticles(result as IArticleData[]);
+      });
   }, [isFocused]);
 
   async function handleSearchSubmit(searchTerm: string) {

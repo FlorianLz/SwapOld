@@ -4,10 +4,13 @@ import locationHelper from '../helpers/location.helper';
 
 const articleFactory = {
   getAllArticles: async (rawArticles: any) => {
+    if (!rawArticles) {
+      return [];
+    }
     let articles: IArticleData[] = [];
     let location = await locationHelper.getUserLocation();
-    rawArticles.map((article: any) => {
-      articles.push(<IArticleData>{
+    articles = rawArticles.map((article: any) => {
+      return <IArticleData>{
         id: article.id,
         title: article.title,
         distance: locationHelper.getDistanceFromLatLonInKm(
@@ -20,8 +23,8 @@ const articleFactory = {
         images: imagesHelper.getPublicUrlByImageName(
           article.articles_images[0].image_name,
         ),
-        isLiked: article.articles_favorites.length > 0,
-      });
+        isLiked: article.articles_favorites?.length > 0,
+      };
     });
     articles.sort((a, b) => a.distance - b.distance);
     return articles;
@@ -47,7 +50,7 @@ const articleFactory = {
       images: images,
       id_profile: rawArticle.articles_profiles[0].id_profile,
       username: rawArticle.articles_profiles[0].profiles.username,
-      isLiked: rawArticle.articles_favorites.length > 0,
+      isLiked: rawArticle.articles_favorites?.length > 0,
     };
   },
   toggleLikeArticle: async (like: any) => {

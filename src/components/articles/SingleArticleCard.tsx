@@ -51,14 +51,18 @@ export default function SingleArticleCard({
                   }
                 });
             }}>
-            <View
-              style={isLiked ? [styles.AddFav, styles.isLiked] : styles.AddFav}>
-              {!isLiked ? (
-                <IconIon name="ios-bookmark-outline" size={24} color="#000" />
-              ) : (
-                <IconIon name="ios-bookmark" size={24} color="#000" />
-              )}
-            </View>
+            {session?.user && (
+              <View
+                style={
+                  isLiked ? [styles.AddFav, styles.isLiked] : styles.AddFav
+                }>
+                {!isLiked ? (
+                  <IconIon name="ios-bookmark-outline" size={24} color="#000" />
+                ) : (
+                  <IconIon name="ios-bookmark" size={24} color="#000" />
+                )}
+              </View>
+            )}
           </Pressable>
         </View>
       </Pressable>
