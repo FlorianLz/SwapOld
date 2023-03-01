@@ -96,16 +96,22 @@ export default function AddArticle({
           value={content}
           onChangeText={setContent}
         />
-        <View>
-          <Text>Photos</Text>
-          {images.map((image, index) => (
-            <Image
-              key={index}
-              source={{uri: image.assets[0].uri}}
-              style={{width: 200, height: 200}}
-            />
-          ))}
-        </View>
+        {images.length > 0 && (
+          <View>
+            <Text>Photos</Text>
+            {images.map((image, index) => (
+              <>
+                {image.assets && (
+                  <Image
+                    key={index}
+                    source={{uri: image.assets[0].uri}}
+                    style={{width: 200, height: 200}}
+                  />
+                )}
+              </>
+            ))}
+          </View>
+        )}
         <Button title={'Ajouter photo'} onPress={initMediaPicker} />
         <Button title="Ajouter" onPress={handleUpload} />
         {error ? <Text style={styles.error}>{error}</Text> : null}
