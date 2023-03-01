@@ -35,7 +35,7 @@ export default function Home({session}: {session: any}) {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <View>
       <SearchBar onSubmit={handleSearchSubmit} />
       {isFocused ? (
         <ListArticles
@@ -44,12 +44,6 @@ export default function Home({session}: {session: any}) {
           searchTermText={searchTermText}
         />
       ) : null}
-    </ScrollView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 10,
-  },
-});

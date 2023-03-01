@@ -27,7 +27,7 @@ export default function ListArticles({
   }, [articles]);
 
   return (
-    <ScrollView>
+    <View>
       <View style={styles.ModeAffichage}>
         <Text style={styles.Title}>Les derniers ajouts</Text>
         <View style={styles.ModeAffichageContainer}>
@@ -47,24 +47,26 @@ export default function ListArticles({
           </Pressable>
         </View>
       </View>
-      <View style={styles.ListArticle}>
-        {articlesTab.length > 0 ? (
-          articlesTab.map(article => (
-            <SingleArticleCard
-              key={article.id}
-              modeAffichage={modeAffichage}
-              article={article}
-              navigation={navigation}
-              session={session}
-            />
-          ))
-        ) : searchTermText !== '' ? (
-          <Text>
-            Aucun article trouvé pour votre recherche {searchTermText}
-          </Text>
-        ) : null}
-      </View>
-    </ScrollView>
+      <ScrollView>
+        <View style={styles.ListArticle}>
+          {articlesTab.length > 0 ? (
+            articlesTab.map(article => (
+              <SingleArticleCard
+                key={article.id}
+                modeAffichage={modeAffichage}
+                article={article}
+                navigation={navigation}
+                session={session}
+              />
+            ))
+          ) : searchTermText !== '' ? (
+            <Text>
+              Aucun article trouvé pour votre recherche {searchTermText}
+            </Text>
+          ) : null}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -96,6 +98,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     paddingRight: 20,
     paddingLeft: 20,
-    marginBottom: 10,
+    paddingBottom: 240,
   },
 });
