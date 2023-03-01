@@ -11,4 +11,5 @@ export default interface IArticleData {
   distance: number;
   isLiked: boolean;
   hideLike: boolean;
+  isOwner: boolean;
 }

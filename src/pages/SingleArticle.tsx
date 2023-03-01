@@ -5,8 +5,9 @@ import {
   Text,
   View,
   ScrollView,
+  Modal,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
@@ -14,6 +15,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconIon from 'react-native-vector-icons/Ionicons';
+import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default ({route}: {params: {session: object; id: number}} | any) => {
   const {id, session} = route.params;
@@ -22,6 +24,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
   );
   const [loading, setLoading] = React.useState<boolean>(false);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const [modalVisible, setModalVisible] = useState(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
   useEffect(() => {
     articleService
@@ -30,8 +33,19 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
         setArticle(result as IArticleData);
         setLoading(true);
         setIsLiked(result.isLiked);
+        console.log(result);
       });
   }, [id]);
+
+  function handleDelete() {
+    articleService.deleteArticle(article.id).then(result => {
+      if (!result.error) {
+        navigation.navigate('HubPublication');
+      } else {
+        console.log(result);
+      }
+    });
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -56,7 +70,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
             />
             <View style={styles.RightImage}>
               <View style={styles.RightImageIcon}>
-                {session?.user ? (
+                {session?.user && !article.isOwner ? (
                   <Pressable
                     onPress={() => {
                       articleService
@@ -82,6 +96,19 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
                         color="#000"
                       />
                     )}
+                  </Pressable>
+                ) : article.isOwner ? (
+                  <Pressable
+                    onPress={() => {
+                      console.log('edit');
+                      setModalVisible(true);
+                    }}>
+                    <IconMat
+                      style={[styles.Icon]}
+                      name="delete"
+                      size={20}
+                      color="#000"
+                    />
                   </Pressable>
                 ) : (
                   <IconIon
@@ -115,6 +142,31 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
               </View>
             </View>
           </View>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>
+                  Voulez-vous vraiment supprimer cet article ?
+                </Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => handleDelete()}>
+                  <Text style={styles.textStyle}>Confirmer</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.textStyle}>Annuler</Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
           <View style={styles.Bottom}>
             <View>
               <Text style={styles.TextTitle}>Localisation</Text>
@@ -239,5 +291,48 @@ const styles = StyleSheet.create({
   Hide: {
     backfaceVisibility: 'hidden',
     opacity: 0,
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 0,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });

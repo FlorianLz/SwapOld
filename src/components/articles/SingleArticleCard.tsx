@@ -2,6 +2,7 @@ import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import IconIon from 'react-native-vector-icons/Ionicons';
+import IconFeather from 'react-native-vector-icons/Feather';
 import articleService from '../../services/article.service';
 export default function SingleArticleCard({
   navigation,
@@ -43,29 +44,42 @@ export default function SingleArticleCard({
         </View>
         <View
           style={modeAffichage === 'mode1' ? styles.favoris : styles.favoris2}>
-          <Pressable
-            onPress={() => {
-              articleService
-                .toggleLikeArticle(article.id, session.user.id)
-                .then(result => {
-                  if (!result.error) {
-                    setIsLiked(result.isLiked);
-                  }
-                });
-            }}>
-            {session?.user && !hideLike && (
-              <View
-                style={
-                  isLiked ? [styles.AddFav, styles.isLiked] : styles.AddFav
-                }>
-                {!isLiked ? (
-                  <IconIon name="ios-bookmark-outline" size={24} color="#000" />
-                ) : (
-                  <IconIon name="ios-bookmark" size={24} color="#000" />
-                )}
+          {!article.isOwner && (
+            <Pressable
+              onPress={() => {
+                articleService
+                  .toggleLikeArticle(article.id, session.user.id)
+                  .then(result => {
+                    if (!result.error) {
+                      setIsLiked(result.isLiked);
+                    }
+                  });
+              }}>
+              {session?.user && !hideLike && !article.isOwner && (
+                <View
+                  style={
+                    isLiked ? [styles.AddFav, styles.isLiked] : styles.AddFav
+                  }>
+                  {!isLiked ? (
+                    <IconIon
+                      name="ios-bookmark-outline"
+                      size={20}
+                      color="#000"
+                    />
+                  ) : (
+                    <IconIon name="ios-bookmark" size={20} color="#000" />
+                  )}
+                </View>
+              )}
+            </Pressable>
+          )}
+          {article.isOwner && (
+            <Pressable>
+              <View style={styles.AddFav}>
+                <IconFeather name="edit" size={20} color="#000" />
               </View>
-            )}
-          </Pressable>
+            </Pressable>
+          )}
         </View>
       </Pressable>
     </View>

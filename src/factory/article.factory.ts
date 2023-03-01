@@ -3,7 +3,7 @@ import imagesHelper from '../helpers/images.helper';
 import locationHelper from '../helpers/location.helper';
 
 const articleFactory = {
-  getAllArticles: async (rawArticles: any) => {
+  getAllArticles: async (rawArticles: any, userId: string) => {
     if (!rawArticles) {
       return [];
     }
@@ -24,12 +24,13 @@ const articleFactory = {
           article.articles_images[0]?.image_name ?? 'default/default.png',
         ),
         isLiked: article.articles_favorites?.length > 0,
+        isOwner: article.articles_profiles[0]?.id_profile === userId,
       };
     });
     articles.sort((a, b) => a.distance - b.distance);
     return articles;
   },
-  getArticleById: async (rawArticle: any) => {
+  getArticleById: async (rawArticle: any, userId: string) => {
     const images =
       rawArticle.articles_images.length > 0
         ? rawArticle.articles_images.map((image: any) => {
@@ -53,6 +54,7 @@ const articleFactory = {
       id_profile: rawArticle.articles_profiles[0].id_profile,
       username: rawArticle.articles_profiles[0].profiles.username,
       isLiked: rawArticle.articles_favorites?.length > 0,
+      isOwner: rawArticle.articles_profiles[0]?.id_profile === userId,
     };
   },
   toggleLikeArticle: async (like: any) => {

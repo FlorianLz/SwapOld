@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import ListArticles from '../components/articles/ListArticles';
 import {useIsFocused} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
@@ -27,13 +27,15 @@ export default function Home({session}: {session: any}) {
       setSearchTermText('');
       setArticles(allArticles);
     }
-    articleService.searchArticles(searchTerm).then((result: IArticleData[]) => {
-      setArticles(result as IArticleData[]);
-    });
+    articleService
+      .searchArticles(searchTerm, session?.user.id)
+      .then((result: IArticleData[]) => {
+        setArticles(result as IArticleData[]);
+      });
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <SearchBar onSubmit={handleSearchSubmit} />
       {isFocused ? (
         <ListArticles
@@ -42,7 +44,7 @@ export default function Home({session}: {session: any}) {
           searchTermText={searchTermText}
         />
       ) : null}
-    </View>
+    </ScrollView>
   );
 }
 

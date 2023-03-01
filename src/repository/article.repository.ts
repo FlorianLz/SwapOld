@@ -27,7 +27,7 @@ const articleRepository = {
       id,
       image_name
     ),
-    articles_profiles (
+    articles_profiles!inner (
       id_profile,
       profiles (
         username
@@ -38,7 +38,8 @@ const articleRepository = {
     )
   `,
         )
-        .eq('articles_favorites.id_profile', userId);
+        .eq('articles_favorites.id_profile', userId)
+        .neq('articles_profiles.id_profile', userId);
       return data;
     }
   },
@@ -89,7 +90,7 @@ const articleRepository = {
       return data ? data[0] : {};
     }
   },
-  getFavoriteArticles: async (userId: number) => {
+  getFavoriteArticles: async (userId: string) => {
     const {data} = await supabase
       .from('articles')
       .select(
@@ -167,7 +168,7 @@ const articleRepository = {
       id,
       image_name
     ),
-    articles_profiles (
+    articles_profiles!inner (
       id_profile,
       profiles (
         username
@@ -177,6 +178,18 @@ const articleRepository = {
       )
       .eq('articles_profiles.id_profile', idUser);
     return data;
+  },
+  deleteArticle: async (articleId: number) => {
+    const {data, error} = await supabase
+      .from('articles')
+      .delete()
+      .eq('id', articleId);
+    console.log('ici', data);
+    if (error) {
+      return {error: true, message: error.message};
+    } else {
+      return {error: false};
+    }
   },
 };
 export default articleRepository;
