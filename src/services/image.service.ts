@@ -9,11 +9,13 @@ const ImageService = {
     path = '/',
     bucketName = 'swapold',
   ) {
+    console.log('BEFORE UPLOAD', imageObject);
     const upload = await imageRepository.uploadImage(
       imageObject,
       path,
       bucketName,
     );
+    console.log('AFTER UPLOAD', upload);
     if (!upload) {
       return {error: true};
     }

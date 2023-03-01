@@ -3,9 +3,10 @@ import uuid from 'react-native-uuid';
 
 const imageRepository = {
   async uploadImage(imageObject: any, path = '/', bucketName = 'swapold') {
-    const imageData = imageObject?.assets[0];
+    const imageData = imageObject;
     const uri = imageData.uri;
-    const type = imageData.type;
+    const type = 'image/png';
+    //const type = imageData.type;
     const fileExtension = uri.split('.').pop();
     const name = `${uuid.v4()}.${fileExtension}`;
     const imagePath = `${path}${name}`;
@@ -13,7 +14,7 @@ const imageRepository = {
     const imageToUpload = new FormData();
 
     imageToUpload.append('file', {uri, type, name});
-
+    console.log('imageToUpload', imageToUpload);
     const {error} = await supabase.storage
       .from(bucketName)
       .upload(imagePath, imageToUpload);
@@ -22,6 +23,7 @@ const imageRepository = {
       console.error(error);
       return false;
     }
+    console.log('imagePath', imagePath);
     return imagePath;
   },
   async deleteAllImagesFromBucket(idUser: string, idArticle: number) {

@@ -14,6 +14,7 @@ import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ImagePickerResponse, launchCamera} from 'react-native-image-picker';
 import imageService from '../../services/image.service';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
 
 export default function AddArticle({
   route,
@@ -23,42 +24,87 @@ export default function AddArticle({
   const [content, setContent] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [images, setImages] = useState<ImagePickerResponse[]>([]);
+  const [resizedImages, setResizedImages] = useState<[]>([]);
+  const [published, setPublished] = useState<boolean>(false);
+  const [onPublication, setOnPublication] = useState<boolean>(false);
+  const [msgPublished, setMsgPublished] = useState<string>('');
   const maxImages = 5;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+
+  const resize = async (newTab: ImagePickerResponse[]) => {
+    for (const image of newTab) {
+      console.log('image', image);
+      if (!image || !image.assets) {
+        return;
+      }
+
+      try {
+        let result = await ImageResizer.createResizedImage(
+          String(image.assets[0].uri),
+          1200,
+          1200,
+          'PNG',
+          100,
+          0,
+          undefined,
+          false,
+          {
+            mode: 'contain',
+            onlyScaleDown: true,
+          },
+        );
+        let neww = [...resizedImages, result];
+
+        // @ts-ignore
+        setResizedImages(neww);
+      } catch (err) {
+        console.log('Unable to resize the photo');
+      }
+    }
+  };
 
   function handleUpload() {
     console.log('handleUpload');
     if (title === '' || content === '') {
       setError('Veuillez remplir tous les champs');
     } else {
+      setOnPublication(true);
       setError('');
       console.log('title', title);
       console.log('content', content);
       articleRepository
         .addArticle(session.user.id, title, content)
-        .then((result: any) => {
+        .then(async (result: any) => {
           console.log(result);
           if (!result.error) {
-            //navigation.navigate('HubPublication');
             let errorDuringUpload = false;
-            images.forEach(image => {
-              imageService
-                .uploadImage(
-                  image,
-                  result.id_article,
-                  session.user.id + '/' + result.id_article + '/',
-                )
-                .then(res => {
-                  if (res.error) {
-                    errorDuringUpload = true;
-                  }
-                });
-            });
+            for (const image of resizedImages) {
+              const add = await imageService.uploadImage(
+                image,
+                result.id_article,
+                session.user.id + '/' + result.id_article + '/',
+              );
+              if (add.error) {
+                errorDuringUpload = true;
+              }
+            }
             if (!errorDuringUpload) {
-              navigation.navigate('HubPublication');
+              setPublished(true);
+              setMsgPublished(
+                'Article ajouté avec succès. Vous allez être redirigé vers la liste de vos ajouts dans quelques secondes...',
+              );
+              setTimeout(() => {
+                navigation.navigate('HubPublication');
+              }, 4000);
             } else {
+              setPublished(true);
               //Rediriger vers la page de modification de l'article
-              navigation.navigate('HubPublication');
+              setMsgPublished(
+                "Une erreur est survenue lors de l'upload des images. Vous allez être redirigé vers la page de modification de l'article dans quelques secondes...",
+              );
+              setTimeout(() => {
+                navigation.navigate('HubPublication');
+              }, 4000);
             }
           } else {
             setError("Un problème est survenu lors de l'ajout de l'article");
@@ -73,13 +119,13 @@ export default function AddArticle({
 
     if (!result.didCancel) {
       if (images.length <= maxImages) {
-        setImages([...images, result]);
+        let newTab = [...images, result];
+        setImages(newTab);
+        await resize(newTab);
       }
     }
   }
 
-  // @ts-ignore
-  // @ts-ignore
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -96,25 +142,37 @@ export default function AddArticle({
           value={content}
           onChangeText={setContent}
         />
-        {images.length > 0 && (
+        {resizedImages.length > 0 && (
           <View>
             <Text>Photos</Text>
-            {images.map((image, index) => (
-              <>
-                {image.assets && (
+            {resizedImages.map((image: {uri: string}, index) => (
+              <React.Fragment key={index}>
+                {image && (
                   <Image
                     key={index}
-                    source={{uri: image.assets[0].uri}}
+                    source={{uri: image.uri}}
                     style={{width: 200, height: 200}}
                   />
                 )}
-              </>
+              </React.Fragment>
             ))}
           </View>
         )}
-        <Button title={'Ajouter photo'} onPress={initMediaPicker} />
-        <Button title="Ajouter" onPress={handleUpload} />
+        <Button
+          title={'Ajouter photo'}
+          onPress={initMediaPicker}
+          disabled={resizedImages.length > 4}
+        />
+        <Button
+          title="Ajouter"
+          onPress={handleUpload}
+          disabled={onPublication}
+        />
         {error ? <Text style={styles.error}>{error}</Text> : null}
+        {onPublication && !published && (
+          <Text>Publication en cours, veuillez patienter...</Text>
+        )}
+        {published && <Text>{msgPublished}</Text>}
       </View>
     </ScrollView>
   );
