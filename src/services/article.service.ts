@@ -1,5 +1,7 @@
 import articleRepository from '../repository/article.repository';
 import articleFactory from '../factory/article.factory';
+import imageRepository from '../repository/image.repository';
+import imageService from './image.service';
 
 const articleService = {
   getAllArticles: async (userId: any) => {
@@ -29,8 +31,16 @@ const articleService = {
     const articles = await articleFactory.getAllArticles(rawArticles, userId);
     return articles.reverse();
   },
-  deleteArticle: async (articleId: number) => {
-    return await articleRepository.deleteArticle(articleId);
+  deleteArticle: async (articleId: number, idUser: string) => {
+    const deleteImages = await articleRepository.deleteArticle(
+      articleId,
+      idUser,
+    );
+    if (deleteImages.error) {
+      return {error: true, message: deleteImages.message};
+    } else {
+      return await imageService.deleteAllImagesFromBucket(idUser, articleId);
+    }
   },
 };
 export default articleService;

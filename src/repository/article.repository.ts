@@ -152,8 +152,8 @@ const articleRepository = {
       id_profile: idUser,
     });
     // @ts-ignore
-    if (data !== null && data === 1) {
-      return {error: false};
+    if (data !== null && data > 0) {
+      return {error: false, id_article: data};
     } else {
       return {error: true, message: error?.message};
     }
@@ -179,8 +179,8 @@ const articleRepository = {
       .eq('articles_profiles.id_profile', idUser);
     return data;
   },
-  deleteArticle: async (articleId: number) => {
-    const {data, error} = await supabase
+  deleteArticle: async (articleId: number, idUser: string) => {
+    let {data, error} = await supabase
       .from('articles')
       .delete()
       .eq('id', articleId);
@@ -188,8 +188,29 @@ const articleRepository = {
     if (error) {
       return {error: true, message: error.message};
     } else {
-      return {error: false};
+      console.log('delete all images');
+      let del = await supabase
+        .from('articles_images')
+        .delete()
+        .like('image_name', idUser + '/' + articleId + '/%');
+      if (del.error) {
+        return {error: true, message: del.error.message};
+      } else {
+        return {error: false};
+      }
     }
+  },
+  addImageToArticle: async (articleId: number, imagePath: string) => {
+    const {error} = await supabase.from('articles_images').insert([
+      {
+        article_id: articleId,
+        image_name: imagePath,
+      },
+    ]);
+    if (error) {
+      return {error: true, message: error.message};
+    }
+    return {error: false};
   },
 };
 export default articleRepository;

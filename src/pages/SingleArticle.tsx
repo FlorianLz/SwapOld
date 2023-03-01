@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconIon from 'react-native-vector-icons/Ionicons';
 import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
+import imageService from '../services/image.service';
 
 export default ({route}: {params: {session: object; id: number}} | any) => {
   const {id, session} = route.params;
@@ -38,7 +39,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
   }, [id]);
 
   function handleDelete() {
-    articleService.deleteArticle(article.id).then(result => {
+    articleService.deleteArticle(article.id, session.user.id).then(result => {
       if (!result.error) {
         navigation.navigate('HubPublication');
       } else {
@@ -64,7 +65,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
           <View style={styles.Top}>
             <Image
               source={{
-                uri: article.images[0],
+                uri: article.images[0] + '?width=150&height=100',
               }}
               style={styles.Image}
             />
