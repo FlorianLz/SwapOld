@@ -1,5 +1,6 @@
 import articleRepository from '../repository/article.repository';
 import articleFactory from '../factory/article.factory';
+import imageService from './image.service';
 
 const articleService = {
   getAllArticles: async (userId: any) => {
@@ -19,7 +20,7 @@ const articleService = {
     return articleFactory.toggleLikeArticle(like);
   },
   searchArticles: async (search: string, userId: string) => {
-    const rawArticles = await articleRepository.searchArticles(search);
+    const rawArticles = await articleRepository.searchArticles(search, userId);
     return articleFactory.getAllArticles(rawArticles, userId);
   },
   getAllMyPublishedArticles: async (userId: string) => {
@@ -27,10 +28,18 @@ const articleService = {
       userId,
     );
     const articles = await articleFactory.getAllArticles(rawArticles, userId);
-    return articles.reverse();
+    return articles.sort((a, b) => b.id - a.id);
   },
-  deleteArticle: async (articleId: number) => {
-    return await articleRepository.deleteArticle(articleId);
+  deleteArticle: async (articleId: number, idUser: string) => {
+    const deleteImages = await articleRepository.deleteArticle(
+      articleId,
+      idUser,
+    );
+    if (deleteImages.error) {
+      return {error: true, message: deleteImages.message};
+    } else {
+      return await imageService.deleteAllImagesFromBucket(idUser, articleId);
+    }
   },
 };
 export default articleService;

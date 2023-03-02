@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
 import {
   ParamListBase,
   useIsFocused,
@@ -9,12 +9,18 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import IArticleData from '../interfaces/articleInterface';
 import articleService from '../services/article.service';
 import SingleArticleCard from '../components/articles/SingleArticleCard';
-export default function HubPublication({session}: {session: any}) {
+export default function SwapProposition({
+  route,
+}: {params: {session: object; id: number; article_sender: any}} | any) {
+  const {session} = route.params;
   const isFocused = useIsFocused();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const {article_sender} = route.params;
   const [articlesPublished, setArticlesPublished] = useState<
     IArticleData[] | []
   >([]);
+
+  console.log(article_sender);
   useEffect(() => {
     articleService
       .getAllMyPublishedArticles(session.user.id)
@@ -23,16 +29,17 @@ export default function HubPublication({session}: {session: any}) {
       });
   }, [isFocused]);
   return (
-    <ScrollView>
+    <View>
+      <Text>Proposer des article qui ne sont pas sur le site</Text>
       <Button
-        title={'Recao des proposition'}
-        onPress={() => navigation.navigate('RecapProposition')}
+        title={'ajouter un article'}
+        onPress={() =>
+          navigation.navigate('AddArticle', {
+            privateArticle: true,
+          })
+        }
       />
-      <Button
-        title={'Ajouter un article'}
-        onPress={() => navigation.navigate('AddArticle')}
-      />
-      <Text>Articles publiés</Text>
+      <Text>Proposer des article deja sur le site</Text>
       <View style={styles.ModeAffichageContainer}>
         <View style={styles.ModeAffichage}>
           {isFocused
@@ -44,12 +51,14 @@ export default function HubPublication({session}: {session: any}) {
                   navigation={navigation}
                   session={session}
                   hideLike={true}
+                  url={'SwapProposition'}
+                  article_sender={article_sender}
                 />
               ))
             : null}
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 

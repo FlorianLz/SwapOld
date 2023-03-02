@@ -27,11 +27,14 @@ import IconFont from 'react-native-vector-icons/Fontisto';
 import IconFea from 'react-native-vector-icons/Feather';
 import IconOti from 'react-native-vector-icons/Octicons';
 import AddArticle from './src/components/articles/AddArticle';
+import SwapProposition from './src/components/SwapProposition';
+import RecapProposition from './src/components/RecapProposition';
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log('Hello from App.tsx useEffect');
     supabase.auth.getSession().then(({data: {session}}) => {
       setSession(session);
     });
@@ -76,6 +79,18 @@ const App = () => {
           name="AddArticle"
           initialParams={{session: session}}
           component={AddArticle}
+          options={{headerShown: true}}
+        />
+        <Stack.Screen
+          name="SwapProposition"
+          initialParams={{session: session}}
+          component={SwapProposition}
+          options={{headerShown: true}}
+        />
+        <Stack.Screen
+          name="RecapProposition"
+          initialParams={{session: session}}
+          component={RecapProposition}
           options={{headerShown: true}}
         />
       </Stack.Navigator>

@@ -1,9 +1,11 @@
 import {supabase} from '../lib/initSupabase';
-
 const articleRepository = {
   getAllArticles: async (userId: any) => {
     if (!userId) {
-      const {data} = await supabase.from('articles').select(`
+      const {data} = await supabase
+        .from('articles')
+        .select(
+          `
     *,
     articles_images (
       id,
@@ -15,7 +17,9 @@ const articleRepository = {
         username
         )
     )
-  `);
+  `,
+        )
+        .eq('private', false);
       return data;
     } else {
       const {data} = await supabase
@@ -38,6 +42,7 @@ const articleRepository = {
     )
   `,
         )
+        .eq('private', false)
         .eq('articles_favorites.id_profile', userId)
         .neq('articles_profiles.id_profile', userId);
       return data;
@@ -120,7 +125,7 @@ const articleRepository = {
       ]);
     }
   },
-  searchArticles: async (search: string) => {
+  searchArticles: async (search: string, userId: string) => {
     const {data} = await supabase
       .from('articles')
       .select(
@@ -141,19 +146,33 @@ const articleRepository = {
     )
   `,
       )
-      .ilike('title', `%${search}%`);
+      .ilike('title', `%${search}%`)
+      .eq('private', false)
+      .eq('articles_favorites.id_profile', userId)
+      .neq('articles_profiles.id_profile', userId);
     return data;
   },
-  addArticle: async (idUser: string, title: string, description: string) => {
+  addArticle: async (
+    idUser: string,
+    title: string,
+    description: string,
+    location: any,
+    privateArticle: boolean,
+  ) => {
     const {data, error} = await supabase.rpc('insert_articles', {
       title,
       description,
-      location: {latitude: 0, longitude: 0},
+      location: {
+        latitude: location?.latitude,
+        longitude: location.longitude,
+        cityName: location.cityName,
+      },
+      private: privateArticle,
       id_profile: idUser,
     });
     // @ts-ignore
-    if (data !== null && data === 1) {
-      return {error: false};
+    if (data !== null && data > 0) {
+      return {error: false, id_article: data};
     } else {
       return {error: true, message: error?.message};
     }
@@ -179,8 +198,8 @@ const articleRepository = {
       .eq('articles_profiles.id_profile', idUser);
     return data;
   },
-  deleteArticle: async (articleId: number) => {
-    const {data, error} = await supabase
+  deleteArticle: async (articleId: number, idUser: string) => {
+    let {data, error} = await supabase
       .from('articles')
       .delete()
       .eq('id', articleId);
@@ -188,8 +207,72 @@ const articleRepository = {
     if (error) {
       return {error: true, message: error.message};
     } else {
-      return {error: false};
+      console.log('delete all images');
+      let del = await supabase
+        .from('articles_images')
+        .delete()
+        .like('image_name', idUser + '/' + articleId + '/%');
+      if (del.error) {
+        return {error: true, message: del.error.message};
+      } else {
+        return {error: false};
+      }
     }
+  },
+  addImageToArticle: async (articleId: number, imagePath: string) => {
+    const {error} = await supabase.from('articles_images').insert([
+      {
+        article_id: articleId,
+        image_name: imagePath,
+      },
+    ]);
+    if (error) {
+      return {error: true, message: error.message};
+    }
+    return {error: false};
+  },
+  swapArticle: async (
+    id_profile_sender: string,
+    id_profile_receiver: string,
+    id_article_sender: number,
+    id_article_receiver: number,
+  ) => {
+    // Vérifier si l'échange existe déjà dans la base de données
+    const {data: existingSwap, error: selectError} = await supabase
+      .from('swap')
+      .select('*')
+      .eq('id_profile_sender', id_profile_sender)
+      .eq('id_profile_receiver', id_profile_receiver)
+      .eq('id_article_sender', id_article_sender)
+      .eq('id_article_receiver', id_article_receiver);
+
+    if (selectError) {
+      return {error: true, message: selectError.message};
+    }
+
+    if (existingSwap && existingSwap.length > 0) {
+      // L'échange existe déjà, ne rien faire et retourner une erreur
+      return {
+        error: true,
+        message: 'Cet échange existe déjà dans la base de données.',
+      };
+    }
+
+    // Insérer l'échange dans la base de données
+    const {error: insertError} = await supabase.from('swap').insert([
+      {
+        id_profile_sender,
+        id_profile_receiver,
+        id_article_sender,
+        id_article_receiver,
+      },
+    ]);
+
+    if (insertError) {
+      return {error: true, message: insertError.message};
+    }
+
+    return {error: false};
   },
 };
 export default articleRepository;
