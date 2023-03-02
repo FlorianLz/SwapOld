@@ -23,7 +23,6 @@ import {
 } from 'react-native-autocomplete-dropdown';
 import locationService from '../../services/location.service';
 import Feather from 'react-native-vector-icons/Feather';
-import {filter} from 'lodash';
 
 Feather.loadFont();
 
