@@ -3,7 +3,10 @@ import {supabase} from '../lib/initSupabase';
 const articleRepository = {
   getAllArticles: async (userId: any) => {
     if (!userId) {
-      const {data} = await supabase.from('articles').select(`
+      const {data} = await supabase
+        .from('articles')
+        .select(
+          `
     *,
     articles_images (
       id,
@@ -15,7 +18,9 @@ const articleRepository = {
         username
         )
     )
-  `);
+  `,
+        )
+        .eq('private', false);
       return data;
     } else {
       const {data} = await supabase
@@ -38,6 +43,7 @@ const articleRepository = {
     )
   `,
         )
+        .eq('private', false)
         .eq('articles_favorites.id_profile', userId)
         .neq('articles_profiles.id_profile', userId);
       return data;
@@ -149,6 +155,7 @@ const articleRepository = {
     title: string,
     description: string,
     location: {latitude: number; longitude: number; cityName: string},
+    privateArticle: boolean,
   ) => {
     const {data, error} = await supabase.rpc('insert_articles', {
       title,
@@ -158,6 +165,7 @@ const articleRepository = {
         longitude: location.longitude,
         cityName: location.cityName,
       },
+      private: privateArticle,
       id_profile: idUser,
     });
     // @ts-ignore

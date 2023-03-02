@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
 import {
   ParamListBase,
   useIsFocused,
@@ -30,7 +30,16 @@ export default function SwapProposition({
   }, [isFocused]);
   return (
     <View>
-      <Text>Mes articles publiés</Text>
+      <Text>Proposer des article qui ne sont pas sur le site</Text>
+      <Button
+        title={'ajouter un article'}
+        onPress={() =>
+          navigation.navigate('AddArticle', {
+            privateArticle: true,
+          })
+        }
+      />
+      <Text>Proposer des article deja sur le site</Text>
       <View style={styles.ModeAffichageContainer}>
         <View style={styles.ModeAffichage}>
           {isFocused

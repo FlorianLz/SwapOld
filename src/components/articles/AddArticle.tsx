@@ -25,7 +25,7 @@ Feather.loadFont();
 
 export default function AddArticle({
   route,
-}: {params: {session: object; id: number}} | any) {
+}: {params: {session: object; id: number; privateArticle: boolean}} | any) {
   const {session} = route.params;
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -35,9 +35,11 @@ export default function AddArticle({
   const [published, setPublished] = useState<boolean>(false);
   const [onPublication, setOnPublication] = useState<boolean>(false);
   const [msgPublished, setMsgPublished] = useState<string>('');
+  const privateArticle = route.params.privateArticle || false;
   const maxImages = 5;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
+  console.log('private', privateArticle);
   const resize = async (newTab: ImagePickerResponse[]) => {
     for (const image of newTab) {
       if (!image || !image.assets) {
@@ -81,7 +83,13 @@ export default function AddArticle({
       setOnPublication(true);
       setError('');
       articleRepository
-        .addArticle(session.user.id, title, content, selectedItem)
+        .addArticle(
+          session.user.id,
+          title,
+          content,
+          selectedItem,
+          privateArticle,
+        )
         .then(async (result: any) => {
           if (!result.error) {
             let errorDuringUpload = false;
