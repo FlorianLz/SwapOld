@@ -28,6 +28,7 @@ import IconFea from 'react-native-vector-icons/Feather';
 import IconOti from 'react-native-vector-icons/Octicons';
 import AddArticle from './src/components/articles/AddArticle';
 import SwapProposition from './src/components/SwapProposition';
+import RecapProposition from './src/components/RecapProposition';
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -83,6 +84,12 @@ const App = () => {
           name="SwapProposition"
           initialParams={{session: session}}
           component={SwapProposition}
+          options={{headerShown: true}}
+        />
+        <Stack.Screen
+          name="RecapProposition"
+          initialParams={{session: session}}
+          component={RecapProposition}
           options={{headerShown: true}}
         />
       </Stack.Navigator>
