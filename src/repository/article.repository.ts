@@ -144,11 +144,20 @@ const articleRepository = {
       .ilike('title', `%${search}%`);
     return data;
   },
-  addArticle: async (idUser: string, title: string, description: string) => {
+  addArticle: async (
+    idUser: string,
+    title: string,
+    description: string,
+    location: {latitude: number; longitude: number, cityName: string}
+  ) => {
     const {data, error} = await supabase.rpc('insert_articles', {
       title,
       description,
-      location: {latitude: 0, longitude: 0},
+      location: {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        cityName: location.cityName,
+      },
       id_profile: idUser,
     });
     // @ts-ignore

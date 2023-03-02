@@ -1,7 +1,9 @@
-import React from 'react';
+import React, {useCallback, useRef} from 'react';
 import {
   Button,
+  Dimensions,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,6 +17,12 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ImagePickerResponse, launchCamera} from 'react-native-image-picker';
 import imageService from '../../services/image.service';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
+import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
+import locationService from '../../services/location.service';
+import Feather from 'react-native-vector-icons/Feather';
+import {filter} from 'lodash';
+
+Feather.loadFont();
 
 export default function AddArticle({
   route,
@@ -65,7 +73,7 @@ export default function AddArticle({
 
   function handleUpload() {
     console.log('handleUpload');
-    if (title === '' || content === '') {
+    if (title === '' || content === '' || selectedItem === null || images.length === 0) {
       setError('Veuillez remplir tous les champs');
     } else {
       setOnPublication(true);
@@ -73,7 +81,7 @@ export default function AddArticle({
       console.log('title', title);
       console.log('content', content);
       articleRepository
-        .addArticle(session.user.id, title, content)
+        .addArticle(session.user.id, title, content, selectedItem)
         .then(async (result: any) => {
           console.log(result);
           if (!result.error) {
@@ -126,8 +134,38 @@ export default function AddArticle({
     }
   }
 
+  const [loading, setLoading] = useState(false);
+  const [suggestionsList, setSuggestionsList] = useState<{}[]>([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const dropdownController = useRef(null);
+
+  const searchRef = useRef(null);
+
+  const getSuggestions = useCallback(async q => {
+    const filterToken = q.toLowerCase();
+    console.log('getSuggestions', q);
+    if (typeof q !== 'string' || q.length < 3) {
+      setSuggestionsList(null);
+      setSelectedItem(null);
+      return;
+    }
+    setLoading(true);
+    const suggestions = await locationService.getCitiesBySearch(filterToken);
+    console.log(suggestions);
+    setSuggestionsList(suggestions);
+    setLoading(false);
+  }, []);
+
+  const onClearPress = useCallback(() => {
+    setSuggestionsList(null);
+    setSelectedItem(null);
+  }, []);
+
+  const onOpenSuggestionsList = useCallback(isOpened => {}, []);
+
+  // @ts-ignore
   return (
-    <ScrollView>
+    <View style={{flexGrow: 1}}>
       <View style={styles.container}>
         <Text style={styles.title}>Ajouter un article</Text>
         <TextInput
@@ -142,6 +180,7 @@ export default function AddArticle({
           value={content}
           onChangeText={setContent}
         />
+
         {resizedImages.length > 0 && (
           <View>
             <Text>Photos</Text>
@@ -158,23 +197,95 @@ export default function AddArticle({
             ))}
           </View>
         )}
-        <Button
-          title={'Ajouter photo'}
-          onPress={initMediaPicker}
-          disabled={resizedImages.length > 4}
-        />
-        <Button
-          title="Ajouter"
-          onPress={handleUpload}
-          disabled={onPublication}
-        />
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-        {onPublication && !published && (
-          <Text>Publication en cours, veuillez patienter...</Text>
-        )}
-        {published && <Text>{msgPublished}</Text>}
+
+        <View
+          style={[
+            {flex: 1, flexDirection: 'row', alignItems: 'center'},
+            Platform.select({ios: {zIndex: 1}}),
+          ]}>
+          <AutocompleteDropdown
+            ref={searchRef}
+            controller={controller => {
+              dropdownController.current = controller;
+            }}
+            // initialValue={'1'}
+            direction={Platform.select({ios: 'down'})}
+            dataSet={suggestionsList}
+            onChangeText={getSuggestions}
+            onSelectItem={item => {
+              item && setSelectedItem(item);
+            }}
+            debounce={600}
+            suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
+            onClear={onClearPress}
+            //  onSubmit={(e) => onSubmitSearch(e.nativeEvent.text)}
+            onOpenSuggestionsList={onOpenSuggestionsList}
+            loading={loading}
+            useFilter={false} // set false to prevent rerender twice
+            textInputProps={{
+              placeholder: 'Rechercher...',
+              autoCorrect: true,
+              autoCapitalize: 'none',
+              style: {
+                borderRadius: 25,
+                backgroundColor: '#383b42',
+                color: '#fff',
+                paddingLeft: 18,
+              },
+            }}
+            rightButtonsContainerStyle={{
+              right: 8,
+              height: 30,
+
+              alignSelf: 'center',
+            }}
+            inputContainerStyle={{
+              backgroundColor: '#383b42',
+              borderRadius: 25,
+            }}
+            suggestionsListContainerStyle={{
+              backgroundColor: '#383b42',
+            }}
+            containerStyle={{flexGrow: 1, flexShrink: 1}}
+            renderItem={(item, text) => (
+              <Text style={{color: '#fff', padding: 15}}>{item.title}</Text>
+            )}
+            ChevronIconComponent={
+              <Feather name="chevron-down" size={20} color="#fff" />
+            }
+            ClearIconComponent={
+              <Feather name="x-circle" size={18} color="#fff" />
+            }
+            inputHeight={50}
+            showChevron={false}
+            closeOnBlur={false}
+            //  showClear={false}
+          />
+          <View style={{width: 10}} />
+        </View>
+        <Text style={{color: '#668', fontSize: 13}}>
+          Selected item id: {JSON.stringify(selectedItem)}
+        </Text>
+
+        <ScrollView>
+          <Button
+            title={'Ajouter photo'}
+            onPress={initMediaPicker}
+            disabled={resizedImages.length > 4}
+          />
+          <Button
+            title="Ajouter"
+            onPress={handleUpload}
+            disabled={onPublication}
+          />
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+          {onPublication && !published && (
+            <Text>Publication en cours, veuillez patienter...</Text>
+          )}
+          {published && <Text>{msgPublished}</Text>}
+        </ScrollView>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 const styles = StyleSheet.create({
@@ -186,11 +297,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    marginBottom: 12,
+    marginTop: 12,
   },
   input: {
     height: 40,
     width: 200,
-    margin: 12,
+    marginBottom: 12,
     borderWidth: 1,
   },
   error: {

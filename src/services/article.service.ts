@@ -29,7 +29,7 @@ const articleService = {
       userId,
     );
     const articles = await articleFactory.getAllArticles(rawArticles, userId);
-    return articles.reverse();
+    return articles.sort((a, b) => b.id - a.id);
   },
   deleteArticle: async (articleId: number, idUser: string) => {
     const deleteImages = await articleRepository.deleteArticle(

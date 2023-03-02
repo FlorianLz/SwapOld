@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   ParamListBase,
   useIsFocused,
@@ -23,7 +23,7 @@ export default function HubPublication({session}: {session: any}) {
       });
   }, [isFocused]);
   return (
-    <View>
+    <ScrollView>
       <Button
         title={'Ajouter un article'}
         onPress={() => navigation.navigate('AddArticle')}
@@ -45,7 +45,7 @@ export default function HubPublication({session}: {session: any}) {
             : null}
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
