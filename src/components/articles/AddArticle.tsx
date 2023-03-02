@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback} from 'react';
 import {
   Button,
   Dimensions,
@@ -17,13 +17,9 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ImagePickerResponse, launchCamera} from 'react-native-image-picker';
 import imageService from '../../services/image.service';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
-import {
-  AutocompleteDropdown,
-  TAutocompleteDropdownItem,
-} from 'react-native-autocomplete-dropdown';
+import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import locationService from '../../services/location.service';
 import Feather from 'react-native-vector-icons/Feather';
-import {filter} from 'lodash';
 
 Feather.loadFont();
 
@@ -142,19 +138,33 @@ export default function AddArticle({
   const [suggestionsList, setSuggestionsList] = useState<
     {id: string; title: string}[]
   >([]);
-  const [selectedItem, setSelectedItem] = useState<TAutocompleteDropdownItem>({
+  const [selectedItem, setSelectedItem] = useState<{
+    title: string;
+    id: string;
+    latitude: number;
+    longitude: number;
+    cityName: string;
+  }>({
     id: '',
     title: '',
+    latitude: 0,
+    longitude: 0,
+    cityName: '',
   });
-  const searchRef = useRef(null);
 
-  const getSuggestions = useCallback(async q => {
+  const getSuggestions = useCallback(async (q: string) => {
     const filterToken = q.toLowerCase();
     setCurrentSearch(filterToken);
     console.log('getSuggestions', q);
-    if (typeof q !== 'string' || q.length < 3) {
+    if (q.length < 3) {
       setSuggestionsList([]);
-      setSelectedItem(null);
+      setSelectedItem({
+        cityName: '',
+        id: '',
+        latitude: 0,
+        longitude: 0,
+        title: '',
+      });
       return;
     }
     setLoading(true);
@@ -165,7 +175,13 @@ export default function AddArticle({
 
   const onClearPress = useCallback(() => {
     setSuggestionsList([]);
-    setSelectedItem(null);
+    setSelectedItem({
+      cityName: '',
+      id: '',
+      latitude: 0,
+      longitude: 0,
+      title: '',
+    });
     setCurrentSearch('');
   }, []);
 
@@ -209,11 +225,11 @@ export default function AddArticle({
             Platform.select({ios: {zIndex: 1}}),
           ]}>
           <AutocompleteDropdown
-            ref={searchRef}
             direction={Platform.select({ios: 'down'})}
             dataSet={suggestionsList}
             onChangeText={getSuggestions}
             onSelectItem={item => {
+              // @ts-ignore
               item && setSelectedItem(item);
             }}
             debounce={600}
@@ -243,9 +259,7 @@ export default function AddArticle({
               backgroundColor: 'white',
             }}
             containerStyle={{flexGrow: 1, flexShrink: 1}}
-            renderItem={item => (
-              <Text style={{padding: 15}}>{item.title}</Text>
-            )}
+            renderItem={item => <Text style={{padding: 15}}>{item.title}</Text>}
             EmptyResultComponent={
               <View>
                 {currentSearch.length > 0 && (
