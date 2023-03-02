@@ -27,6 +27,7 @@ import IconFont from 'react-native-vector-icons/Fontisto';
 import IconFea from 'react-native-vector-icons/Feather';
 import IconOti from 'react-native-vector-icons/Octicons';
 import AddArticle from './src/components/articles/AddArticle';
+import SwapProposition from './src/components/SwapProposition';
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -76,6 +77,12 @@ const App = () => {
           name="AddArticle"
           initialParams={{session: session}}
           component={AddArticle}
+          options={{headerShown: true}}
+        />
+        <Stack.Screen
+          name="SwapProposition"
+          initialParams={{session: session}}
+          component={SwapProposition}
           options={{headerShown: true}}
         />
       </Stack.Navigator>

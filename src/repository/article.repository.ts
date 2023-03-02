@@ -212,5 +212,48 @@ const articleRepository = {
     }
     return {error: false};
   },
+  swapArticle: async (
+    id_profile_sender: string,
+    id_profile_receiver: string,
+    id_article_sender: number,
+    id_article_receiver: number,
+  ) => {
+    // Vérifier si l'échange existe déjà dans la base de données
+    const {data: existingSwap, error: selectError} = await supabase
+      .from('swap')
+      .select('*')
+      .eq('id_profile_sender', id_profile_sender)
+      .eq('id_profile_receiver', id_profile_receiver)
+      .eq('id_article_sender', id_article_sender)
+      .eq('id_article_receiver', id_article_receiver);
+
+    if (selectError) {
+      return {error: true, message: selectError.message};
+    }
+
+    if (existingSwap && existingSwap.length > 0) {
+      // L'échange existe déjà, ne rien faire et retourner une erreur
+      return {
+        error: true,
+        message: 'Cet échange existe déjà dans la base de données.',
+      };
+    }
+
+    // Insérer l'échange dans la base de données
+    const {error: insertError} = await supabase.from('swap').insert([
+      {
+        id_profile_sender,
+        id_profile_receiver,
+        id_article_sender,
+        id_article_receiver,
+      },
+    ]);
+
+    if (insertError) {
+      return {error: true, message: insertError.message};
+    }
+
+    return {error: false};
+  },
 };
 export default articleRepository;
