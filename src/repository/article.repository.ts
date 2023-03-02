@@ -148,7 +148,7 @@ const articleRepository = {
     idUser: string,
     title: string,
     description: string,
-    location: {latitude: number; longitude: number, cityName: string}
+    location: {latitude: number; longitude: number; cityName: string},
   ) => {
     const {data, error} = await supabase.rpc('insert_articles', {
       title,
