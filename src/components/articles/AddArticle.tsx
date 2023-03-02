@@ -26,7 +26,7 @@ Feather.loadFont();
 
 export default function AddArticle({
   route,
-}: {params: {session: object; id: number}} | any) {
+}: {params: {session: object; id: number; privateArticle: boolean}} | any) {
   const {session} = route.params;
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -36,9 +36,11 @@ export default function AddArticle({
   const [published, setPublished] = useState<boolean>(false);
   const [onPublication, setOnPublication] = useState<boolean>(false);
   const [msgPublished, setMsgPublished] = useState<string>('');
+  const privateArticle = route.params.privateArticle || false;
   const maxImages = 5;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
+  console.log('private', privateArticle);
   const resize = async (newTab: ImagePickerResponse[]) => {
     for (const image of newTab) {
       console.log('image', image);
@@ -73,7 +75,12 @@ export default function AddArticle({
 
   function handleUpload() {
     console.log('handleUpload');
-    if (title === '' || content === '' || selectedItem === null || images.length === 0) {
+    if (
+      title === '' ||
+      content === '' ||
+      selectedItem === null ||
+      images.length === 0
+    ) {
       setError('Veuillez remplir tous les champs');
     } else {
       setOnPublication(true);
@@ -81,7 +88,13 @@ export default function AddArticle({
       console.log('title', title);
       console.log('content', content);
       articleRepository
-        .addArticle(session.user.id, title, content, selectedItem)
+        .addArticle(
+          session.user.id,
+          title,
+          content,
+          selectedItem,
+          privateArticle,
+        )
         .then(async (result: any) => {
           console.log(result);
           if (!result.error) {

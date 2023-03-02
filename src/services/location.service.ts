@@ -1,5 +1,5 @@
 import locationRepository from '../repository/location.repository';
-import locationFactory from "../factory/location.factory";
+import locationFactory from '../factory/location.factory';
 
 const locationService = {
   getCitiesBySearch: async (search: string) => {
