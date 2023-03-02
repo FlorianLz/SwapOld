@@ -188,7 +188,13 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
               </Text>
             </View>
           </View>
-          <Pressable style={styles.Button}>
+          <Pressable
+            style={styles.Button}
+            onPress={() =>
+              navigation.navigate('SwapProposition', {
+                article_sender: {article},
+              })
+            }>
             <Text style={styles.ButtonText}>Proposer un échange</Text>
           </Pressable>
         </>

@@ -1,6 +1,5 @@
 import articleRepository from '../repository/article.repository';
 import articleFactory from '../factory/article.factory';
-import imageRepository from '../repository/image.repository';
 import imageService from './image.service';
 
 const articleService = {

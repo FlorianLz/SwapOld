@@ -1,23 +1,29 @@
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import IconIon from 'react-native-vector-icons/Ionicons';
 import IconFeather from 'react-native-vector-icons/Feather';
 import articleService from '../../services/article.service';
+import articleRepository from '../../repository/article.repository';
 export default function SingleArticleCard({
   navigation,
   article,
   modeAffichage,
   session,
   hideLike = false,
+  url,
+  article_sender,
 }: {
   navigation: any;
   article: any;
   modeAffichage: string;
   session: any;
   hideLike?: boolean;
+  url?: string;
+  article_sender?: any;
 }) {
   const [isLiked, setIsLiked] = React.useState<boolean>(article.isLiked);
+  const [error, setError] = useState<string>('');
   return (
     <View
       style={
@@ -26,7 +32,28 @@ export default function SingleArticleCard({
           : styles.AffichageMode2
       }>
       <Pressable
-        onPress={() => navigation.navigate('SingleArticle', {id: article.id})}
+        onPress={() => {
+          {
+            url === 'SwapProposition'
+              ? articleRepository
+                  .swapArticle(
+                    session.user.id,
+                    article_sender.article.id_profile,
+                    article_sender.article.id,
+                    article.id,
+                  )
+                  .then(result => {
+                    if (!result.error) {
+                      navigation.navigate('Home');
+                    } else {
+                      setError(
+                        'vous avez deja proposé un echange pour cet article',
+                      );
+                    }
+                  })
+              : navigation.navigate('SingleArticle', {id: article.id});
+          }
+        }}
         key={article.id}>
         <View style={modeAffichage === 'mode2' ? styles.Affichage2 : null}>
           <Image
