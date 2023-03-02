@@ -126,7 +126,7 @@ const articleRepository = {
       ]);
     }
   },
-  searchArticles: async (search: string) => {
+  searchArticles: async (search: string, userId: string) => {
     const {data} = await supabase
       .from('articles')
       .select(
@@ -147,7 +147,9 @@ const articleRepository = {
     )
   `,
       )
-      .ilike('title', `%${search}%`);
+      .ilike('title', `%${search}%`).eq('private', false)
+      .eq('articles_favorites.id_profile', userId)
+      .neq('articles_profiles.id_profile', userId);
     return data;
   },
   addArticle: async (

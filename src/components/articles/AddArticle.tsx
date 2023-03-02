@@ -123,6 +123,7 @@ export default function AddArticle({
             }
           } else {
             setError("Un problème est survenu lors de l'ajout de l'article");
+            setOnPublication(false);
           }
         });
     }
