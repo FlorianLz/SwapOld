@@ -20,7 +20,7 @@ const articleService = {
     return articleFactory.toggleLikeArticle(like);
   },
   searchArticles: async (search: string, userId: string) => {
-    const rawArticles = await articleRepository.searchArticles(search);
+    const rawArticles = await articleRepository.searchArticles(search, userId);
     return articleFactory.getAllArticles(rawArticles, userId);
   },
   getAllMyPublishedArticles: async (userId: string) => {
