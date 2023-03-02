@@ -6,6 +6,7 @@ const locationFactory = {
         latitude: city.geometry.coordinates[1],
         longitude: city.geometry.coordinates[0],
         title: city.properties.label,
+        id: city.properties.id,
       };
     });
   },

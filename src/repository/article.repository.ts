@@ -3,7 +3,10 @@ import {supabase} from '../lib/initSupabase';
 const articleRepository = {
   getAllArticles: async (userId: any) => {
     if (!userId) {
-      const {data} = await supabase.from('articles').select(`
+      const {data} = await supabase
+        .from('articles')
+        .select(
+          `
     *,
     articles_images (
       id,

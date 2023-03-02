@@ -17,7 +17,10 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ImagePickerResponse, launchCamera} from 'react-native-image-picker';
 import imageService from '../../services/image.service';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
-import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
+import {
+  AutocompleteDropdown,
+  TAutocompleteDropdownItem,
+} from 'react-native-autocomplete-dropdown';
 import locationService from '../../services/location.service';
 import Feather from 'react-native-vector-icons/Feather';
 import {filter} from 'lodash';
@@ -43,7 +46,6 @@ export default function AddArticle({
   console.log('private', privateArticle);
   const resize = async (newTab: ImagePickerResponse[]) => {
     for (const image of newTab) {
-      console.log('image', image);
       if (!image || !image.assets) {
         return;
       }
@@ -74,7 +76,6 @@ export default function AddArticle({
   };
 
   function handleUpload() {
-    console.log('handleUpload');
     if (
       title === '' ||
       content === '' ||
@@ -85,8 +86,6 @@ export default function AddArticle({
     } else {
       setOnPublication(true);
       setError('');
-      console.log('title', title);
-      console.log('content', content);
       articleRepository
         .addArticle(
           session.user.id,
@@ -96,7 +95,6 @@ export default function AddArticle({
           privateArticle,
         )
         .then(async (result: any) => {
-          console.log(result);
           if (!result.error) {
             let errorDuringUpload = false;
             for (const image of resizedImages) {
@@ -148,35 +146,37 @@ export default function AddArticle({
   }
 
   const [loading, setLoading] = useState(false);
-  const [suggestionsList, setSuggestionsList] = useState<{}[]>([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const dropdownController = useRef(null);
-
+  const [currentSearch, setCurrentSearch] = useState<string>('');
+  const [suggestionsList, setSuggestionsList] = useState<
+    {id: string; title: string}[]
+  >([]);
+  const [selectedItem, setSelectedItem] = useState<TAutocompleteDropdownItem>({
+    id: '',
+    title: '',
+  });
   const searchRef = useRef(null);
 
   const getSuggestions = useCallback(async q => {
     const filterToken = q.toLowerCase();
+    setCurrentSearch(filterToken);
     console.log('getSuggestions', q);
     if (typeof q !== 'string' || q.length < 3) {
-      setSuggestionsList(null);
+      setSuggestionsList([]);
       setSelectedItem(null);
       return;
     }
     setLoading(true);
     const suggestions = await locationService.getCitiesBySearch(filterToken);
-    console.log(suggestions);
     setSuggestionsList(suggestions);
     setLoading(false);
   }, []);
 
   const onClearPress = useCallback(() => {
-    setSuggestionsList(null);
+    setSuggestionsList([]);
     setSelectedItem(null);
+    setCurrentSearch('');
   }, []);
 
-  const onOpenSuggestionsList = useCallback(isOpened => {}, []);
-
-  // @ts-ignore
   return (
     <View style={{flexGrow: 1}}>
       <View style={styles.container}>
@@ -218,10 +218,6 @@ export default function AddArticle({
           ]}>
           <AutocompleteDropdown
             ref={searchRef}
-            controller={controller => {
-              dropdownController.current = controller;
-            }}
-            // initialValue={'1'}
             direction={Platform.select({ios: 'down'})}
             dataSet={suggestionsList}
             onChangeText={getSuggestions}
@@ -231,8 +227,6 @@ export default function AddArticle({
             debounce={600}
             suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
             onClear={onClearPress}
-            //  onSubmit={(e) => onSubmitSearch(e.nativeEvent.text)}
-            onOpenSuggestionsList={onOpenSuggestionsList}
             loading={loading}
             useFilter={false} // set false to prevent rerender twice
             textInputProps={{
@@ -241,8 +235,6 @@ export default function AddArticle({
               autoCapitalize: 'none',
               style: {
                 borderRadius: 25,
-                backgroundColor: '#383b42',
-                color: '#fff',
                 paddingLeft: 18,
               },
             }}
@@ -253,16 +245,20 @@ export default function AddArticle({
               alignSelf: 'center',
             }}
             inputContainerStyle={{
-              backgroundColor: '#383b42',
               borderRadius: 25,
             }}
             suggestionsListContainerStyle={{
-              backgroundColor: '#383b42',
+              backgroundColor: 'white',
             }}
             containerStyle={{flexGrow: 1, flexShrink: 1}}
-            renderItem={(item, text) => (
-              <Text style={{color: '#fff', padding: 15}}>{item.title}</Text>
-            )}
+            renderItem={item => <Text style={{padding: 15}}>{item.title}</Text>}
+            EmptyResultComponent={
+              <View>
+                {currentSearch.length > 0 && (
+                  <Text style={{padding: 15}}>Aucun résultat</Text>
+                )}
+              </View>
+            }
             ChevronIconComponent={
               <Feather name="chevron-down" size={20} color="#fff" />
             }
