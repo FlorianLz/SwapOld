@@ -31,7 +31,7 @@ export default function AddArticle({
   const [content, setContent] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [images, setImages] = useState<ImagePickerResponse[]>([]);
-  const [resizedImages, setResizedImages] = useState<[]>([]);
+  const [resizedImages, setResizedImages] = useState<[] | any>([]);
   const [published, setPublished] = useState<boolean>(false);
   const [onPublication, setOnPublication] = useState<boolean>(false);
   const [msgPublished, setMsgPublished] = useState<string>('');
@@ -62,8 +62,6 @@ export default function AddArticle({
           },
         );
         let neww = [...resizedImages, result];
-
-        // @ts-ignore
         setResizedImages(neww);
       } catch (err) {
         console.log('Unable to resize the photo');
@@ -147,13 +145,16 @@ export default function AddArticle({
   const [suggestionsList, setSuggestionsList] = useState<
     {id: string; title: string}[]
   >([]);
-  const [selectedItem, setSelectedItem] = useState<{
-    title: string;
-    id: string;
-    latitude: number;
-    longitude: number;
-    cityName: string;
-  }>({
+  const [selectedItem, setSelectedItem] = useState<
+    | {
+        title: string;
+        id: string;
+        latitude: number;
+        longitude: number;
+        cityName: string;
+      }
+    | unknown
+  >({
     id: '',
     title: '',
     latitude: 0,
@@ -214,17 +215,19 @@ export default function AddArticle({
         {resizedImages.length > 0 && (
           <View>
             <Text>Photos</Text>
-            {resizedImages.map((image: {uri: string}, index) => (
-              <React.Fragment key={index}>
-                {image && (
-                  <Image
-                    key={index}
-                    source={{uri: image.uri}}
-                    style={{width: 200, height: 200}}
-                  />
-                )}
-              </React.Fragment>
-            ))}
+            {resizedImages.map(
+              (image: {uri: string}, index: React.Key | null | undefined) => (
+                <React.Fragment key={index}>
+                  {image && (
+                    <Image
+                      key={index}
+                      source={{uri: image.uri}}
+                      style={{width: 200, height: 200}}
+                    />
+                  )}
+                </React.Fragment>
+              ),
+            )}
           </View>
         )}
 
@@ -238,7 +241,6 @@ export default function AddArticle({
             dataSet={suggestionsList}
             onChangeText={getSuggestions}
             onSelectItem={item => {
-              // @ts-ignore
               item && setSelectedItem(item);
             }}
             debounce={600}
@@ -285,7 +287,6 @@ export default function AddArticle({
             inputHeight={50}
             showChevron={false}
             closeOnBlur={false}
-            //  showClear={false}
           />
           <View style={{width: 10}} />
         </View>

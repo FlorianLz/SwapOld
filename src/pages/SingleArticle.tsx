@@ -16,8 +16,6 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconIon from 'react-native-vector-icons/Ionicons';
 import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
-import imageService from '../services/image.service';
-
 export default ({route}: {params: {session: object; id: number}} | any) => {
   const {id, session} = route.params;
   const [article, setArticle] = React.useState<IArticleData>(
@@ -188,15 +186,17 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
               </Text>
             </View>
           </View>
-          <Pressable
-            style={styles.Button}
-            onPress={() =>
-              navigation.navigate('SwapProposition', {
-                article_sender: {article},
-              })
-            }>
-            <Text style={styles.ButtonText}>Proposer un échange</Text>
-          </Pressable>
+          {session?.user && (
+            <Pressable
+              style={styles.Button}
+              onPress={() =>
+                navigation.navigate('SwapProposition', {
+                  article_sender: {article},
+                })
+              }>
+              <Text style={styles.ButtonText}>Proposer un échange</Text>
+            </Pressable>
+          )}
         </>
       ) : null}
     </ScrollView>

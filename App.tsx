@@ -33,6 +33,7 @@ const App = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log('Hello from App.tsx useEffect');
     supabase.auth.getSession().then(({data: {session}}) => {
       setSession(session);
     });

@@ -1,5 +1,4 @@
 import {supabase} from '../lib/initSupabase';
-
 const articleRepository = {
   getAllArticles: async (userId: any) => {
     if (!userId) {
@@ -147,7 +146,8 @@ const articleRepository = {
     )
   `,
       )
-      .ilike('title', `%${search}%`).eq('private', false)
+      .ilike('title', `%${search}%`)
+      .eq('private', false)
       .eq('articles_favorites.id_profile', userId)
       .neq('articles_profiles.id_profile', userId);
     return data;
@@ -156,14 +156,14 @@ const articleRepository = {
     idUser: string,
     title: string,
     description: string,
-    location: {latitude: number; longitude: number; cityName: string},
+    location: any,
     privateArticle: boolean,
   ) => {
     const {data, error} = await supabase.rpc('insert_articles', {
       title,
       description,
       location: {
-        latitude: location.latitude,
+        latitude: location?.latitude,
         longitude: location.longitude,
         cityName: location.cityName,
       },
