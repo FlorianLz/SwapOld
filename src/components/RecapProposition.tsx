@@ -4,7 +4,8 @@ import articleRepository from '../repository/article.repository';
 
 export default function SwapProposition({
   route,
-}: {params: {session: object; id: number}} | any) {
+  navigation,
+}: {navigation: any; params: {session: object; id: number}} | any) {
   const {session} = route.params;
   const [swaps, setSwaps] = React.useState([]);
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function SwapProposition({
                                   )
                                   .then(res => {
                                     if (res) {
-                                      console.log(res);
+                                      navigation.navigate('HubPublication');
                                     }
                                   });
                               }

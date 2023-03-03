@@ -344,17 +344,28 @@ const articleRepository = {
     status: 1 | 2,
   ) => {
     console.log('ici', id_article_sender, id_article_receiver, status);
-    const {data, error} = await supabase
-      .from('articles')
-      .update({status})
-      .match({id: id_article_sender})
-      .match({id: id_article_receiver});
 
-    if (error) {
-      return {error: true, message: error.message};
+    if (id_article_sender) {
+      const {error} = await supabase
+        .from('articles')
+        .update({status})
+        .eq('id', id_article_sender);
+      if (error) {
+        return {error: true, message: error.message};
+      }
     }
 
-    return {error: false, data};
+    if (id_article_receiver) {
+      const {error} = await supabase
+        .from('articles')
+        .update({status})
+        .eq('id', id_article_receiver);
+      if (error) {
+        return {error: true, message: error.message};
+      }
+    }
+
+    return {error: false};
   },
 };
 export default articleRepository;
