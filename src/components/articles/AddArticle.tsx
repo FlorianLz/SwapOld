@@ -45,7 +45,8 @@ export default function AddArticle({
   const [onPublication, setOnPublication] = useState<boolean>(false);
   const [msgPublished, setMsgPublished] = useState<string>('');
   const privateArticle = route.params.privateArticle || false;
-  const {article_sender} = route.params.article_sender;
+  const {article_sender} = route.params.article_sender || null;
+  console.log('article_sender', article_sender);
   const maxImages = 5;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
