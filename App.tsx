@@ -10,7 +10,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {supabase} from './src/lib/initSupabase';
-import Auth from './src/components/Login';
+import Auth from './src/components/Auth';
 import {Session} from '@supabase/supabase-js';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import Home from './src/pages/Home';
@@ -104,7 +104,7 @@ const App = () => {
         screenOptions={({route}) => ({
           tabBarShowLabel: false,
           tabBarIcon: focused => {
-            const icons = {
+            const icons: any = {
               HomePage: (
                 <IconOti
                   name={'home'}
@@ -143,7 +143,6 @@ const App = () => {
               ),
             };
 
-            // @ts-ignore
             return icons[route.name];
           },
         })}>
@@ -174,10 +173,10 @@ const App = () => {
           </>
         ) : (
           <>
-            <Tab.Screen name="Messagerie" component={Auth} />
-            <Tab.Screen name="HubPublication" component={Auth} />
-            <Tab.Screen name="Favoris" component={Auth} />
-            <Tab.Screen name="Profil" component={Auth} />
+            <Tab.Screen name="Messagerie" component={Auth} initialParams={{step:'Connexion'}} options={{headerShown: false}} />
+            <Tab.Screen name="HubPublication" component={Auth} initialParams={{step:'Connexion'}} options={{headerShown: false}} />
+            <Tab.Screen name="Favoris" component={Auth} initialParams={{step:'Connexion'}} options={{headerShown: false}} />
+            <Tab.Screen name="Profil" component={Auth} initialParams={{step:'Connexion'}} options={{headerShown: false}} />
           </>
         )}
       </Tab.Navigator>
