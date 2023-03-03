@@ -1,4 +1,5 @@
 import {supabase} from '../lib/initSupabase';
+import {matches} from 'lodash';
 const articleRepository = {
   getAllArticles: async (userId: any) => {
     if (!userId) {
@@ -273,6 +274,51 @@ const articleRepository = {
     }
 
     return {error: false};
+  },
+  getSwapsByStateAndProfile: async (id_profile: string, state: 0 | 1 | 2) => {
+    const {data, error} = await supabase
+      .from('swap')
+      .select(
+        `
+    *,
+    id_article_sender (
+      *,
+      articles_images (
+        id,
+        image_name
+      ),
+      articles_profiles (
+        id_profile,
+        profiles (
+          username
+        )
+      )
+    ),
+    id_article_receiver (
+      *,
+      articles_images (
+        id,
+        image_name
+      ),
+      articles_profiles (
+        id_profile,
+        profiles (
+          username
+        )
+      )
+    )
+  `,
+      )
+      .eq('state', state)
+      .or(
+        `id_profile_sender.eq.${id_profile},id_profile_receiver.eq.${id_profile}`,
+      );
+
+    if (error) {
+      return {error: true, message: error.message};
+    }
+
+    return {error: false, data};
   },
 };
 export default articleRepository;
