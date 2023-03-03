@@ -173,10 +173,30 @@ const App = () => {
           </>
         ) : (
           <>
-            <Tab.Screen name="Messagerie" component={Auth} initialParams={{step:'Connexion'}} options={{headerShown: false}} />
-            <Tab.Screen name="HubPublication" component={Auth} initialParams={{step:'Connexion'}} options={{headerShown: false}} />
-            <Tab.Screen name="Favoris" component={Auth} initialParams={{step:'Connexion'}} options={{headerShown: false}} />
-            <Tab.Screen name="Profil" component={Auth} initialParams={{step:'Connexion'}} options={{headerShown: false}} />
+            <Tab.Screen
+              name="Messagerie"
+              component={Auth}
+              initialParams={{step: 'Connexion'}}
+              options={{headerShown: false}}
+            />
+            <Tab.Screen
+              name="HubPublication"
+              component={Auth}
+              initialParams={{step: 'Connexion'}}
+              options={{headerShown: false}}
+            />
+            <Tab.Screen
+              name="Favoris"
+              component={Auth}
+              initialParams={{step: 'Connexion'}}
+              options={{headerShown: false}}
+            />
+            <Tab.Screen
+              name="Profil"
+              component={Auth}
+              initialParams={{step: 'Connexion'}}
+              options={{headerShown: false}}
+            />
           </>
         )}
       </Tab.Navigator>

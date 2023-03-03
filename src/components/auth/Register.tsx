@@ -1,9 +1,16 @@
 import React, {useState} from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {supabase} from '../../lib/initSupabase';
 import {Button, Input} from 'react-native-elements';
-import Icon from "react-native-vector-icons/Ionicons";
-import authHelper from "../../helpers/auth.helper";
+import Icon from 'react-native-vector-icons/Ionicons';
+import authHelper from '../../helpers/auth.helper';
 
 export default function Register() {
   const [email, setEmail] = useState('');
