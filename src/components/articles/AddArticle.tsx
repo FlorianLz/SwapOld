@@ -25,7 +25,16 @@ Feather.loadFont();
 
 export default function AddArticle({
   route,
-}: {params: {session: object; id: number; privateArticle: boolean}} | any) {
+}:
+  | {
+      params: {
+        session: object;
+        id: number;
+        privateArticle: boolean;
+        article_sender: any;
+      };
+    }
+  | any) {
   const {session} = route.params;
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -36,10 +45,12 @@ export default function AddArticle({
   const [onPublication, setOnPublication] = useState<boolean>(false);
   const [msgPublished, setMsgPublished] = useState<string>('');
   const privateArticle = route.params.privateArticle || false;
+  const {article_sender} = route.params.article_sender;
   const maxImages = 5;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   console.log('private', privateArticle);
+  console.log('sender', article_sender);
   const resize = async (newTab: ImagePickerResponse[]) => {
     for (const image of newTab) {
       if (!image || !image.assets) {
@@ -100,6 +111,20 @@ export default function AddArticle({
               if (add.error) {
                 errorDuringUpload = true;
               }
+            }
+            if (privateArticle) {
+              articleRepository
+                .swapArticle(
+                  session.user.id,
+                  article_sender.article.id_profile,
+                  article_sender.article.id,
+                  result.id_article,
+                )
+                .then((result: any) => {
+                  if (result.error) {
+                    console.log('error', result.error);
+                  }
+                });
             }
             if (!errorDuringUpload) {
               setPublished(true);
