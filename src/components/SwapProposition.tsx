@@ -36,6 +36,7 @@ export default function SwapProposition({
         onPress={() =>
           navigation.navigate('AddArticle', {
             privateArticle: true,
+            article_sender: {article_sender},
           })
         }
       />
