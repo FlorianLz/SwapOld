@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {Text, View, StyleSheet, ScrollView, Button} from 'react-native';
 import articleRepository from '../repository/article.repository';
+import {supabase} from '../lib/initSupabase';
 
 export default function SwapProposition({
   route,
@@ -8,6 +9,22 @@ export default function SwapProposition({
 }: {navigation: any; params: {session: object; id: number}} | any) {
   const {session} = route.params;
   const [swaps, setSwaps] = React.useState([]);
+
+  async function updateSwapsState() {
+    try {
+      const {data, error} = await supabase.rpc('update_swaps_state');
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     articleRepository
       .getSwapsByStateAndProfile(session.user.id, 0)
@@ -48,6 +65,7 @@ export default function SwapProposition({
                                   )
                                   .then(res => {
                                     if (res) {
+                                      updateSwapsState();
                                       navigation.navigate('HubPublication');
                                     }
                                   });
