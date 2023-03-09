@@ -8,7 +8,6 @@ export default function SwapProposition({
   navigation,
 }: {navigation: any; params: {session: object; id: number}} | any) {
   const {session} = route.params;
-  const [swaps, setSwaps] = React.useState([]);
 
   async function updateSwapsState() {
     try {
