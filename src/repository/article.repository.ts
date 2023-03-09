@@ -292,6 +292,9 @@ const articleRepository = {
         profiles (
           username
         )
+      ),
+      articles_favorites (
+        id_profile
       )
     ),
     id_article_receiver (
@@ -305,6 +308,9 @@ const articleRepository = {
         profiles (
           username
         )
+      ),
+      articles_favorites (
+        id_profile
       )
     )
   `,
@@ -318,7 +324,7 @@ const articleRepository = {
       return {error: true, message: error.message};
     }
 
-    return {error: false, data};
+    return data;
   },
 };
 export default articleRepository;

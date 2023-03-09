@@ -8,7 +8,7 @@ export default function SwapProposition({session}: {session: any}) {
     articleRepository
       .getSwapsByStateAndProfile(session.user.id, 2)
       .then(res => {
-        console.log(res.data[0]);
+        //console.log(res.data[0]);
         setSwaps(res.data);
       });
   }, []);

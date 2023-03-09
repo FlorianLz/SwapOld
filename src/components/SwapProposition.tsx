@@ -20,7 +20,6 @@ export default function SwapProposition({
     IArticleData[] | []
   >([]);
 
-  console.log(article_sender);
   useEffect(() => {
     articleService
       .getAllMyPublishedArticles(session.user.id)

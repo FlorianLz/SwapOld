@@ -41,5 +41,12 @@ const articleService = {
       return await imageService.deleteAllImagesFromBucket(idUser, articleId);
     }
   },
+  getSwapsByStateAndProfile: async (state: 0 | 1 | 2, userId: string) => {
+    const rawArticles = await articleRepository.getSwapsByStateAndProfile(
+      userId,
+      state,
+    );
+    return await articleFactory.getSwapsByStateAndProfile(rawArticles, userId);
+  },
 };
 export default articleService;

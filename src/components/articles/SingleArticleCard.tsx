@@ -22,8 +22,11 @@ export default function SingleArticleCard({
   url?: string;
   article_sender?: any;
 }) {
-  const [isLiked, setIsLiked] = React.useState<boolean>(article.isLiked);
+  const [isLiked, setIsLiked] = React.useState<boolean>(
+    article.isLiked ?? false,
+  );
   const [error, setError] = useState<string>('');
+  console.log(article);
   return (
     <View
       style={
@@ -51,6 +54,11 @@ export default function SingleArticleCard({
                       );
                     }
                   })
+              : url === 'Messagerie'
+              ? navigation.navigate('MessagesScreen', {
+                  session: session,
+                  article: article
+                })
               : navigation.navigate('SingleArticle', {id: article.id});
           }
         }}
