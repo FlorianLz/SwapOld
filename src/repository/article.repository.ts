@@ -1,5 +1,5 @@
 import {supabase} from '../lib/initSupabase';
-import {matches} from 'lodash';
+
 const articleRepository = {
   getAllArticles: async (userId: any) => {
     if (!userId) {
@@ -325,6 +325,53 @@ const articleRepository = {
     }
 
     return data;
+  },
+  changeStateSwapArticle: async (
+    id_swap: number,
+    id_profile: string,
+    state: 1 | 2,
+  ) => {
+    const {data, error} = await supabase
+      .from('swap')
+      .update({state})
+      .eq('id', id_swap)
+      .eq('id_profile_receiver', id_profile)
+      .select('*');
+
+    if (error) {
+      return {error: true, message: error.message};
+    }
+
+    return {error: false, data};
+  },
+  changeStateArticle: async (
+    id_article_sender: string,
+    id_article_receiver: string,
+    status: 1 | 2,
+  ) => {
+    console.log('ici', id_article_sender, id_article_receiver, status);
+
+    if (id_article_sender) {
+      const {error} = await supabase
+        .from('articles')
+        .update({status})
+        .eq('id', id_article_sender);
+      if (error) {
+        return {error: true, message: error.message};
+      }
+    }
+
+    if (id_article_receiver) {
+      const {error} = await supabase
+        .from('articles')
+        .update({status})
+        .eq('id', id_article_receiver);
+      if (error) {
+        return {error: true, message: error.message};
+      }
+    }
+
+    return {error: false};
   },
 };
 export default articleRepository;

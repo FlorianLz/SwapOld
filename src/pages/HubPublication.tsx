@@ -25,7 +25,7 @@ export default function HubPublication({session}: {session: any}) {
   return (
     <ScrollView>
       <Button
-        title={'Recao des proposition'}
+        title={'Recap des proposition'}
         onPress={() => navigation.navigate('RecapProposition')}
       />
       <Button
