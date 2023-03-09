@@ -25,11 +25,12 @@ export default function SwapProposition({
     }
   }
 
+  const [swaps, setSwaps] = React.useState<any[]>([]);
   useEffect(() => {
     articleRepository
       .getSwapsByStateAndProfile(session.user.id, 0)
       .then(res => {
-        setSwaps(res.data as any);
+        setSwaps(res.data);
       });
   }, []);
   return (

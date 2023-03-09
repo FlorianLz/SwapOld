@@ -1,4 +1,5 @@
 import {supabase} from '../lib/initSupabase';
+import IArticleData from '../interfaces/articleInterface';
 
 const articleRepository = {
   getAllArticles: async (userId: any) => {
@@ -292,6 +293,9 @@ const articleRepository = {
         profiles (
           username
         )
+      ),
+      articles_favorites (
+        id_profile
       )
     ),
     id_article_receiver (
@@ -305,6 +309,9 @@ const articleRepository = {
         profiles (
           username
         )
+      ),
+      articles_favorites (
+        id_profile
       )
     )
   `,
@@ -315,7 +322,7 @@ const articleRepository = {
       );
 
     if (error) {
-      return {error: true, message: error.message};
+      return {error: true, message: error.message, data: []};
     }
 
     return {error: false, data};

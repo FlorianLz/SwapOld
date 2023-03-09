@@ -9,6 +9,7 @@ const articleFactory = {
     }
     let articles: IArticleData[] = [];
     let location = await locationHelper.getUserLocation();
+    console.log(location);
     articles = rawArticles.map((article: any) => {
       return <IArticleData>{
         id: article.id,
@@ -64,6 +65,46 @@ const articleFactory = {
       return {isLiked: true, error: false};
     }
     return {error: true, isLiked: false};
+  },
+  getSwapsByStateAndProfile: async (rawArticles: any, userId: string) => {
+    if (!rawArticles) {
+      return [];
+    }
+    let articles: IArticleData[] = [];
+    let location = await locationHelper.getUserLocation();
+    articles = rawArticles.map((article: any) => {
+      return <IArticleData>{
+        id: article.id_article_receiver.id,
+        title: article.id_article_receiver.title,
+        distance: locationHelper.getDistanceFromLatLonInKm(
+          location.coords.latitude,
+          location.coords.longitude,
+          article.id_article_receiver.location.latitude,
+          article.id_article_receiver.location.longitude,
+        ),
+        location_name: article.id_article_receiver.location.cityName,
+        images: imagesHelper.getPublicUrlByImageName(
+          article.id_article_receiver.articles_images[0]?.image_name ??
+            'default/default.png',
+        ),
+        isLiked: article.id_article_receiver.articles_favorites?.length > 0,
+        isOwner:
+          article.id_article_receiver.articles_profiles[0]?.id_profile ===
+          userId,
+        ownerInfos: {
+          id: article.id_article_receiver.articles_profiles[0]?.id_profile,
+          username:
+            article.id_article_receiver.articles_profiles[0]?.profiles.username,
+        },
+        receiverInfos: {
+          id: article.id_article_sender.articles_profiles[0]?.id_profile,
+          username:
+            article.id_article_sender.articles_profiles[0]?.profiles.username,
+        },
+      };
+    });
+    articles.sort((a, b) => a.distance - b.distance);
+    return articles;
   },
 };
 export default articleFactory;

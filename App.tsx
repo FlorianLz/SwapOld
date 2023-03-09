@@ -29,6 +29,7 @@ import IconOti from 'react-native-vector-icons/Octicons';
 import AddArticle from './src/components/articles/AddArticle';
 import SwapProposition from './src/components/SwapProposition';
 import RecapProposition from './src/components/RecapProposition';
+import MessagesScreen from './src/components/MessagesScreen';
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -93,6 +94,12 @@ const App = () => {
           component={RecapProposition}
           options={{headerShown: true}}
         />
+        <Stack.Screen
+          name="MessagesScreen"
+          initialParams={{session: session}}
+          component={MessagesScreen}
+          options={{headerShown: true, headerTitle: 'Messages'}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -156,7 +163,7 @@ const App = () => {
             <Tab.Screen
               name="Messagerie"
               children={() => <Messagerie session={session} />}
-              options={{tabBarBadge: 3}}
+              options={{tabBarBadge: 3, headerShown: false}}
             />
             <Tab.Screen
               name="HubPublication"
