@@ -9,15 +9,17 @@ import {Text} from 'react-native-elements';
 import SingleArticleCard from '../components/articles/SingleArticleCard';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import articleService from '../services/article.service';
+import IArticleData from '../interfaces/articleInterface';
 export default function Messagerie({session}: {session: any}) {
   const isFocused = useIsFocused();
   const [swaps, setSwaps] = React.useState<object[]>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
-    articleService.getSwapsByStateAndProfile(2, session.user.id).then(res => {
-      //console.log('res', res);
-      setSwaps(res);
-    });
+    articleService
+      .getSwapsByStateAndProfile(2, session.user.id)
+      .then((result: IArticleData[]) => {
+        setSwaps(result as IArticleData[]);
+      });
   }, [isFocused, session.user.id]);
   return (
     <ScrollView style={styles.container}>

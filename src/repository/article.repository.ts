@@ -1,4 +1,5 @@
 import {supabase} from '../lib/initSupabase';
+import IArticleData from "../interfaces/articleInterface";
 
 const articleRepository = {
   getAllArticles: async (userId: any) => {

@@ -46,7 +46,10 @@ const articleService = {
       userId,
       state,
     );
-    return await articleFactory.getSwapsByStateAndProfile(rawArticles, userId);
+    return await articleFactory.getSwapsByStateAndProfile(
+      rawArticles.data,
+      userId,
+    );
   },
 };
 export default articleService;
