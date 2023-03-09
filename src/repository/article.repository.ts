@@ -321,10 +321,10 @@ const articleRepository = {
       );
 
     if (error) {
-      return {error: true, message: error.message};
+      return {error: true, message: error.message, data: []};
     }
 
-    return data;
+    return {error: false, data};
   },
   changeStateSwapArticle: async (
     id_swap: number,
