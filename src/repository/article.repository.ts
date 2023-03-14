@@ -291,7 +291,8 @@ const articleRepository = {
       articles_profiles (
         id_profile,
         profiles (
-          username
+          username,
+          avatar_url
         )
       ),
       articles_favorites (
@@ -307,7 +308,8 @@ const articleRepository = {
       articles_profiles (
         id_profile,
         profiles (
-          username
+          username,
+          avatar_url
         )
       ),
       articles_favorites (

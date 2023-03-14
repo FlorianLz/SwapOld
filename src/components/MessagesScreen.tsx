@@ -1,28 +1,37 @@
-import {Text} from 'react-native-elements';
-import {
-  KeyboardAvoidingView,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
-import React, { useEffect, useRef } from "react";
+import {StyleSheet, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {supabase} from '../lib/initSupabase';
 import messageService from '../services/message.service';
 import messageFactory from '../factory/message.factory';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {GiftedChat} from 'react-native-gifted-chat';
+import 'dayjs/locale/fr';
 
 export default function MessagesScreen({
   route,
 }: {params: {article: object; session: any}} | any) {
   const {article, session} = route.params;
-  const [messages, setMessages] = React.useState<object[]>([]);
-  const [msgInput, setMsgInput] = React.useState<string>('');
-  const scrollViewRef = useRef<any>(null);
   const otherId: string = !article.isOwner
     ? article.ownerInfos.id
     : article.receiverInfos.id;
+  const actualUser = {
+    id: session.user.id,
+    name: article.isOwner
+      ? article.ownerInfos.username
+      : article.receiverInfos.username,
+    avatar: article.isOwner
+      ? article.ownerInfos.avatar_url
+      : article.receiverInfos.avatar_url,
+  };
+  const otherUser = {
+    id: otherId,
+    name: !article.isOwner
+      ? article.ownerInfos.username
+      : article.receiverInfos.username,
+    avatar: !article.isOwner
+      ? article.ownerInfos.avatar_url
+      : article.receiverInfos.avatar_url,
+  };
+  const [messages, setMessages] = useState<any>([]);
 
   useEffect(() => {
     console.log('Hello from useEffect');
@@ -47,81 +56,57 @@ export default function MessagesScreen({
         payload => {
           let {new: newRecord} = payload;
           console.log('newRecord', newRecord);
+          let userToAdd =
+            newRecord.id_first_profile === session.user.id
+              ? actualUser
+              : otherUser;
           let msg = messageFactory.formatNewMessageReceived(
             newRecord,
             session.user.id,
+            userToAdd,
           );
-          updateMessages(msg);
+          setMessages((previousMessages: never[] | undefined) =>
+            GiftedChat.append(previousMessages, msg),
+          );
         },
       )
       .subscribe();
-  }, [messages]);
+  }, []);
 
-  function updateMessages(newMessage: any) {
-    setMessages([...messages, newMessage]);
-    console.log([...messages, newMessage]);
-  }
-
-  async function handleSend() {
-    let send = await messageService.sendMessage(
+  const onSend = useCallback(async (message: any = []) => {
+    console.log('messages', message);
+    await messageService.sendMessage(
       session.user.id,
       otherId,
-      msgInput,
+      message[0].text,
       article.id,
     );
-    console.log('send', send);
-    if (!send.error) {
-      setMsgInput('');
-    }
-  }
-
-  function scrollViewSizeChanged() {
-    scrollViewRef.current !== null
-      ? scrollViewRef.current.scrollToEnd({animated: true})
-      : null;
-  }
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text h4 style={styles.title}>
-        Chat avec {article.ownerInfos.username}
-      </Text>
-      <ScrollView
-        ref={scrollViewRef}
-        onContentSizeChange={() => {
-          scrollViewSizeChanged();
+      <GiftedChat
+        inverted={true}
+        locale={'fr'}
+        dateFormat={'DD/MM/YYYY'}
+        timeFormat={'HH:mm'}
+        placeholder={'Écrivez votre message ici...'}
+        messages={messages}
+        onSend={onSend}
+        listViewProps={{
+          style: styles.hideScroll,
+          showsVerticalScrollIndicator: false,
         }}
-        style={styles.messagesContainer}>
-        {messages && messages.length > 0 ? (
-          messages.map((message: any) => {
-            return (
-              <Text key={message.id}>
-                {message.isSender
-                  ? article.ownerInfos.username
-                  : article.receiverInfos.username}{' '}
-                : {message.message}
-              </Text>
-            );
-          })
-        ) : (
-          <Text>
-            Vous n'avez pas encore échangé de messages avec cette utilisateur.
-          </Text>
-        )}
-      </ScrollView>
-      <KeyboardAvoidingView style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Message..."
-          value={msgInput}
-          onChangeText={text => setMsgInput(text)}
-        />
-        {msgInput.length > 0 && (
-          <Pressable onPress={handleSend} style={styles.iconContainer}>
-            <Icon name="send" color="#000" size={24} style={styles.icon} />
-          </Pressable>
-        )}
-      </KeyboardAvoidingView>
+        user={{
+          _id: session.user.id,
+          name: article.isOwner
+            ? article.ownerInfos.username
+            : article.receiverInfos.username,
+          avatar: article.isOwner
+            ? article.ownerInfos.avatar_url
+            : article.receiverInfos.avatar_url,
+        }}
+      />
     </View>
   );
 }
@@ -130,7 +115,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     position: 'relative',
-    height: '100%',
+    height: '90%',
   },
   messagesContainer: {
     maxHeight: '60%',
@@ -164,5 +149,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     textAlign: 'center',
+  },
+  hideScroll: {
+    maxHeight: '100%',
   },
 });

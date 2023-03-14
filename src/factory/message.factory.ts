@@ -1,25 +1,44 @@
+import imagesHelper from '../helpers/images.helper';
+
 const messageFactory = {
   getMessagesForArticle(rawMessages: any | null, userId: string) {
-    return rawMessages.map((message: any) => {
-      const isSender = message.id_first_profile === userId;
-      return {
-        id: message.id,
-        message: message.message,
-        isSender,
-        createdAt: message.created_at,
-        otherId: isSender
-          ? message.id_second_profile
-          : message.id_first_profile,
-      };
-    });
+    return rawMessages
+      .map((message: any) => {
+        const isSender = message.id_first_profile === userId;
+        return {
+          _id: message.id,
+          text: message.message,
+          isSender,
+          sent: true,
+          user: {
+            _id: message.id_first_profile.id,
+            name: message.id_first_profile.username,
+            avatar: imagesHelper.getPublicUrlByImageName(
+              message.id_first_profile.avatar_url,
+            ),
+          },
+          createdAt: message.created_at,
+          otherId: isSender
+            ? message.id_second_profile
+            : message.id_first_profile,
+        };
+      })
+      .reverse();
   },
-  formatNewMessageReceived(message: any, userId: string) {
+  formatNewMessageReceived(message: any, userId: string, userToAdd: any) {
     const isSender = message.id_first_profile === userId;
     return {
-      id: message.id,
-      message: message.message,
+      _id: message.id,
+      text: message.message,
       isSender,
+      sent: true,
+      user: {
+        _id: userToAdd.id,
+        name: userToAdd.name,
+        avatar: imagesHelper.getPublicUrlByImageName(userToAdd.avatar_url),
+      },
       createdAt: message.created_at,
+      otherId: isSender ? message.id_second_profile : message.id_first_profile,
     };
   },
 };

@@ -84,8 +84,7 @@ const articleFactory = {
         ),
         location_name: article.id_article_receiver.location.cityName,
         images: imagesHelper.getPublicUrlByImageName(
-          article.id_article_receiver.articles_images[0]?.image_name ??
-            'default/default.png',
+          article.id_article_receiver.articles_images[0]?.image_name,
         ),
         isLiked: article.id_article_receiver.articles_favorites?.length > 0,
         isOwner:
@@ -95,11 +94,18 @@ const articleFactory = {
           id: article.id_article_receiver.articles_profiles[0]?.id_profile,
           username:
             article.id_article_receiver.articles_profiles[0]?.profiles.username,
+          avatar_url: imagesHelper.getPublicUrlByImageName(
+            article.id_article_receiver.articles_profiles[0]?.profiles
+              .avatar_url,
+          ),
         },
         receiverInfos: {
           id: article.id_article_sender.articles_profiles[0]?.id_profile,
           username:
             article.id_article_sender.articles_profiles[0]?.profiles.username,
+          avatar_url: imagesHelper.getPublicUrlByImageName(
+            article.id_article_sender.articles_profiles[0]?.profiles.avatar_url,
+          ),
         },
       };
     });

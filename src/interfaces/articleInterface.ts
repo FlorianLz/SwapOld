@@ -12,6 +12,6 @@ export default interface IArticleData {
   isLiked: boolean;
   hideLike: boolean;
   isOwner: boolean;
-  ownerInfos?: {id: number; username: string};
-  receiverInfos?: {id: number; username: string};
+  ownerInfos?: {id: number; username: string; avatar_url: string};
+  receiverInfos?: {id: number; username: string; avatar_url: string};
 }
