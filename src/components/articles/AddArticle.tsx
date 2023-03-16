@@ -219,7 +219,7 @@ export default function AddArticle({
   }, []);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
         <IconAnt
           style={styles.BackIcon}
@@ -229,7 +229,7 @@ export default function AddArticle({
         />
         <Text style={styles.backTitle}>Ajouter un article</Text>
       </Pressable>
-      <View>
+      <View style={{position: 'relative', zIndex: 100, minHeight:'80%'}}>
         <TextInput
           style={styles.input}
           placeholder="Titre..."
@@ -281,6 +281,7 @@ export default function AddArticle({
             }}
             suggestionsListContainerStyle={{
               backgroundColor: 'white',
+              maxHeight: 165,
             }}
             containerStyle={{
               flexGrow: 1,
@@ -316,24 +317,36 @@ export default function AddArticle({
           Photos de l’article ({resizedImages.length}/5)
         </Text>
 
-        <View style={styles.ContainerAddImage}>
-          {resizedImages.length > 0 && (
-            <View>
-              {resizedImages.map(
-                (image: {uri: string}, index: React.Key | null | undefined) => (
-                  <React.Fragment key={index}>
-                    {image && (
-                      <Image
-                        key={index}
-                        source={{uri: image.uri}}
-                        style={styles.Image}
-                      />
-                    )}
-                  </React.Fragment>
-                ),
-              )}
-            </View>
-          )}
+        {resizedImages.length > 0 ? (
+          <View style={styles.ContainerAddImage}>
+            {resizedImages.map(
+              (image: {uri: string}, index: React.Key | null | undefined) => (
+                <React.Fragment key={index}>
+                  {image && (
+                    <Image
+                      key={index}
+                      source={{uri: image.uri}}
+                      style={styles.Image}
+                    />
+                  )}
+                </React.Fragment>
+              ),
+            )}
+            {resizedImages.length < 5 && (
+              <Pressable
+                style={styles.Button}
+                onPress={initMediaPicker}
+                disabled={resizedImages.length > 4}>
+                <IconIco
+                  style={styles.Icon}
+                  name="add-circle-outline"
+                  size={45}
+                  color="#000"
+                />
+              </Pressable>
+            )}
+          </View>
+        ) : (
           <Pressable
             style={styles.Button}
             onPress={initMediaPicker}
@@ -345,22 +358,24 @@ export default function AddArticle({
               color="#000"
             />
           </Pressable>
-        </View>
+        )}
       </View>
       <View style={styles.containerAddArticle}>
-        <Pressable
-          style={styles.ButtonAddArticle}
-          onPress={handleUpload}
-          disabled={onPublication}>
-          <Text style={styles.ButtonText}>Publier cet article</Text>
-        </Pressable>
         {error ? <Text style={styles.error}>{error}</Text> : null}
+        {!onPublication && !published && (
+          <Pressable
+            style={styles.ButtonAddArticle}
+            onPress={handleUpload}
+            disabled={onPublication}>
+            <Text style={styles.ButtonText}>Publier cet article</Text>
+          </Pressable>
+        )}
         {onPublication && !published && (
           <Text>Publication en cours, veuillez patienter...</Text>
         )}
         {published && <Text>{msgPublished}</Text>}
       </View>
-    </ScrollView>
+    </View>
   );
 }
 const styles = StyleSheet.create({
@@ -383,6 +398,8 @@ const styles = StyleSheet.create({
   container: {
     marginLeft: 20,
     marginRight: 20,
+    position: 'relative',
+    height: '100%',
   },
   input: {
     backgroundColor: '#F6F6F6',
@@ -435,10 +452,11 @@ const styles = StyleSheet.create({
   },
   containerAddArticle: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 10,
     width: '100%',
   },
   error: {
     color: 'red',
+    marginBottom: 10,
   },
 });
