@@ -72,7 +72,7 @@ export default function SingleArticleCard({
             style={modeAffichage === 'mode1' ? styles.Infos : styles.Infos2}>
             <Text style={styles.Title}>{article.title}</Text>
             <Text style={styles.Localisation}>
-              <Icon name="location" size={10} color="#696969" />
+              <Icon name="location" size={14} color="#696969" />
               {article.location_name} ({article.distance} km)
             </Text>
           </View>
@@ -98,11 +98,11 @@ export default function SingleArticleCard({
                   {!isLiked ? (
                     <IconIon
                       name="ios-bookmark-outline"
-                      size={20}
+                      size={16}
                       color="#000"
                     />
                   ) : (
-                    <IconIon name="ios-bookmark" size={20} color="#000" />
+                    <IconIon name="ios-bookmark" size={16} color="#000" />
                   )}
                 </View>
               )}
@@ -124,16 +124,11 @@ const styles = StyleSheet.create({
   AffichageMode1: {
     display: 'flex',
     flexDirection: 'column',
-    borderRadius: 16,
+    borderRadius: 4,
     backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
+    elevation: 2,
+    borderBottomColor: '#000',
+    borderBottomWidth: 3,
     width: '47%',
     marginBottom: 15,
     position: 'relative',
@@ -143,20 +138,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     width: '100%',
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 8,
     padding: 2,
     position: 'relative',
+    borderColor: '#000',
+    borderBottomWidth: 3,
+    borderBottomLeftRadius: 4,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
   },
   Affichage2: {
     display: 'flex',
     flexDirection: 'row',
     backgroundColor: 'white',
-    borderRadius: 16,
+    borderRadius: 4,
   },
   favoris: {
     position: 'absolute',
@@ -198,13 +193,13 @@ const styles = StyleSheet.create({
   },
   Title: {
     color: 'black',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   Localisation: {
     color: '#696969',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
   },
   ContainerImage: {
@@ -214,14 +209,14 @@ const styles = StyleSheet.create({
     height: 185,
     width: '100%',
     resizeMode: 'cover',
-    borderTopRightRadius: 16,
-    borderTopLeftRadius: 16,
+    borderTopRightRadius: 4,
+    borderTopLeftRadius: 4,
   },
   Image2: {
     height: 75,
     width: 75,
     resizeMode: 'cover',
-    borderTopLeftRadius: 16,
-    borderBottomLeftRadius: 16,
+    borderTopLeftRadius: 4,
+    borderBottomLeftRadius: 4,
   },
 });

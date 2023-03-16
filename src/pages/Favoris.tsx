@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     marginBottom: 10,
     width: '100%',
+    gap: 20,
   },
   ModeAffichageContainer: {
     display: 'flex',

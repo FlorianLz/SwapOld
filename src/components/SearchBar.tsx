@@ -19,7 +19,7 @@ const SearchBar: React.FC<Props> = ({onSubmit}) => {
   };
 
   return (
-    <View style={[styles.Flex, styles.Shadow]}>
+    <View style={[styles.Flex]}>
       <View style={styles.Container}>
         <Icon name="search" style={styles.Icon} />
         <TextInput
@@ -50,24 +50,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     margin: 20,
   },
-  Shadow: {
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
-    marginBottom: 10,
-    zIndex: 999,
-  },
   Container: {
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderBottomLeftRadius: 20,
-    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 4,
+    borderTopLeftRadius: 4,
     flexDirection: 'row',
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -86,8 +73,8 @@ const styles = StyleSheet.create({
   FilterIconContainer: {
     alignItems: 'center',
     backgroundColor: '#f2f2f2',
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
+    borderTopRightRadius: 4,
+    borderBottomRightRadius: 4,
     justifyContent: 'center',
     paddingHorizontal: 10,
     paddingVertical: 5,
