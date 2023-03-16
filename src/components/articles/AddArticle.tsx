@@ -1,6 +1,5 @@
 import React, {useCallback} from 'react';
 import {
-  Button,
   Dimensions,
   Image,
   Platform,
@@ -437,6 +436,7 @@ const styles = StyleSheet.create({
   containerAddArticle: {
     position: 'absolute',
     bottom: 0,
+    width: '100%',
   },
   error: {
     color: 'red',
