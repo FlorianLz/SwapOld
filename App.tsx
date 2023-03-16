@@ -80,7 +80,7 @@ const App = () => {
           name="AddArticle"
           initialParams={{session: session}}
           component={AddArticle}
-          options={{headerShown: true}}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="SwapProposition"

@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -20,6 +21,8 @@ import ImageResizer from '@bam.tech/react-native-image-resizer';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import locationService from '../../services/location.service';
 import Feather from 'react-native-vector-icons/Feather';
+import IconAnt from 'react-native-vector-icons/AntDesign';
+import IconIco from 'react-native-vector-icons/Ionicons';
 
 Feather.loadFont();
 
@@ -46,12 +49,9 @@ export default function AddArticle({
   const [msgPublished, setMsgPublished] = useState<string>('');
   const privateArticle = route.params.privateArticle || false;
   const article_sender = route.params.article_sender || null;
-  console.log('article_sender', article_sender);
   const maxImages = 5;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
-  console.log('private', privateArticle);
-  console.log('sender', article_sender);
   const resize = async (newTab: ImagePickerResponse[]) => {
     for (const image of newTab) {
       if (!image || !image.assets) {
@@ -155,7 +155,6 @@ export default function AddArticle({
 
   async function initMediaPicker() {
     const result = await launchCamera({mediaType: 'photo'});
-    console.log(result);
 
     if (!result.didCancel) {
       if (images.length <= maxImages) {
@@ -191,7 +190,6 @@ export default function AddArticle({
   const getSuggestions = useCallback(async (q: string) => {
     const filterToken = q.toLowerCase();
     setCurrentSearch(filterToken);
-    console.log('getSuggestions', q);
     if (q.length < 3) {
       setSuggestionsList([]);
       setSelectedItem({
@@ -222,46 +220,34 @@ export default function AddArticle({
   }, []);
 
   return (
-    <View style={{flexGrow: 1}}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Ajouter un article</Text>
+    <ScrollView style={styles.container}>
+      <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
+        <IconAnt
+          style={styles.BackIcon}
+          name="arrowleft"
+          size={16}
+          color="#000"
+        />
+        <Text style={styles.backTitle}>Ajouter un article</Text>
+      </Pressable>
+      <View>
         <TextInput
           style={styles.input}
-          placeholder="Titre"
+          placeholder="Titre..."
+          placeholderTextColor="#BDBDBD"
           value={title}
           onChangeText={setTitle}
         />
         <TextInput
           style={styles.input}
-          placeholder="Contenu"
+          placeholder="Description..."
+          placeholderTextColor="#BDBDBD"
           value={content}
           onChangeText={setContent}
         />
 
-        {resizedImages.length > 0 && (
-          <View>
-            <Text>Photos</Text>
-            {resizedImages.map(
-              (image: {uri: string}, index: React.Key | null | undefined) => (
-                <React.Fragment key={index}>
-                  {image && (
-                    <Image
-                      key={index}
-                      source={{uri: image.uri}}
-                      style={{width: 200, height: 200}}
-                    />
-                  )}
-                </React.Fragment>
-              ),
-            )}
-          </View>
-        )}
-
-        <View
-          style={[
-            {flex: 1, flexDirection: 'row', alignItems: 'center'},
-            Platform.select({ios: {zIndex: 1}}),
-          ]}>
+        <Text style={styles.Title}>Localisation</Text>
+        <View style={[Platform.select({ios: {zIndex: 1}})]}>
           <AutocompleteDropdown
             direction={Platform.select({ios: 'down'})}
             dataSet={suggestionsList}
@@ -275,27 +261,37 @@ export default function AddArticle({
             loading={loading}
             useFilter={false} // set false to prevent rerender twice
             textInputProps={{
-              placeholder: 'Rechercher...',
+              placeholder: 'Localisation...',
               autoCorrect: true,
               autoCapitalize: 'none',
               style: {
-                borderRadius: 25,
-                paddingLeft: 18,
+                borderRadius: 8,
+                color: '#BDBDBD',
+                backgroundColor: '#F6F6F6',
+                height: 40,
               },
             }}
             rightButtonsContainerStyle={{
-              right: 8,
-              height: 30,
-
-              alignSelf: 'center',
+              backgroundColor: '#F6F6F6',
+              height: 40,
             }}
             inputContainerStyle={{
-              borderRadius: 25,
+              borderRadius: 8,
+              backgroundColor: '#F6F6F6',
+              height: 40,
             }}
             suggestionsListContainerStyle={{
               backgroundColor: 'white',
             }}
-            containerStyle={{flexGrow: 1, flexShrink: 1}}
+            containerStyle={{
+              flexGrow: 1,
+              flexShrink: 1,
+              marginBottom: 16,
+              borderColor: '#E8E8E8',
+              height: 40,
+              borderWidth: 1,
+              borderRadius: 8,
+            }}
             renderItem={item => <Text style={{padding: 15}}>{item.title}</Text>}
             EmptyResultComponent={
               <View>
@@ -305,10 +301,10 @@ export default function AddArticle({
               </View>
             }
             ChevronIconComponent={
-              <Feather name="chevron-down" size={20} color="#fff" />
+              <Feather name="chevron-down" size={20} color="#000" />
             }
             ClearIconComponent={
-              <Feather name="x-circle" size={18} color="#fff" />
+              <Feather name="x-circle" size={18} color="#000" />
             }
             inputHeight={50}
             showChevron={false}
@@ -316,48 +312,131 @@ export default function AddArticle({
           />
           <View style={{width: 10}} />
         </View>
-        <Text style={{color: '#668', fontSize: 13}}>
-          Selected item id: {JSON.stringify(selectedItem)}
+
+        <Text style={styles.Title}>
+          Photos de l’article ({resizedImages.length}/5)
         </Text>
 
-        <ScrollView>
-          <Button
-            title={'Ajouter photo'}
-            onPress={initMediaPicker}
-            disabled={resizedImages.length > 4}
-          />
-          <Button
-            title="Ajouter"
-            onPress={handleUpload}
-            disabled={onPublication}
-          />
-          {error ? <Text style={styles.error}>{error}</Text> : null}
-          {onPublication && !published && (
-            <Text>Publication en cours, veuillez patienter...</Text>
+        <View style={styles.ContainerAddImage}>
+          {resizedImages.length > 0 && (
+            <View>
+              {resizedImages.map(
+                (image: {uri: string}, index: React.Key | null | undefined) => (
+                  <React.Fragment key={index}>
+                    {image && (
+                      <Image
+                        key={index}
+                        source={{uri: image.uri}}
+                        style={styles.Image}
+                      />
+                    )}
+                  </React.Fragment>
+                ),
+              )}
+            </View>
           )}
-          {published && <Text>{msgPublished}</Text>}
-        </ScrollView>
+          <Pressable
+            style={styles.Button}
+            onPress={initMediaPicker}
+            disabled={resizedImages.length > 4}>
+            <IconIco
+              style={styles.Icon}
+              name="add-circle-outline"
+              size={45}
+              color="#000"
+            />
+          </Pressable>
+        </View>
       </View>
-    </View>
+      <View style={styles.containerAddArticle}>
+        <Pressable
+          style={styles.ButtonAddArticle}
+          onPress={handleUpload}
+          disabled={onPublication}>
+          <Text style={styles.ButtonText}>Publier cet article</Text>
+        </Pressable>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {onPublication && !published && (
+          <Text>Publication en cours, veuillez patienter...</Text>
+        )}
+        {published && <Text>{msgPublished}</Text>}
+      </View>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
+  Header: {
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    paddingTop: 20,
+    paddingBottom: 20,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    marginTop: 12,
+  backTitle: {
+    color: '#000',
+    fontFamily: 'Roboto',
+    fontSize: 12,
+  },
+  BackIcon: {
+    marginRight: 10,
+  },
+
+  container: {
+    marginLeft: 20,
+    marginRight: 20,
   },
   input: {
+    backgroundColor: '#F6F6F6',
+    borderRadius: 8,
+    borderColor: '#E8E8E8',
     height: 40,
-    width: 200,
-    marginBottom: 12,
+    marginBottom: 16,
     borderWidth: 1,
+  },
+  Title: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  Button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#000',
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+  },
+  Icon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 0,
+    marginLeft: 2,
+  },
+  Image: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+  },
+  ContainerAddImage: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  ButtonAddArticle: {
+    backgroundColor: '#D9D9D9',
+    borderRadius: 8,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ButtonText: {
+    color: '#000',
+    fontSize: 16,
+  },
+  containerAddArticle: {
+    position: 'absolute',
+    bottom: 0,
   },
   error: {
     color: 'red',
