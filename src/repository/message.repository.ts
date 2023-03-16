@@ -4,7 +4,9 @@ const messageRepository = {
   getMessagesForArticle: async (articleId: string, userId: string) => {
     const {data} = await supabase
       .from('articles_chat_profiles')
-      .select('*')
+      .select(
+        '*, id_first_profile (id,username,avatar_url), id_second_profile (id,username,avatar_url)',
+      )
       .eq('id_article', articleId)
       .or('id_first_profile.eq.' + userId + ',id_second_profile.eq.' + userId);
     return data;
