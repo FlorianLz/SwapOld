@@ -65,7 +65,7 @@ export default function Login() {
           />
           {viewPassword ? (
             <Icon
-              name="eye-off-outline"
+              name="eye-outline"
               color="#000"
               size={24}
               style={styles.icon}
@@ -73,7 +73,7 @@ export default function Login() {
             />
           ) : (
             <Icon
-              name="eye-outline"
+              name="eye-off-outline"
               color="#000"
               size={24}
               style={styles.icon}
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 100,
+    borderRadius: 4,
     marginTop: 20,
   },
   buttonText: {
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F6F6',
     paddingLeft: 20,
     width: '100%',
-    borderRadius: 8,
+    borderRadius: 4,
     borderColor: '#E8E8E8',
     borderWidth: 1,
   },
