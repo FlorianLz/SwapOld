@@ -29,7 +29,7 @@ import IconOti from 'react-native-vector-icons/Octicons';
 import AddArticle from './src/components/articles/AddArticle';
 import SwapProposition from './src/components/SwapProposition';
 import RecapProposition from './src/components/RecapProposition';
-import MessagesScreen from "./src/components/MessagesScreen";
+import MessagesScreen from './src/components/MessagesScreen';
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(false);

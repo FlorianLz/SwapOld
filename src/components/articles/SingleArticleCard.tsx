@@ -57,7 +57,7 @@ export default function SingleArticleCard({
               : url === 'Messagerie'
               ? navigation.navigate('MessagesScreen', {
                   session: session,
-                  article: article
+                  article: article,
                 })
               : navigation.navigate('SingleArticle', {id: article.id});
           }
