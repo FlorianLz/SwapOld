@@ -9,6 +9,7 @@ import articleService from '../services/article.service';
 import SingleArticleCard from '../components/articles/SingleArticleCard';
 import IArticleData from '../interfaces/articleInterface';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {Text} from 'react-native-elements';
 export default function Favoris({session}: {session: any}) {
   const isFocused = useIsFocused();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -35,7 +36,8 @@ export default function Favoris({session}: {session: any}) {
       .subscribe();*/
   }, [isFocused, session.user.id]);
   return (
-    <ScrollView>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Favoris</Text>
       <View style={styles.ModeAffichageContainer}>
         <View style={styles.ModeAffichage}>
           {articles.map(article => (
@@ -54,12 +56,21 @@ export default function Favoris({session}: {session: any}) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  title: {
+    color: '#000',
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 20,
+    marginBottom: 20,
+  },
   ModeAffichage: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    paddingRight: 20,
-    paddingLeft: 20,
     marginBottom: 10,
     width: '100%',
     gap: 20,

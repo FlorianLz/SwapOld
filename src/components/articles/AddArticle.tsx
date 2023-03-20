@@ -229,7 +229,7 @@ export default function AddArticle({
         />
         <Text style={styles.backTitle}>Ajouter un article</Text>
       </Pressable>
-      <View style={{position: 'relative', zIndex: 100, minHeight:'80%'}}>
+      <View style={{position: 'relative', zIndex: 100, minHeight: '80%'}}>
         <TextInput
           style={styles.input}
           placeholder="Titre..."

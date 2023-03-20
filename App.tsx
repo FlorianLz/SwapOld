@@ -168,14 +168,17 @@ const App = () => {
             <Tab.Screen
               name="HubPublication"
               children={() => <HubPublication session={session} />}
+              options={{headerShown: false}}
             />
             <Tab.Screen
               name="Favoris"
               children={() => <Favoris session={session} />}
+              options={{headerShown: false}}
             />
             <Tab.Screen
               name="Profil"
               children={() => <Profil session={session} />}
+              options={{headerShown: false}}
             />
           </>
         ) : (

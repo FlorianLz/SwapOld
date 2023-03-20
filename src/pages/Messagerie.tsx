@@ -6,10 +6,11 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {Text} from 'react-native-elements';
-import SingleArticleCard from '../components/articles/SingleArticleCard';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
+import ListMessagerie from '../components/articles/ListMessagerie';
+
 export default function Messagerie({session}: {session: any}) {
   const isFocused = useIsFocused();
   const [swaps, setSwaps] = React.useState<object[]>([]);
@@ -23,19 +24,15 @@ export default function Messagerie({session}: {session: any}) {
   }, [isFocused, session.user.id]);
   return (
     <ScrollView style={styles.container}>
-      <Text h3 style={styles.title}>
-        Messagerie
-      </Text>
+      <Text style={styles.title}>Messagerie récents</Text>
       {swaps &&
         swaps.map((swap: any) => {
           return (
             <Text key={swap.id}>
-              <SingleArticleCard
+              <ListMessagerie
                 navigation={navigation}
                 article={swap}
-                modeAffichage={'mode2'}
                 session={session}
-                url={'Messagerie'}
               />
             </Text>
           );
@@ -49,7 +46,9 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   title: {
-    textAlign: 'center',
+    color: '#000',
+    fontSize: 12,
+    fontWeight: '700',
     marginTop: 20,
     marginBottom: 20,
   },
