@@ -9,7 +9,7 @@ import {Text} from 'react-native-elements';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
-import ListMessagerie from '../components/articles/ListMessagerie';
+import ListMessagerie from './ListMessagerie';
 
 export default function Messagerie({session}: {session: any}) {
   const isFocused = useIsFocused();
