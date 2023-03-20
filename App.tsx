@@ -86,13 +86,13 @@ const App = () => {
           name="SwapProposition"
           initialParams={{session: session}}
           component={SwapProposition}
-          options={{headerShown: true}}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="RecapProposition"
           initialParams={{session: session}}
           component={RecapProposition}
-          options={{headerShown: true}}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="MessagesScreen"

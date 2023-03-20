@@ -28,7 +28,8 @@ export default function SwapProposition({
       });
   }, [isFocused]);
   return (
-    <View>
+    <View style={styles.container}>
+      <Text style={styles.title}>Veuillez selectionner un article pour finaliser la proposition</Text>
       <View style={styles.ModeAffichageContainer}>
         <View style={styles.ModeAffichage}>
           {isFocused
@@ -52,12 +53,21 @@ export default function SwapProposition({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  title: {
+    color: '#000',
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 20,
+    marginBottom: 20,
+  },
   ModeAffichage: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    paddingRight: 20,
-    paddingLeft: 20,
     marginBottom: 10,
     width: '100%',
   },
