@@ -24,6 +24,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
   useEffect(() => {
     articleService
@@ -189,14 +190,61 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
           {session?.user && (
             <Pressable
               style={styles.Button}
-              onPress={() =>
-                navigation.navigate('SwapProposition', {
-                  article_sender: {article},
-                })
-              }>
+              onPress={() => {
+                console.log('edit');
+                setModalChoiceVisible(true);
+              }}>
               <Text style={styles.ButtonText}>Proposer un échange</Text>
             </Pressable>
           )}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalChoiceVisible}
+            onRequestClose={() => {
+              setModalChoiceVisible(!modalChoiceVisible);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>
+                  Vous souhaitez proposer un échange pour cet objet. Vous avez
+                  Vous avez la possibilité de proposer un nouvel article
+                  uniquement pour cet échanger, ou de sélectionner un article
+                  parmi ceux que vous avez déjà mis en ligne.
+                </Text>
+                <Pressable
+                  style={[styles.button]}
+                  onPress={() =>
+                    navigation.navigate('AddArticle', {
+                      privateArticle: true,
+                      article_sender: {article},
+                    })
+                  }>
+                  <Text style={styles.textStyle}>
+                    Ajouter un nouvel article
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button]}
+                  onPress={() =>
+                    navigation.navigate('SwapProposition', {
+                      article_sender: {article},
+                    })
+                  }>
+                  <Text style={styles.textStyle}>
+                    Choisir un article déjà publié
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalChoiceVisible(!modalChoiceVisible)}>
+                  <Text style={[styles.textStyle, styles.TextClose]}>
+                    Annuler
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
         </>
       ) : null}
     </ScrollView>
@@ -308,10 +356,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
   },
   modalView: {
-    margin: 20,
     backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
+    borderRadius: 8,
+    padding: 16,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -321,17 +368,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    width: '90%',
   },
   button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
+    borderRadius: 4,
+    height: 40,
+    backgroundColor: '#000',
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 8,
+    paddingTop: 8,
+    width: '100%',
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: 'transparent',
+  },
+  TextClose: {
+    color: '#000',
   },
   textStyle: {
     color: 'white',
@@ -339,7 +393,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
-    marginBottom: 15,
+    fontSize: 16,
+    color: '#666666',
+    marginBottom: 20,
     textAlign: 'center',
   },
 });

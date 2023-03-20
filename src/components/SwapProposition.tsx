@@ -29,17 +29,6 @@ export default function SwapProposition({
   }, [isFocused]);
   return (
     <View>
-      <Text>Proposer des article qui ne sont pas sur le site</Text>
-      <Button
-        title={'ajouter un article'}
-        onPress={() =>
-          navigation.navigate('AddArticle', {
-            privateArticle: true,
-            article_sender: {article_sender},
-          })
-        }
-      />
-      <Text>Proposer des article deja sur le site</Text>
       <View style={styles.ModeAffichageContainer}>
         <View style={styles.ModeAffichage}>
           {isFocused
