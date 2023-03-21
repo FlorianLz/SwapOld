@@ -9,7 +9,6 @@ const articleFactory = {
     }
     let articles: IArticleData[] = [];
     let location = await locationHelper.getUserLocation();
-    console.log(location);
     articles = rawArticles.map((article: any) => {
       return <IArticleData>{
         id: article.id,

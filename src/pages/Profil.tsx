@@ -1,4 +1,4 @@
-import {Button, ScrollView, StyleSheet, Text, View} from "react-native";
+import { Button, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import React, {useEffect, useState} from 'react';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
@@ -8,10 +8,12 @@ import RecapProposition from '../components/RecapProposition';
 import IconAwe from 'react-native-vector-icons/FontAwesome5';
 import IconMat from 'react-native-vector-icons/MaterialIcons';
 import {supabase} from '../lib/initSupabase';
+import profileService from "../services/profile.service";
 
 export default function Profil({session}: {session: any}) {
   const [selectedComponent, setSelectedComponent] = useState('articles');
   const [articles, setArticles] = useState<IArticleData[]>([]);
+  const [userInfos, setUserInfos] = useState<any>([]);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
@@ -19,6 +21,9 @@ export default function Profil({session}: {session: any}) {
     setSelectedComponent('articles');
     articleService.getAllMyPublishedArticles(session.user.id).then(result => {
       setArticles(result);
+    });
+    profileService.getProfile(session.user.id).then(result => {
+      setUserInfos(result);
     });
   }, [isFocused]);
   return (
@@ -43,10 +48,12 @@ export default function Profil({session}: {session: any}) {
         </View>
         <View style={styles.ContainerImage}>
           <View style={styles.ImageBackground}>
-            <View style={styles.Image} />
+            <Image style={styles.Image} source={{uri: userInfos.avatar_url}} />
           </View>
         </View>
       </View>
+      <Text style={styles.Name}>{userInfos.full_name}</Text>
+      <Text style={styles.Name}>{userInfos.city_name}</Text>
       <View>
         <Button
           title={'Articles publiés'}
@@ -109,10 +116,12 @@ const styles = StyleSheet.create({
   Image: {
     width: 140,
     height: 140,
-    backgroundColor: 'grey',
     borderRadius: 100,
   },
   Name: {
     color: '#000',
+    fontFamily: 'Roboto',
+    fontSize: 28,
+    textAlign: 'center',
   },
 });

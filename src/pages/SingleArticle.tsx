@@ -33,7 +33,6 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
         setArticle(result as IArticleData);
         setLoading(true);
         setIsLiked(result.isLiked);
-        console.log(result);
       });
   }, [id]);
 
@@ -42,7 +41,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
       if (!result.error) {
         navigation.navigate('HubPublication');
       } else {
-        console.log(result);
+        //console.log(result);
       }
     });
   }

@@ -26,7 +26,6 @@ export default function SingleArticleCard({
     article.isLiked ?? false,
   );
   const [error, setError] = useState<string>('');
-  console.log(article);
   return (
     <View
       style={
