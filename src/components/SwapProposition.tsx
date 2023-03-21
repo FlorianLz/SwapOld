@@ -29,7 +29,9 @@ export default function SwapProposition({
   }, [isFocused]);
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Veuillez selectionner un article pour finaliser la proposition</Text>
+      <Text style={styles.title}>
+        Veuillez selectionner un article pour finaliser la proposition
+      </Text>
       <View style={styles.ModeAffichageContainer}>
         <View style={styles.ModeAffichage}>
           {isFocused
