@@ -214,23 +214,25 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
                 </Text>
                 <Pressable
                   style={[styles.button]}
-                  onPress={() =>
+                  onPress={() => {
                     navigation.navigate('AddArticle', {
                       privateArticle: true,
                       article_sender: {article},
-                    })
-                  }>
+                    });
+                    setModalChoiceVisible(false);
+                  }}>
                   <Text style={styles.textStyle}>
                     Ajouter un nouvel article
                   </Text>
                 </Pressable>
                 <Pressable
                   style={[styles.button]}
-                  onPress={() =>
+                  onPress={() => {
                     navigation.navigate('SwapProposition', {
                       article_sender: {article},
-                    })
-                  }>
+                    });
+                    setModalChoiceVisible(false);
+                  }}>
                   <Text style={styles.textStyle}>
                     Choisir un article déjà publié
                   </Text>
