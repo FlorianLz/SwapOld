@@ -1,4 +1,4 @@
-import { Button, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {Button, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
@@ -8,7 +8,8 @@ import RecapProposition from '../components/RecapProposition';
 import IconAwe from 'react-native-vector-icons/FontAwesome5';
 import IconMat from 'react-native-vector-icons/MaterialIcons';
 import {supabase} from '../lib/initSupabase';
-import profileService from "../services/profile.service";
+import profileService from '../services/profile.service';
+import SwitchSelector from 'react-native-switch-selector';
 
 export default function Profil({session}: {session: any}) {
   const [selectedComponent, setSelectedComponent] = useState('articles');
@@ -52,16 +53,25 @@ export default function Profil({session}: {session: any}) {
           </View>
         </View>
       </View>
-      <Text style={styles.Name}>{userInfos.full_name}</Text>
-      <Text style={styles.Name}>{userInfos.city_name}</Text>
-      <View>
-        <Button
-          title={'Articles publiés'}
-          onPress={() => setSelectedComponent('articles')}
-        />
-        <Button
-          title={'Propositions'}
-          onPress={() => setSelectedComponent('propositions')}
+      <View style={styles.ContainerBottom}>
+        <Text style={styles.Name}>{userInfos.full_name}</Text>
+        <Text style={styles.Name}>{userInfos.city_name}</Text>
+        <SwitchSelector
+          initial={0}
+          onPress={(value: any) => setSelectedComponent(value)}
+          textColor={'#F6F6F6'}
+          selectedColor={'#000'}
+          buttonColor={'#FFF'}
+          backgroundColor={'#9E9E9E'}
+          borderColor={'#9E9E9E'}
+          style={styles.SwitchContainer}
+          height={46}
+          hasPadding
+          options={[
+            {label: 'Articles publiés', value: 'articles'},
+            {label: 'Propositions', value: 'propositions'},
+          ]}
+          accessibilityLabel="gender-switch-selector"
         />
         {selectedComponent === 'articles' &&
           articles.map(article => (
@@ -89,6 +99,10 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 80,
+  },
+  ContainerBottom: {
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   Top: {
     flexDirection: 'row',
@@ -124,4 +138,12 @@ const styles = StyleSheet.create({
     fontSize: 28,
     textAlign: 'center',
   },
+  SwitchContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  SwitchTextContainer: {
+    paddingTop: 10,
+    paddingBottom: 10,
+  }
 });
