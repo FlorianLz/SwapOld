@@ -17,7 +17,6 @@ import Home from './src/pages/Home';
 import Profil from './src/pages/Profil';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Messagerie from './src/pages/Messagerie';
-import HubPublication from './src/pages/HubPublication';
 import Favoris from './src/pages/Favoris';
 import SingleArticle from './src/pages/SingleArticle';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -30,6 +29,7 @@ import AddArticle from './src/components/articles/AddArticle';
 import SwapProposition from './src/components/SwapProposition';
 import RecapProposition from './src/components/RecapProposition';
 import MessagesScreen from './src/components/MessagesScreen';
+import Account from './src/components/Account';
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -99,6 +99,12 @@ const App = () => {
           initialParams={{session: session}}
           component={MessagesScreen}
           options={{headerShown: true, headerTitle: 'Messages'}}
+        />
+        <Stack.Screen
+          name="UpdateProfil"
+          initialParams={{session: session}}
+          component={Account}
+          options={{headerShown: true}}
         />
       </Stack.Navigator>
     </NavigationContainer>
