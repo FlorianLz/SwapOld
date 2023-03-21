@@ -167,7 +167,8 @@ const App = () => {
             />
             <Tab.Screen
               name="HubPublication"
-              children={() => <HubPublication session={session} />}
+              component={AddArticle}
+              initialParams={{session: session, hideRetour: true}}
               options={{headerShown: false}}
             />
             <Tab.Screen

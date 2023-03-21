@@ -3,11 +3,10 @@ import {Text, View, StyleSheet, ScrollView, Button} from 'react-native';
 import articleRepository from '../repository/article.repository';
 import {supabase} from '../lib/initSupabase';
 
-export default function SwapProposition({
-  route,
+export default function RecapProposition({
+  session,
   navigation,
-}: {navigation: any; params: {session: object; id: number}} | any) {
-  const {session} = route.params;
+}: any) {
 
   async function updateSwapsState() {
     try {

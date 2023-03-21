@@ -34,6 +34,7 @@ export default function AddArticle({
         id: number;
         privateArticle: boolean;
         article_sender: any;
+        hideRetour: boolean;
       };
     }
   | any) {
@@ -48,6 +49,7 @@ export default function AddArticle({
   const [msgPublished, setMsgPublished] = useState<string>('');
   const privateArticle = route.params.privateArticle || false;
   const article_sender = route.params.article_sender || null;
+  const hideRetour = route.params.hideRetour || false;
   const maxImages = 5;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
@@ -220,15 +222,20 @@ export default function AddArticle({
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
-        <IconAnt
-          style={styles.BackIcon}
-          name="arrowleft"
-          size={16}
-          color="#000"
-        />
-        <Text style={styles.backTitle}>Ajouter un article</Text>
-      </Pressable>
+      {!hideRetour && (
+        <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
+          <IconAnt
+            style={styles.BackIcon}
+            name="arrowleft"
+            size={16}
+            color="#000"
+          />
+          <Text style={styles.backTitle}>Ajouter un article</Text>
+        </Pressable>
+      )}
+      {hideRetour && (
+        <View style={styles.Header}></View>
+      )}
       <View style={{position: 'relative', zIndex: 100, minHeight: '80%'}}>
         <TextInput
           style={styles.input}
