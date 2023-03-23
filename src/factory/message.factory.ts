@@ -17,7 +17,6 @@ const messageFactory = {
             ),
           },
           createdAt: message.created_at,
-          unique_id: message.unique_id,
           otherId: isSender
             ? message.id_second_profile
             : message.id_first_profile,

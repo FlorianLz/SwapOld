@@ -14,15 +14,16 @@ const messageService = {
     otherId: string,
     msgInput: string,
     idArticle: number,
-    uniqueId: string,
   ) => {
     return await messageRepository.sendMessage(
       myId,
       otherId,
       msgInput,
       idArticle,
-      uniqueId,
     );
+  },
+  updateReadMessagesForArticle: (articleId: string, userId: string) => {
+    return messageRepository.updateReadMessagesForArticle(articleId, userId);
   },
 };
 export default messageService;

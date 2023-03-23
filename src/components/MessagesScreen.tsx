@@ -40,6 +40,11 @@ export default function MessagesScreen({
       .getMessagesForArticle(article.id, session.user.id)
       .then(res => {
         setMessages(res);
+        messageService
+          .updateReadMessagesForArticle(article.id, session.user.id)
+          .then(() => {
+            console.log('messages updated');
+          });
       });
   }, []);
 
@@ -71,6 +76,11 @@ export default function MessagesScreen({
             setMessages((previousMessages: IMessage[] | undefined) =>
               GiftedChat.append(previousMessages, msg as any),
             );
+            messageService
+              .updateReadMessagesForArticle(article.id, session.user.id)
+              .then(() => {
+                console.log('messages updated');
+              });
           }
         },
       )

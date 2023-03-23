@@ -376,5 +376,18 @@ const articleRepository = {
 
     return {error: false};
   },
+  getArticlesIdWhereMessageNotRead: async (id_profile: string) => {
+    const {data, error} = await supabase
+      .from('articles_chat_profiles')
+      .select('id_article')
+      .eq('id_second_profile', id_profile)
+      .eq('read_by_receiver', false);
+
+    if (error) {
+      return {error: true, message: error.message, data: []};
+    }
+
+    return {error: false, data};
+  },
 };
 export default articleRepository;

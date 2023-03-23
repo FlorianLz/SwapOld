@@ -4,6 +4,7 @@ export default function ListMessagerie({
   navigation,
   article,
   session,
+  notRead,
 }: {
   navigation: any;
   article: any;
@@ -11,6 +12,7 @@ export default function ListMessagerie({
   hideLike?: boolean;
   url?: string;
   article_sender?: any;
+  notRead?: boolean;
 }) {
   const actualUser = {
     id: session.user.id,
@@ -33,7 +35,12 @@ export default function ListMessagerie({
         }
       }}
       key={article.id}>
-      <View style={styles.ListContainer}>
+      <View
+        style={
+          notRead
+            ? [styles.ListContainer, styles.notRead]
+            : [styles.ListContainer]
+        }>
         <Image style={styles.Image} source={{uri: article.images}} />
         <View style={styles.InfosContainer}>
           <Text style={styles.Name}>{actualUser.name}</Text>
@@ -75,5 +82,8 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     marginRight: 16,
     borderRadius: 8,
+  },
+  notRead: {
+    backgroundColor: '#F8F8F8',
   },
 });

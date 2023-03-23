@@ -10,16 +10,28 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
 import ListMessagerie from './ListMessagerie';
+import articleRepository from "../repository/article.repository";
 
 export default function Messagerie({session}: {session: any}) {
   const isFocused = useIsFocused();
   const [swaps, setSwaps] = React.useState<object[]>([]);
+  const [notReadArticles, setNotReadArticles] = React.useState<number[]>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
     articleService
       .getSwapsByStateAndProfile(2, session.user.id)
       .then((result: IArticleData[]) => {
         setSwaps(result as IArticleData[]);
+      });
+    articleRepository
+      .getArticlesIdWhereMessageNotRead(session.user.id)
+      .then((result: any) => {
+        console.log(result);
+        let resultsId = [
+          ...new Set(result.data.map((item: any) => item.id_article)),
+        ];
+        console.log(resultsId);
+        setNotReadArticles(resultsId as number[]);
       });
   }, [isFocused, session.user.id]);
   return (
@@ -33,6 +45,7 @@ export default function Messagerie({session}: {session: any}) {
                 navigation={navigation}
                 article={swap}
                 session={session}
+                notRead={notReadArticles.includes(swap.id)}
               />
             </Text>
           );
