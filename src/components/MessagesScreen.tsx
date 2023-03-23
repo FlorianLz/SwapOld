@@ -69,7 +69,7 @@ export default function MessagesScreen({
           //add message only if it's not the current user
           if (msg?.user?._id !== session.user.id) {
             setMessages((previousMessages: IMessage[] | undefined) =>
-              GiftedChat.append(previousMessages, msg),
+              GiftedChat.append(previousMessages, msg as any),
             );
           }
         },
