@@ -1,4 +1,4 @@
-import {Button, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
@@ -10,7 +10,7 @@ import IconMat from 'react-native-vector-icons/MaterialIcons';
 import {supabase} from '../lib/initSupabase';
 import profileService from '../services/profile.service';
 import SwitchSelector from 'react-native-switch-selector';
-
+import Icon from 'react-native-vector-icons/EvilIcons';
 export default function Profil({session}: {session: any}) {
   const [selectedComponent, setSelectedComponent] = useState('articles');
   const [articles, setArticles] = useState<IArticleData[]>([]);
@@ -54,8 +54,11 @@ export default function Profil({session}: {session: any}) {
         </View>
       </View>
       <View style={styles.ContainerBottom}>
-        <Text style={styles.Name}>{userInfos.full_name}</Text>
-        <Text style={styles.Name}>{userInfos.city_name}</Text>
+        <Text style={styles.full_name}>{userInfos.username}</Text>
+        <Text style={styles.Localisation}>
+          <Icon name="location" size={14} color="#696969" />
+          <Text style={styles.city_name}>{userInfos.city_name}</Text>
+        </Text>
         <SwitchSelector
           initial={0}
           onPress={(value: any) => setSelectedComponent(value)}
@@ -64,6 +67,7 @@ export default function Profil({session}: {session: any}) {
           buttonColor={'#FFF'}
           backgroundColor={'#9E9E9E'}
           borderColor={'#9E9E9E'}
+          borderRadius={4}
           style={styles.SwitchContainer}
           height={46}
           hasPadding
@@ -73,26 +77,33 @@ export default function Profil({session}: {session: any}) {
           ]}
           accessibilityLabel="gender-switch-selector"
         />
-        {selectedComponent === 'articles' &&
-          articles.map(article => (
-            <React.Fragment key={article.id}>
-              <SingleArticleCard
-                navigation={navigation}
-                article={article}
-                modeAffichage={'mode2'}
-                session={session}
-              />
-            </React.Fragment>
-          ))}
-        {selectedComponent === 'propositions' && (
-          <RecapProposition session={session} navigation={navigation} />
-        )}
+        <View style={styles.InfosContainer}>
+          {selectedComponent === 'articles' &&
+            articles.map(article => (
+              <React.Fragment key={article.id}>
+                <SingleArticleCard
+                  navigation={navigation}
+                  article={article}
+                  modeAffichage={'mode2'}
+                  session={session}
+                />
+              </React.Fragment>
+            ))}
+          {selectedComponent === 'propositions' && (
+            <RecapProposition session={session} navigation={navigation} />
+          )}
+        </View>
       </View>
     </ScrollView>
   );
 }
 const styles = StyleSheet.create({
-  Container: {},
+  Localisation: {
+    color: '#696969',
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   ContainerTop: {
     backgroundColor: '#000',
     height: 200,
@@ -132,10 +143,18 @@ const styles = StyleSheet.create({
     height: 140,
     borderRadius: 100,
   },
-  Name: {
+  full_name: {
     color: '#000',
     fontFamily: 'Roboto',
     fontSize: 28,
+    textAlign: 'center',
+    marginBottom: 8,
+    fontWeight: 'bold',
+  },
+  city_name: {
+    color: '#000',
+    fontFamily: 'Roboto',
+    fontSize: 14,
     textAlign: 'center',
   },
   SwitchContainer: {
@@ -145,5 +164,8 @@ const styles = StyleSheet.create({
   SwitchTextContainer: {
     paddingTop: 10,
     paddingBottom: 10,
-  }
+  },
+  InfosContainer: {
+    marginBottom: 32,
+  },
 });
