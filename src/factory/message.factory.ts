@@ -9,7 +9,6 @@ const messageFactory = {
           _id: message.id,
           text: message.message,
           isSender,
-          sent: true,
           user: {
             _id: message.id_first_profile.id,
             name: message.id_first_profile.username,
@@ -18,12 +17,15 @@ const messageFactory = {
             ),
           },
           createdAt: message.created_at,
+          unique_id: message.unique_id,
           otherId: isSender
             ? message.id_second_profile
             : message.id_first_profile,
         };
       })
-      .reverse();
+      .sort((a: any, b: any) => {
+        return b._id - a._id;
+      });
   },
   formatNewMessageReceived(message: any, userId: string, userToAdd: any) {
     const isSender = message.id_first_profile === userId;
@@ -31,7 +33,6 @@ const messageFactory = {
       _id: message.id,
       text: message.message,
       isSender,
-      sent: true,
       user: {
         _id: userToAdd.id,
         name: userToAdd.name,

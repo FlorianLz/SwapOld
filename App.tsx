@@ -98,7 +98,7 @@ const App = () => {
           name="MessagesScreen"
           initialParams={{session: session}}
           component={MessagesScreen}
-          options={{headerShown: true, headerTitle: 'Messages'}}
+          options={{headerShown: false, headerTitle: 'Messages'}}
         />
         <Stack.Screen
           name="UpdateProfil"

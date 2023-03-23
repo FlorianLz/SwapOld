@@ -14,12 +14,14 @@ const messageService = {
     otherId: string,
     msgInput: string,
     idArticle: number,
+    uniqueId: string,
   ) => {
     return await messageRepository.sendMessage(
       myId,
       otherId,
       msgInput,
       idArticle,
+      uniqueId,
     );
   },
 };

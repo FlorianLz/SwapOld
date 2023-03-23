@@ -16,12 +16,14 @@ const messageRepository = {
     otherId: string,
     msgInput: string,
     idArticle: number,
+    uniqueId: string,
   ) => {
     const {data, error} = await supabase.from('articles_chat_profiles').insert({
       id_article: idArticle,
       id_first_profile: myId,
       id_second_profile: otherId,
       message: msgInput,
+      unique_id: uniqueId,
     });
     if (error) {
       return {error: true, message: error.message};

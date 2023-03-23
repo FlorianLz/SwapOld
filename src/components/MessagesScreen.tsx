@@ -3,8 +3,9 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {supabase} from '../lib/initSupabase';
 import messageService from '../services/message.service';
 import messageFactory from '../factory/message.factory';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {GiftedChat, IMessage, Send} from 'react-native-gifted-chat';
 import 'dayjs/locale/fr';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function MessagesScreen({
   route,
@@ -65,21 +66,28 @@ export default function MessagesScreen({
             session.user.id,
             userToAdd,
           );
-          setMessages((previousMessages: never[] | undefined) =>
-            GiftedChat.append(previousMessages, msg),
-          );
+          //add message only if it's not the current user
+          if (msg?.user?._id !== session.user.id) {
+            setMessages((previousMessages: IMessage[] | undefined) =>
+              GiftedChat.append(previousMessages, msg),
+            );
+          }
         },
       )
       .subscribe();
   }, []);
 
   const onSend = useCallback(async (message: any = []) => {
-    console.log('messages', message);
+    console.log('message cree', message);
+    setMessages((previousMessages: IMessage[] | undefined) =>
+      GiftedChat.append(previousMessages, message),
+    );
     await messageService.sendMessage(
       session.user.id,
       otherId,
       message[0].text,
       article.id,
+      message[0]._id,
     );
   }, []);
 
@@ -106,6 +114,13 @@ export default function MessagesScreen({
             ? article.ownerInfos.avatar_url
             : article.receiverInfos.avatar_url,
         }}
+        renderSend={props => {
+          return (
+            <Send {...props} containerStyle={styles.sendContainer}>
+              <Icon style={styles.icon} name="send" size={20} color="#000" />
+            </Send>
+          );
+        }}
       />
     </View>
   );
@@ -115,11 +130,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     position: 'relative',
-    height: '90%',
-  },
-  messagesContainer: {
-    maxHeight: '60%',
-    marginBottom: 20,
+    height: '100%',
   },
   title: {
     textAlign: 'center',
@@ -145,12 +156,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   iconContainer: {
-    width: '15%',
+    width: 30,
   },
   icon: {
     textAlign: 'center',
   },
   hideScroll: {
     maxHeight: '100%',
+  },
+  sendContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
   },
 });
