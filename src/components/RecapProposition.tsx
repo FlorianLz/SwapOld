@@ -6,12 +6,15 @@ import {
   ScrollView,
   Button,
   Pressable,
-  Animated,
+  Image,
 } from 'react-native';
 import articleRepository from '../repository/article.repository';
 import {supabase} from '../lib/initSupabase';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import IconIco from 'react-native-vector-icons/Ionicons';
+import locationHelper from '../helpers/location.helper';
+import {useIsFocused} from '@react-navigation/native';
+import imagesHelper from '../helpers/images.helper';
 
 export default function RecapProposition({session, navigation}: any) {
   async function updateSwapsState() {
@@ -31,14 +34,19 @@ export default function RecapProposition({session, navigation}: any) {
 
   const [swaps, setSwaps] = React.useState<any[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [location, setLocation] = useState({});
+  const isFocused = useIsFocused();
 
   useEffect(() => {
+    locationHelper.getUserLocation().then(location => {
+      setLocation(location);
+    });
     articleRepository
       .getSwapsByStateAndProfile(session.user.id, 0)
       .then(res => {
         setSwaps(res.data);
       });
-  }, []);
+  }, [isFocused]);
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'column'}}>
@@ -63,11 +71,33 @@ export default function RecapProposition({session, navigation}: any) {
                   {swap.id_profile_receiver === session.user.id ? (
                     <View>
                       <View style={styles.swapContainer}>
-                        <Text style={styles.swapLeft}>
-                          <Text style={styles.swap_title}>
-                            {swap.id_article_receiver.title}
-                          </Text>
-                        </Text>
+                        <View style={styles.swapLeft}>
+                          <Image
+                            style={styles.image}
+                            source={{
+                              uri: imagesHelper.getPublicUrlByImageName(
+                                swap.id_article_receiver.articles_images[0]
+                                  .image_name,
+                              ),
+                            }}
+                          />
+                          <View>
+                            <Text style={[styles.swap_title, styles.TextRight]}>
+                              {swap.id_article_receiver.title}
+                            </Text>
+                            <Text
+                              style={[styles.Localisation, styles.TextRight]}>
+                              {swap.id_article_receiver.location.cityName},{' '}
+                              {locationHelper.getDistanceFromLatLonInKm(
+                                swap.id_article_receiver.location.latitude,
+                                swap.id_article_receiver.location.longitude,
+                                location.coords.latitude,
+                                location.coords.longitude,
+                              )}
+                              km
+                            </Text>
+                          </View>
+                        </View>
                         <IconIco
                           name="swap-horizontal"
                           size={30}
@@ -75,9 +105,30 @@ export default function RecapProposition({session, navigation}: any) {
                           style={styles.iconSwap}
                         />
                         <View style={styles.swapRight}>
-                          <Text style={styles.swap_title}>
-                            {swap.id_article_sender.title}
-                          </Text>
+                          <View>
+                            <Text style={styles.swap_title}>
+                              {swap.id_article_sender.title}
+                            </Text>
+                            <Text style={styles.Localisation}>
+                              {swap.id_article_sender.location.cityName},{' '}
+                              {locationHelper.getDistanceFromLatLonInKm(
+                                swap.id_article_sender.location.latitude,
+                                swap.id_article_sender.location.longitude,
+                                location.coords.latitude,
+                                location.coords.longitude,
+                              )}
+                              km
+                            </Text>
+                          </View>
+                          <Image
+                            style={styles.image}
+                            source={{
+                              uri: imagesHelper.getPublicUrlByImageName(
+                                swap.id_article_sender.articles_images[0]
+                                  .image_name,
+                              ),
+                            }}
+                          />
                         </View>
                       </View>
                       <View style={styles.buttonContainer}>
@@ -154,9 +205,30 @@ export default function RecapProposition({session, navigation}: any) {
                   {swap.id_profile_receiver !== session.user.id ? (
                     <View style={styles.swapContainer}>
                       <View style={styles.swapLeft}>
-                        <Text style={styles.swap_title}>
-                          {swap.id_article_sender.title}
-                        </Text>
+                        <Image
+                          style={styles.image}
+                          source={{
+                            uri: imagesHelper.getPublicUrlByImageName(
+                              swap.id_article_sender.articles_images[0]
+                                .image_name,
+                            ),
+                          }}
+                        />
+                        <View>
+                          <Text style={styles.swap_title}>
+                            {swap.id_article_sender.title}
+                          </Text>
+                          <Text style={styles.Localisation}>
+                            {swap.id_article_sender.location.cityName},{' '}
+                            {locationHelper.getDistanceFromLatLonInKm(
+                              swap.id_article_sender.location.latitude,
+                              swap.id_article_sender.location.longitude,
+                              location.coords.latitude,
+                              location.coords.longitude,
+                            )}
+                            km
+                          </Text>
+                        </View>
                       </View>
                       <IconIco
                         name="swap-horizontal"
@@ -164,11 +236,32 @@ export default function RecapProposition({session, navigation}: any) {
                         color="#000"
                         style={styles.iconSwap}
                       />
-                      <Text style={styles.swapRight}>
-                        <Text style={styles.swap_title}>
-                          {swap.id_article_receiver.title}
-                        </Text>
-                      </Text>
+                      <View style={styles.swapRight}>
+                        <View>
+                          <Text style={[styles.swap_title, styles.TextRight]}>
+                            {swap.id_article_receiver.title}
+                          </Text>
+                          <Text style={[styles.Localisation, styles.TextRight]}>
+                            {swap.id_article_receiver.location.cityName},{' '}
+                            {locationHelper.getDistanceFromLatLonInKm(
+                              swap.id_article_receiver.location.latitude,
+                              swap.id_article_receiver.location.longitude,
+                              location.coords.latitude,
+                              location.coords.longitude,
+                            )}
+                            km
+                          </Text>
+                        </View>
+                        <Image
+                          style={styles.image}
+                          source={{
+                            uri: imagesHelper.getPublicUrlByImageName(
+                              swap.id_article_receiver.articles_images[0]
+                                .image_name,
+                            ),
+                          }}
+                        />
+                      </View>
                     </View>
                   ) : (
                     <Text>Vous n'avez pas envoyée de demande</Text>
@@ -217,24 +310,42 @@ export default function RecapProposition({session, navigation}: any) {
 }
 
 const styles = StyleSheet.create({
+  image: {
+    width: 50,
+    height: 50,
+  },
+  Localisation: {
+    color: '#696969',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
   swapContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 10,
     borderRadius: 4,
     borderBottomWidth: 2,
   },
   swapLeft: {
-    width: '30%',
+    width: '45%',
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
   },
   iconSwap: {
-    width: '30%',
+    width: '10%',
     textAlign: 'center',
   },
   swapRight: {
-    width: '30%',
+    width: '45%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+    alignItems: 'center',
+  },
+  TextRight: {
     textAlign: 'right',
   },
   swap_title: {
