@@ -10,7 +10,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
 import ListMessagerie from './ListMessagerie';
-import articleRepository from "../repository/article.repository";
+import articleRepository from '../repository/article.repository';
 
 export default function Messagerie({session}: {session: any}) {
   const isFocused = useIsFocused();

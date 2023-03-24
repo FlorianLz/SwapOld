@@ -13,7 +13,7 @@ import {Text} from 'react-native-elements';
 import locationService from '../../services/location.service';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
-import { useNavigation } from "@react-navigation/native";
+import {useNavigation} from '@react-navigation/native';
 export default function CompleteProfile() {
   const [userName, setUserName] = React.useState('');
   const [location, setLocation] = React.useState({});
@@ -40,8 +40,12 @@ export default function CompleteProfile() {
       return;
     }
 
-    if(!selectedItem.cityName || !selectedItem.latitude || !selectedItem.longitude){
-      setError("Merci de sélectionner une ville dans la liste");
+    if (
+      !selectedItem.cityName ||
+      !selectedItem.latitude ||
+      !selectedItem.longitude
+    ) {
+      setError('Merci de sélectionner une ville dans la liste');
       return;
     }
 
@@ -68,7 +72,7 @@ export default function CompleteProfile() {
       }
     } else {
       setError('');
-      console.log('update ok')
+      console.log('update ok');
       navigation.navigate('Profil', {screen: 'Profil'});
     }
     console.log(data, error);
