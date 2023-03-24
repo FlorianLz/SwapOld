@@ -32,8 +32,8 @@ const locationHelper = {
         Status: true,
         Data,
         coords: {
-          latitude: Data.coords.latitude,
-          longitude: Data.coords.longitude,
+          latitude: Data.coords?.latitude,
+          longitude: Data.coords?.longitude,
         },
       };
     } catch (error) {
@@ -66,8 +66,8 @@ const locationHelper = {
       await AsyncStorage.setItem(
         'UserDefaultLocation',
         JSON.stringify({
-          latitude: coord.data[0].location.latitude,
-          longitude: coord.data[0].location.longitude,
+          latitude: coord.data[0]?.location?.latitude,
+          longitude: coord.data[0]?.location?.longitude,
         }),
       );
     }

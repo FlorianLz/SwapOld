@@ -30,20 +30,59 @@ import SwapProposition from './src/components/SwapProposition';
 import RecapProposition from './src/components/RecapProposition';
 import MessagesScreen from './src/components/MessagesScreen';
 import Account from './src/components/Account';
-import { platform } from "os";
-import { Platform } from "react-native";
+import {Platform} from 'react-native';
+import profileRepository from './src/repository/profile.repository';
+import CompleteProfile from './src/components/auth/CompleteProfile';
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [profileComplete, setProfileComplete] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isLaunchingApp, setIsLaunchingApp] = useState(false);
 
   useEffect(() => {
     console.log('Hello from App.tsx useEffect');
+    setLoading(true);
     supabase.auth.getSession().then(({data: {session}}) => {
       setSession(session);
+      profileRepository.getProfile(session?.user.id as string).then(data => {
+        console.log('dataUse', data);
+        if (data?.location?.latitude === 0 && data?.location?.longitude === 0) {
+          console.log('profile not complete useEffect1');
+          setProfileComplete(false);
+          setLoading(false);
+        } else {
+          console.log('profile complete useEffect 1');
+          setProfileComplete(true);
+          setLoading(false);
+        }
+      });
     });
 
     supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Hello from App.tsx onAuthStateChange');
       setSession(session);
+      if (loading) {
+        supabase.auth.getSession().then(({data: {session}}) => {
+          setSession(session);
+          profileRepository
+            .getProfile(session?.user.id as string)
+            .then(data => {
+              console.log('dataUse', data);
+              if (
+                data?.location?.latitude === 0 &&
+                data?.location?.longitude === 0
+              ) {
+                console.log('profile not complete useEffect');
+                setProfileComplete(false);
+                setLoading(false);
+              } else {
+                console.log('profile complete useEffect');
+                setProfileComplete(true);
+                setLoading(false);
+              }
+            });
+        });
+      }
     });
     if (Platform.OS === 'android') {
       RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
@@ -56,7 +95,6 @@ const App = () => {
         .catch(err => {
           console.log(err);
         });
-
     }
   }, []);
 
@@ -76,7 +114,9 @@ const App = () => {
         <Stack.Screen
           name="Home"
           options={{headerShown: false}}
-          component={HomeTabs}
+          component={
+            profileComplete ? HomeTabs : loading ? HomeTabs : CompleteProfile
+          }
         />
         <Stack.Screen
           name="SingleArticle"
@@ -85,9 +125,15 @@ const App = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen
+          name="CompleteProfile"
+          initialParams={{session: session}}
+          component={CompleteProfile}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
           name="AddArticle"
           initialParams={{session: session}}
-          component={AddArticle}
+          component={profileComplete ? AddArticle : CompleteProfile}
           options={{headerShown: false}}
         />
         <Stack.Screen
@@ -105,7 +151,13 @@ const App = () => {
         <Stack.Screen
           name="MessagesScreen"
           initialParams={{session: session}}
-          component={MessagesScreen}
+          component={
+            profileComplete
+              ? MessagesScreen
+              : !loading
+              ? MessagesScreen
+              : CompleteProfile
+          }
           options={{headerShown: false, headerTitle: 'Messages'}}
         />
         <Stack.Screen

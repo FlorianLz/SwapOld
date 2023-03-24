@@ -1,4 +1,4 @@
-import {Text, View, Pressable, ScrollView, StyleSheet} from 'react-native';
+import { Text, View, Pressable, ScrollView, StyleSheet, Image } from "react-native";
 import React, {useEffect, useState} from 'react';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -27,27 +27,29 @@ export default function ListArticles({
   }, [articles]);
 
   return (
-    <View>
-      <View style={styles.ModeAffichage}>
-        <Text style={styles.Title}>Les derniers ajouts</Text>
-        <View style={styles.ModeAffichageContainer}>
-          <Pressable onPress={() => setModeAffichage('mode1')}>
-            <IconIon
-              name="ios-grid"
-              size={20}
-              color={modeAffichage === 'mode1' ? '#000' : '#D4D4D4'}
-            />
-          </Pressable>
-          <Pressable onPress={() => setModeAffichage('mode2')}>
-            <Icon
-              name="list-ul"
-              size={20}
-              color={modeAffichage === 'mode2' ? '#000' : '#D4D4D4'}
-            />
-          </Pressable>
+    <View style={styles.fullContainer}>
+      {articlesTab.length > 0 ? (
+        <View style={styles.ModeAffichage}>
+          <Text style={styles.Title}>Les derniers ajouts</Text>
+          <View style={styles.ModeAffichageContainer}>
+            <Pressable onPress={() => setModeAffichage('mode1')}>
+              <IconIon
+                name="ios-grid"
+                size={20}
+                color={modeAffichage === 'mode1' ? '#000' : '#D4D4D4'}
+              />
+            </Pressable>
+            <Pressable onPress={() => setModeAffichage('mode2')}>
+              <Icon
+                name="list-ul"
+                size={20}
+                color={modeAffichage === 'mode2' ? '#000' : '#D4D4D4'}
+              />
+            </Pressable>
+          </View>
         </View>
-      </View>
-      <ScrollView>
+      ) : null}
+      <ScrollView contentContainerStyle={{flex:1}}>
         <View style={styles.ListArticle}>
           {articlesTab.length > 0 ? (
             articlesTab.map(article => (
@@ -60,10 +62,22 @@ export default function ListArticles({
               />
             ))
           ) : searchTermText !== '' ? (
-            <Text>
-              Aucun article trouvé pour votre recherche {searchTermText}
-            </Text>
-          ) : null}
+            <View style={styles.notFound}>
+              <Image
+                source={require('../../assets/img/voidSearch.png')}
+                style={styles.notFoundImage}
+              />
+              <Text style={styles.notFoundTitle}>Aucun article trouvé pour votre recherche : {searchTermText}</Text>
+            </View>
+          ) : (
+            <View style={styles.notFound}>
+              <Image
+                source={require('../../assets/img/voidArticles.png')}
+                style={styles.notFoundImage}
+              />
+              <Text style={styles.notFoundTitle}>Aucun article n'est disponible</Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -98,6 +112,27 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     paddingRight: 20,
     paddingLeft: 20,
-    paddingBottom: 240,
+    paddingBottom: 230,
+    height: '100%',
+  },
+  notFound: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  notFoundImage: {
+    width: 200,
+    height: 200,
+  },
+  notFoundTitle: {
+    fontSize: 16,
+    paddingTop: 20,
+    color: '#000',
+  },
+  fullContainer: {
+    height: '100%',
+    width: '100%',
+    position: 'relative',
   },
 });

@@ -57,7 +57,7 @@ export default function Profil({session}: {session: any}) {
         <Text style={styles.full_name}>{userInfos.username}</Text>
         <Text style={styles.Localisation}>
           <Icon name="location" size={14} color="#696969" />
-          <Text style={styles.city_name}>{userInfos.city_name}</Text>
+          <Text style={styles.city_name}>{userInfos?.city_name}</Text>
         </Text>
         <SwitchSelector
           initial={0}

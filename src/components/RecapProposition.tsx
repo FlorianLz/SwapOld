@@ -91,8 +91,8 @@ export default function RecapProposition({session, navigation}: any) {
                               {locationHelper.getDistanceFromLatLonInKm(
                                 swap.id_article_receiver.location.latitude,
                                 swap.id_article_receiver.location.longitude,
-                                location.coords.latitude,
-                                location.coords.longitude,
+                                location.coords?.latitude,
+                                location.coords?.longitude,
                               )}
                               km
                             </Text>

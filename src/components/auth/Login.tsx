@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     borderWidth: 1,
     minHeight: 50,
-    borderRadius: 8,
+    borderRadius: 4,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

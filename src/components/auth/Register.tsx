@@ -8,7 +8,6 @@ import {
   View,
 } from 'react-native';
 import {supabase} from '../../lib/initSupabase';
-import {Button, Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import authHelper from '../../helpers/auth.helper';
 
@@ -35,7 +34,7 @@ export default function Register() {
         if (!authHelper.checkPasswordIsValid(password)) {
           errorInputs = true;
           setError(
-            'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.',
+            'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un caractère spécial et un chiffre.',
           );
         } else {
           if (password !== confirmPassword) {
@@ -60,8 +59,21 @@ export default function Register() {
               'Une erreur est survenue lors de la création du compte. Merci de réessayer.',
             );
           }
+        } else {
+          //add avatar, location and username to profile table
+          let {data, error: err} = await supabase.from('profiles').insert([
+            {
+              avatar_url: 'default/avatar.png',
+              location: '{cityName:Lille,latitude:0,longitude:0}',
+              username: 'Flo',
+              full_name: 'Flo',
+            },
+          ]);
+          if (!err) {
+            console.log('Profile created', data);
+            setLoading(false);
+          }
         }
-        setLoading(false);
       }
     }
   }
