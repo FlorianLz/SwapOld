@@ -33,7 +33,9 @@ export default function ListArticles({
   useEffect(() => {
     setArticlesTab(articles as IArticleData[]);
     locationHelper.setUserDefaultLocation().then(() => {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     });
   }, [articles]);
 
