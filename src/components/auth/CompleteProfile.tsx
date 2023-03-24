@@ -13,12 +13,12 @@ import {Text} from 'react-native-elements';
 import locationService from '../../services/location.service';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
-import { useNavigation } from "@react-navigation/native";
+import {useNavigation} from '@react-navigation/native';
 export default function CompleteProfile() {
   const [userName, setUserName] = React.useState('');
-  const [location, setLocation] = React.useState({});
   const [session, setSession] = React.useState({});
   const [error, setError] = useState('');
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const navigation = useNavigation();
 
   React.useEffect(() => {
@@ -29,6 +29,7 @@ export default function CompleteProfile() {
   }, []);
 
   const handleCompleteProfile = async () => {
+    setLoadingUpdate(true);
     if (!/^[a-zA-Z0-9]+$/.test(userName)) {
       if (userName.length < 3 || userName.length > 10) {
         setError("Le nom d'utilisateur doit faire entre 3 et 10 caractères");
@@ -37,11 +38,17 @@ export default function CompleteProfile() {
           "Le nom d'utilisateur ne doit contenir que des lettres et des chiffres",
         );
       }
+      setLoadingUpdate(false);
       return;
     }
 
-    if(!selectedItem.cityName || !selectedItem.latitude || !selectedItem.longitude){
-      setError("Merci de sélectionner une ville dans la liste");
+    if (
+      !selectedItem.cityName ||
+      !selectedItem.latitude ||
+      !selectedItem.longitude
+    ) {
+      setError('Merci de sélectionner une ville dans la liste');
+      setLoadingUpdate(false);
       return;
     }
 
@@ -66,10 +73,10 @@ export default function CompleteProfile() {
       if (error.code === '23514') {
         setError("Le nom d'utilisateur doit faire entre 3 et 10 caractères");
       }
+      setLoadingUpdate(false);
     } else {
       setError('');
-      console.log('update ok')
-      navigation.navigate('Profil', {screen: 'Profil'});
+      navigation.navigate('HomePageScreen', {screen: 'HomePage'});
     }
     console.log(data, error);
   };
@@ -218,7 +225,7 @@ export default function CompleteProfile() {
           </View>
         </>
       )}
-      <TouchableOpacity style={styles.button} onPress={handleCompleteProfile}>
+      <TouchableOpacity style={styles.button} onPress={handleCompleteProfile} disabled={loadingUpdate}>
         <Text style={styles.buttonText}>Valider</Text>
       </TouchableOpacity>
 

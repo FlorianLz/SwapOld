@@ -7,7 +7,7 @@ import Login from './auth/Login';
 
 export default function Auth({route}: {params: {step: string}} | any) {
   const isFocused = useIsFocused();
-  const [step, setStep] = useState(route.params?.step);
+  const [step, setStep] = useState(route.params?.step || 'Connexion');
 
   useEffect(() => {}, [isFocused]);
 

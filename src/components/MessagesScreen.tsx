@@ -97,7 +97,6 @@ export default function MessagesScreen({
       otherId,
       message[0].text,
       article.id,
-      message[0]._id,
     );
   }, []);
 

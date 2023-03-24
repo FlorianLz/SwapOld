@@ -39,7 +39,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
   function handleDelete() {
     articleService.deleteArticle(article.id, session.user.id).then(result => {
       if (!result.error) {
-        navigation.navigate('HubPublication');
+        navigation.navigate('HomePageScreen', {screen: 'Profil'});
       } else {
         //console.log(result);
       }
@@ -56,7 +56,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
               style={styles.Icon}
               name="arrowleft"
               size={24}
-              color="#000"
+              color="#fff"
             />
             <Text style={styles.Title}>{article.title}</Text>
           </Pressable>
@@ -85,14 +85,14 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
                         style={styles.Icon}
                         name="ios-bookmark"
                         size={24}
-                        color="#000"
+                        color="#fff"
                       />
                     ) : (
                       <IconIon
                         style={styles.Icon}
                         name="ios-bookmark-outline"
                         size={24}
-                        color="#000"
+                        color="#fff"
                       />
                     )}
                   </Pressable>
@@ -106,7 +106,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
                       style={[styles.Icon]}
                       name="delete"
                       size={20}
-                      color="#000"
+                      color="#fff"
                     />
                   </Pressable>
                 ) : (
@@ -114,14 +114,14 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
                     style={[styles.Icon, styles.Hide]}
                     name="ios-bookmark"
                     size={24}
-                    color="#000"
+                    color="#fff"
                   />
                 )}
                 <IconAnt
                   style={styles.Icon}
                   name="sharealt"
                   size={24}
-                  color="#000"
+                  color="#fff"
                 />
               </View>
               <View>
@@ -142,7 +142,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
             </View>
           </View>
           <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
@@ -154,14 +154,14 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
                   Voulez-vous vraiment supprimer cet article ?
                 </Text>
                 <Pressable
-                  style={[styles.button, styles.buttonClose]}
+                  style={[styles.button]}
                   onPress={() => handleDelete()}>
                   <Text style={styles.textStyle}>Confirmer</Text>
                 </Pressable>
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
                   onPress={() => setModalVisible(!modalVisible)}>
-                  <Text style={styles.textStyle}>Annuler</Text>
+                  <Text style={[styles.textStyle, styles.TextClose]}>Annuler</Text>
                 </Pressable>
               </View>
             </View>
@@ -197,7 +197,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
             </Pressable>
           )}
           <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={modalChoiceVisible}
             onRequestClose={() => {
@@ -259,8 +259,8 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     height: 210,
-    backgroundColor: '#CCCCCC',
-    borderBottomRightRadius: 30,
+    backgroundColor: '#5DB075',
+    borderBottomRightRadius: 4,
   },
 
   Header: {
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   Title: {
-    color: '#000',
+    color: '#fff',
     fontFamily: 'Roboto',
     fontSize: 28,
   },
@@ -293,8 +293,8 @@ const styles = StyleSheet.create({
     width: '80%',
     minHeight: 430,
     resizeMode: 'cover',
-    borderBottomRightRadius: 20,
-    borderTopRightRadius: 20,
+    borderBottomRightRadius: 4,
+    borderTopRightRadius: 4,
   },
   RightImage: {
     width: '20%',
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 4,
     height: 40,
-    backgroundColor: '#000',
+    backgroundColor: '#5DB075',
     marginBottom: 12,
     alignItems: 'center',
     justifyContent: 'center',

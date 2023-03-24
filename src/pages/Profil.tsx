@@ -24,6 +24,7 @@ export default function Profil({session}: {session: any}) {
       setArticles(result);
     });
     profileService.getProfile(session.user.id).then(result => {
+      console.log(result);
       setUserInfos(result);
     });
   }, [isFocused]);
@@ -49,7 +50,12 @@ export default function Profil({session}: {session: any}) {
         </View>
         <View style={styles.ContainerImage}>
           <View style={styles.ImageBackground}>
-            <Image style={styles.Image} source={{uri: userInfos.avatar_url}} />
+            {userInfos.avatar_url != null && (
+              <Image
+                style={styles.Image}
+                source={{uri: userInfos?.avatar_url}}
+              />
+            )}
           </View>
         </View>
       </View>
@@ -62,15 +68,17 @@ export default function Profil({session}: {session: any}) {
         <SwitchSelector
           initial={0}
           onPress={(value: any) => setSelectedComponent(value)}
-          textColor={'#F6F6F6'}
-          selectedColor={'#000'}
-          buttonColor={'#FFF'}
-          backgroundColor={'#9E9E9E'}
-          borderColor={'#9E9E9E'}
+          textColor={'#000'}
+          selectedColor={'#fff'}
+          buttonColor={'#5DB075'}
+          backgroundColor={'#fff'}
+          borderColor={'#5DB075'}
           borderRadius={4}
+          touchableProps={{activeOpacity: 1}}
+          borderWidth={1}
           style={styles.SwitchContainer}
           height={46}
-          hasPadding
+          hasPadding={true}
           options={[
             {label: 'Articles publiés', value: 'articles'},
             {label: 'Propositions', value: 'propositions'},
@@ -105,7 +113,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   ContainerTop: {
-    backgroundColor: '#000',
+    backgroundColor: '#5DB075',
     height: 200,
     paddingLeft: 20,
     paddingRight: 20,
@@ -160,6 +168,7 @@ const styles = StyleSheet.create({
   SwitchContainer: {
     marginTop: 20,
     marginBottom: 20,
+    elevation: 1,
   },
   SwitchTextContainer: {
     paddingTop: 10,

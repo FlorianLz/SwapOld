@@ -37,11 +37,11 @@ const App = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [profileComplete, setProfileComplete] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isLaunchingApp, setIsLaunchingApp] = useState(false);
 
   useEffect(() => {
     console.log('Hello from App.tsx useEffect');
     setLoading(true);
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     supabase.auth.getSession().then(({data: {session}}) => {
       setSession(session);
       profileRepository.getProfile(session?.user.id as string).then(data => {
@@ -58,10 +58,12 @@ const App = () => {
       });
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     supabase.auth.onAuthStateChange((_event, session) => {
       console.log('Hello from App.tsx onAuthStateChange');
       setSession(session);
       if (loading) {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         supabase.auth.getSession().then(({data: {session}}) => {
           setSession(session);
           profileRepository
@@ -117,6 +119,11 @@ const App = () => {
           component={
             profileComplete ? HomeTabs : loading ? HomeTabs : CompleteProfile
           }
+        />
+        <Stack.Screen
+          name="HomePageScreen"
+          options={{headerShown: false}}
+          component={HomeTabs}
         />
         <Stack.Screen
           name="SingleArticle"
@@ -181,21 +188,21 @@ const App = () => {
               HomePage: (
                 <IconOti
                   name={'home'}
-                  color={focused.focused ? '#000' : '#ccc'}
+                  color={focused.focused ? '#5DB075' : '#ccc'}
                   size={24}
                 />
               ),
               Messagerie: (
                 <IconMat
                   name={'message-processing-outline'}
-                  color={focused.focused ? '#000' : '#ccc'}
+                  color={focused.focused ? '#5DB075' : '#ccc'}
                   size={24}
                 />
               ),
               HubPublication: (
                 <IconFont
                   name={'arrow-swap'}
-                  color={focused.focused ? '#000' : '#ccc'}
+                  color={focused.focused ? '#5DB075' : '#ccc'}
                   size={24}
                   style={{transform: [{rotateY: '180deg'}]}}
                 />
@@ -203,14 +210,14 @@ const App = () => {
               Favoris: (
                 <IconFea
                   name={'bookmark'}
-                  color={focused.focused ? '#000' : '#ccc'}
+                  color={focused.focused ? '#5DB075' : '#ccc'}
                   size={24}
                 />
               ),
               Profil: (
                 <IconFea
                   name={'user'}
-                  color={focused.focused ? '#000' : '#ccc'}
+                  color={focused.focused ? '#5DB075' : '#ccc'}
                   size={24}
                 />
               ),
@@ -229,7 +236,7 @@ const App = () => {
             <Tab.Screen
               name="Messagerie"
               children={() => <Messagerie session={session} />}
-              options={{tabBarBadge: 3, headerShown: false}}
+              options={{headerShown: false}}
             />
             <Tab.Screen
               name="HubPublication"

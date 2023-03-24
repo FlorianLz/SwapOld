@@ -1,18 +1,17 @@
-import React, {useCallback} from 'react';
+import React, { useCallback, useEffect } from "react";
 import {
   Dimensions,
   Image,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
+import {Text} from 'react-native-elements';
 import {useState} from 'react';
 import articleRepository from '../../repository/article.repository';
-import {ParamListBase, useNavigation} from '@react-navigation/native';
+import { ParamListBase, useIsFocused, useNavigation } from "@react-navigation/native";
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ImagePickerResponse, launchCamera} from 'react-native-image-picker';
 import imageService from '../../services/image.service';
@@ -52,6 +51,18 @@ export default function AddArticle({
   const hideRetour = route.params.hideRetour || false;
   const maxImages = 5;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    setImages([]);
+    setResizedImages([]);
+    setTitle('');
+    setContent('');
+    setSelectedItem(null);
+    setPublished(false);
+    setOnPublication(false);
+    setMsgPublished('');
+    setError('');
+  }, [isFocused]);
 
   const resize = async (newTab: ImagePickerResponse[]) => {
     for (const image of newTab) {
@@ -134,7 +145,7 @@ export default function AddArticle({
                 'Article ajouté avec succès. Vous allez être redirigé vers la liste de vos ajouts dans quelques secondes...',
               );
               setTimeout(() => {
-                navigation.navigate('HubPublication');
+                navigation.navigate('HomePageScreen', {screen: 'Profil'});
               }, 4000);
             } else {
               setPublished(true);
@@ -222,6 +233,9 @@ export default function AddArticle({
 
   return (
     <View style={styles.container}>
+      <Text h4 style={styles.title}>
+        Publier un article
+      </Text>
       {!hideRetour && (
         <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
           <IconAnt
@@ -230,18 +244,20 @@ export default function AddArticle({
             size={16}
             color="#000"
           />
-          <Text style={styles.backTitle}>Ajouter un article</Text>
+          <Text style={styles.backTitle}>Publier un article</Text>
         </Pressable>
       )}
       {hideRetour && <View style={styles.Header}></View>}
       <View style={{position: 'relative', zIndex: 100, minHeight: '80%'}}>
+        <Text style={styles.Title}>Titre de l'article</Text>
         <TextInput
           style={styles.input}
-          placeholder="Titre..."
+          placeholder="Tee shirt blanc..."
           placeholderTextColor="#BDBDBD"
           value={title}
           onChangeText={setTitle}
         />
+        <Text style={styles.Title}>Description de l'article</Text>
         <TextInput
           style={styles.input}
           placeholder="Description..."
@@ -251,7 +267,7 @@ export default function AddArticle({
         />
 
         <Text style={styles.Title}>Localisation</Text>
-        <View style={[Platform.select({ios: {zIndex: 1}})]}>
+        <View style={[Platform.select({ios: {zIndex: 1, backgroundColor: "#fff"}, android:{backgroundColor: "#fff"}})]}>
           <AutocompleteDropdown
             direction={Platform.select({ios: 'down'})}
             dataSet={suggestionsList}
@@ -352,17 +368,19 @@ export default function AddArticle({
             )}
           </View>
         ) : (
-          <Pressable
-            style={styles.Button}
-            onPress={initMediaPicker}
-            disabled={resizedImages.length > 4}>
-            <IconIco
-              style={styles.Icon}
-              name="add-circle-outline"
-              size={45}
-              color="#000"
-            />
-          </Pressable>
+          <View style={{backgroundColor:'white'}}>
+            <Pressable
+              style={styles.Button}
+              onPress={initMediaPicker}
+              disabled={resizedImages.length > 4}>
+              <IconIco
+                style={styles.Icon}
+                name="add-circle-outline"
+                size={45}
+                color="#000"
+              />
+            </Pressable>
+          </View>
         )}
       </View>
       <View style={styles.containerAddArticle}>
@@ -388,8 +406,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    paddingTop: 20,
-    paddingBottom: 20,
   },
   backTitle: {
     color: '#000',
@@ -399,7 +415,6 @@ const styles = StyleSheet.create({
   BackIcon: {
     marginRight: 10,
   },
-
   container: {
     marginLeft: 20,
     marginRight: 20,
@@ -411,13 +426,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: '#E8E8E8',
     height: 40,
-    marginBottom: 16,
+    marginBottom: 8,
     borderWidth: 1,
   },
   Title: {
     fontSize: 12,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   Button: {
     alignItems: 'center',
@@ -443,17 +458,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
+    backgroundColor: 'white',
+    position: 'relative',
+    zIndex: 10,
   },
   ButtonAddArticle: {
-    backgroundColor: '#D9D9D9',
-    borderRadius: 8,
-    height: 60,
-    alignItems: 'center',
+    height: 50,
+    backgroundColor: '#5DB075',
+    display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    marginTop: 20,
+    position: 'relative',
+    zIndex: 0,
   },
   ButtonText: {
-    color: '#000',
+    color: 'white',
+    display: 'flex',
     fontSize: 16,
+    fontWeight: 'bold',
   },
   containerAddArticle: {
     position: 'absolute',
@@ -463,5 +487,12 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     marginBottom: 10,
+  },
+  title: {
+    color: '#000',
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 20,
+    marginBottom: 20,
   },
 });

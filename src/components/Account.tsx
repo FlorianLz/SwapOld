@@ -4,7 +4,7 @@ import {StyleSheet, View, Alert} from 'react-native';
 import {Button, Input} from 'react-native-elements';
 import {Session} from '@supabase/supabase-js';
 
-export default function Account({session}: {session: Session}) {
+export default function Account({session, route}: {session: Session, params: {session: Session}} | any) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import { ActivityIndicator, Image, ScrollView, StyleSheet, View } from "react-native";
 import {
   ParamListBase,
   useIsFocused,
@@ -21,23 +21,10 @@ export default function Favoris({session}: {session: any}) {
       .then((result: IArticleData[]) => {
         setArticles(result as IArticleData[]);
       });
-    /*supabase
-      .channel('value-db-changes-' + session.user.id)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'articles_favorites',
-          filter: 'id_profile=eq.' + session.user.id,
-        },
-        payload => console.log(payload),
-      )
-      .subscribe();*/
   }, [isFocused, session.user.id]);
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Favoris</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.containerScrollView}>
+      <Text h4 style={styles.title}>Favoris</Text>
       <View style={styles.ModeAffichageContainer}>
         <View style={styles.ModeAffichage}>
           {articles.map(article => (
@@ -51,11 +38,25 @@ export default function Favoris({session}: {session: any}) {
           ))}
         </View>
       </View>
+      {articles.length === 0 && (
+        <View style={{alignItems: 'center', flex: 1, justifyContent: 'center'}}>
+          <Image
+            source={require('../assets/img/voidFavorites.png')}
+            style={{width: 200, height: 200}}
+          />
+          <Text style={styles.notFoundTitle}>
+            Aucun favoris pour le moment...
+          </Text>
+        </View>
+      )}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  containerScrollView: {
+    height: '100%',
+  },
   container: {
     marginLeft: 20,
     marginRight: 20,
@@ -78,5 +79,11 @@ const styles = StyleSheet.create({
   ModeAffichageContainer: {
     display: 'flex',
     flexDirection: 'row',
+  },
+  notFoundTitle: {
+    fontSize: 16,
+    paddingTop: 20,
+    color: '#000',
+    textAlign: 'center',
   },
 });

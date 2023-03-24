@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {ScrollView, StyleSheet} from 'react-native';
+import {Image, ScrollView, StyleSheet, View} from 'react-native';
 import {
   ParamListBase,
   useIsFocused,
@@ -10,7 +10,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
 import ListMessagerie from './ListMessagerie';
-import articleRepository from "../repository/article.repository";
+import articleRepository from '../repository/article.repository';
 
 export default function Messagerie({session}: {session: any}) {
   const isFocused = useIsFocused();
@@ -35,25 +35,43 @@ export default function Messagerie({session}: {session: any}) {
       });
   }, [isFocused, session.user.id]);
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Messagerie récents</Text>
-      {swaps &&
-        swaps.map((swap: any) => {
-          return (
-            <Text key={swap.id}>
-              <ListMessagerie
-                navigation={navigation}
-                article={swap}
-                session={session}
-                notRead={notReadArticles.includes(swap.id)}
-              />
+    <>
+      <ScrollView style={styles.container} contentContainerStyle={styles.containerScrollView}>
+        <Text h4 style={styles.title}>
+          Messagerie
+        </Text>
+        {swaps &&
+          swaps.map((swap: any) => {
+            return (
+              <Text key={swap.id}>
+                <ListMessagerie
+                  navigation={navigation}
+                  article={swap}
+                  session={session}
+                  notRead={notReadArticles.includes(swap.id)}
+                />
+              </Text>
+            );
+          })}
+        {swaps.length === 0 && (
+          <View style={{alignItems: 'center', flex: 1, justifyContent: 'center'}}>
+            <Image
+              source={require('../assets/img/voidMessages.png')}
+              style={{width: 200, height: 200}}
+            />
+            <Text style={styles.notFoundTitle}>
+              Aucun message pour le moment...
             </Text>
-          );
-        })}
-    </ScrollView>
+          </View>
+        )}
+      </ScrollView>
+    </>
   );
 }
 const styles = StyleSheet.create({
+  containerScrollView: {
+    height: '100%',
+  },
   container: {
     marginLeft: 20,
     marginRight: 20,
@@ -64,5 +82,11 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginTop: 20,
     marginBottom: 20,
+  },
+  notFoundTitle: {
+    fontSize: 16,
+    paddingTop: 20,
+    color: '#000',
+    textAlign: 'center',
   },
 });

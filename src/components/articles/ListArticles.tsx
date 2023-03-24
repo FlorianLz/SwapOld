@@ -1,4 +1,12 @@
-import { Text, View, Pressable, ScrollView, StyleSheet, Image } from "react-native";
+import {
+  Text,
+  View,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -20,10 +28,13 @@ export default function ListArticles({
   const [articlesTab, setArticlesTab] = useState<IArticleData[] | []>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [modeAffichage, setModeAffichage] = useState<string>('mode1');
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setArticlesTab(articles as IArticleData[]);
-    locationHelper.setUserDefaultLocation();
+    locationHelper.setUserDefaultLocation().then(() => {
+      setLoading(false);
+    });
   }, [articles]);
 
   return (
@@ -49,7 +60,7 @@ export default function ListArticles({
           </View>
         </View>
       ) : null}
-      <ScrollView contentContainerStyle={{flex:1}}>
+      <ScrollView contentContainerStyle={{flex: 1}}>
         <View style={styles.ListArticle}>
           {articlesTab.length > 0 ? (
             articlesTab.map(article => (
@@ -67,15 +78,25 @@ export default function ListArticles({
                 source={require('../../assets/img/voidSearch.png')}
                 style={styles.notFoundImage}
               />
-              <Text style={styles.notFoundTitle}>Aucun article trouvé pour votre recherche : {searchTermText}</Text>
+              <Text style={styles.notFoundTitle}>
+                Aucun article trouvé pour votre recherche : {searchTermText}
+              </Text>
             </View>
           ) : (
             <View style={styles.notFound}>
-              <Image
-                source={require('../../assets/img/voidArticles.png')}
-                style={styles.notFoundImage}
-              />
-              <Text style={styles.notFoundTitle}>Aucun article n'est disponible</Text>
+              {loading ? (
+                <ActivityIndicator size="large" color="#5DB075" />
+              ) : (
+                <>
+                  <Image
+                    source={require('../../assets/img/voidArticles.png')}
+                    style={styles.notFoundImage}
+                  />
+                  <Text style={styles.notFoundTitle}>
+                    Aucun article n'est disponible
+                  </Text>
+                </>
+              )}
             </View>
           )}
         </View>
