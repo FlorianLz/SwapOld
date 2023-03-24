@@ -30,6 +30,8 @@ import SwapProposition from './src/components/SwapProposition';
 import RecapProposition from './src/components/RecapProposition';
 import MessagesScreen from './src/components/MessagesScreen';
 import Account from './src/components/Account';
+import { platform } from "os";
+import { Platform } from "react-native";
 const App = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,13 +45,19 @@ const App = () => {
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
-    RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
-      interval: 10000,
-      fastInterval: 5000,
-    }).then(() => {
-      //Reload the app with the location on
-      setLoading(true);
-    });
+    if (Platform.OS === 'android') {
+      RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
+        interval: 10000,
+        fastInterval: 5000,
+      })
+        .then(data => {
+          console.log(data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+
+    }
   }, []);
 
   const SwapOldTheme = {
