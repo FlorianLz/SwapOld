@@ -144,12 +144,14 @@ export default function CompleteProfile() {
         Votre profil a bien été créé ! {'\n'}Merci de le compléter les
         informations suivantes pour pouvoir utiliser l'application.
       </Text>
+      <Text style={styles.Title}>Nom d'utilisateur</Text>
       <TextInput
         style={styles.input}
         onChangeText={text => setUserName(text)}
         value={userName}
-        placeholder="Username"
+        placeholder="JohnDoe"
         autoCapitalize={'none'}
+        placeholderTextColor={'#BDBDBD'}
       />
       <Text style={styles.Title}>Localisation</Text>
       <View style={[Platform.select({ios: {zIndex: 1}})]}>
@@ -170,20 +172,28 @@ export default function CompleteProfile() {
             autoCorrect: true,
             autoCapitalize: 'none',
             style: {
-              borderRadius: 8,
-              color: '#BDBDBD',
               backgroundColor: '#F6F6F6',
-              height: 40,
+              height: 48,
+              paddingLeft: 20,
+              borderRadius: 4,
+              borderColor: '#E8E8E8',
+              borderWidth: 1,
+              marginBottom: 8,
+              color: '#BDBDBD',
+              fontWeight: 'normal',
+              fontSize: 14,
             },
           }}
           rightButtonsContainerStyle={{
             backgroundColor: '#F6F6F6',
-            height: 40,
+            height: 47,
+            marginTop: 1,
+            marginRight: 1,
           }}
           inputContainerStyle={{
-            borderRadius: 8,
+            borderRadius: 4,
             backgroundColor: '#F6F6F6',
-            height: 40,
+            height: 47,
           }}
           suggestionsListContainerStyle={{
             backgroundColor: 'white',
@@ -194,9 +204,9 @@ export default function CompleteProfile() {
             flexShrink: 1,
             marginBottom: 16,
             borderColor: '#E8E8E8',
-            height: 40,
+            height: 50,
             borderWidth: 1,
-            borderRadius: 8,
+            borderRadius: 4,
           }}
           renderItem={item => <Text style={{padding: 15}}>{item.title}</Text>}
           EmptyResultComponent={
@@ -252,13 +262,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    height: 50,
     backgroundColor: '#F6F6F6',
+    height: 50,
     paddingLeft: 20,
-    width: '100%',
     borderRadius: 4,
     borderColor: '#E8E8E8',
     borderWidth: 1,
+    marginBottom: 8,
+    fontWeight: 'normal',
   },
   button: {
     height: 50,
@@ -302,5 +313,10 @@ const styles = StyleSheet.create({
   errorMessageText: {
     color: 'red',
     textAlign: 'center',
+  },
+  Title: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
 });

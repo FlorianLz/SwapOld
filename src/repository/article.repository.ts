@@ -389,5 +389,16 @@ const articleRepository = {
 
     return {error: false, data};
   },
+  getAllMyPropositionsToSwap: async (idUser: string) => {
+    const {data} = await supabase
+      .from('swap')
+      .select(
+        `
+    *
+  `,
+      )
+      .eq('id_profile_sender', idUser);
+    return data;
+  },
 };
 export default articleRepository;

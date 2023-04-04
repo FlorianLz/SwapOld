@@ -46,10 +46,10 @@ export default function SingleArticleCard({
                   )
                   .then(result => {
                     if (!result.error) {
-                      navigation.navigate('Home');
+                      navigation.navigate('Profil');
                     } else {
                       setError(
-                        'vous avez deja proposé un echange pour cet article',
+                        'Vous avez deja proposé un échange pour cet article',
                       );
                     }
                   })

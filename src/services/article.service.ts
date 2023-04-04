@@ -30,6 +30,28 @@ const articleService = {
     const articles = await articleFactory.getAllArticles(rawArticles, userId);
     return articles.sort((a, b) => b.id - a.id);
   },
+  getAllMyPublishedArticlesNotProposedForSpecificId: async (
+    id_article: number,
+    userId: string,
+  ) => {
+    const rawArticles = await articleRepository.getAllMyPublishedArticles(
+      userId,
+    );
+
+    const rawSwaps =
+      await articleRepository.getAllMyPropositionsToSwap(
+        userId,
+      );
+
+    const articles = await articleFactory.getAllMyPropositionsToSwap(
+      rawArticles,
+      userId,
+      id_article,
+      rawSwaps
+    );
+
+    return articles.sort((a, b) => b.id - a.id);
+  },
   deleteArticle: async (articleId: number, idUser: string) => {
     const deleteImages = await articleRepository.deleteArticle(
       articleId,

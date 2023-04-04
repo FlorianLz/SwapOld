@@ -22,15 +22,26 @@ export default function SwapProposition({
 
   useEffect(() => {
     articleService
-      .getAllMyPublishedArticles(session.user.id)
+      .getAllMyPublishedArticlesNotProposedForSpecificId(
+        article_sender.article.id,
+        session.user.id,
+      )
       .then((result: IArticleData[]) => {
+        console.log('result');
+        console.log(result);
+        if (result?.length === 0 || result === undefined) {
+          navigation.navigate('AddArticle', {
+            privateArticle: true,
+            article_sender: {article_sender},
+          });
+        }
         setArticlesPublished(result as IArticleData[]);
-      });
+    });
   }, [isFocused]);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        Veuillez selectionner un article pour finaliser la proposition
+        Veuillez sélectionner un article pour finaliser la proposition
       </Text>
       <View style={styles.ModeAffichageContainer}>
         <View style={styles.ModeAffichage}>

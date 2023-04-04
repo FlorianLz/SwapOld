@@ -111,5 +111,47 @@ const articleFactory = {
     articles.sort((a, b) => a.distance - b.distance);
     return articles;
   },
+  getAllMyPropositionsToSwap: async (
+    rawArticles: any,
+    userId: string,
+    article_id: number,
+    rawSwaps: any,
+  ) => {
+    if (!rawArticles) {
+      return [];
+    }
+
+    let excludedArticles = rawSwaps.map((swap: any) => {
+      return swap.id_article_sender === article_id
+        ? swap.id_article_receiver
+        : null;
+    });
+
+    let articles: IArticleData[] = [];
+    let location = await locationHelper.getUserLocation();
+    articles = rawArticles.map((article: any) => {
+      return <IArticleData>{
+        id: article.id,
+        title: article.title,
+        distance: locationHelper.getDistanceFromLatLonInKm(
+          location.coords.latitude,
+          location.coords.longitude,
+          article.location.latitude,
+          article.location.longitude,
+        ),
+        location_name: article.location.cityName,
+        images: imagesHelper.getPublicUrlByImageName(
+          article.articles_images[0]?.image_name ?? 'default/default.png',
+        ),
+        isLiked: article.articles_favorites?.length > 0,
+        isOwner: article.articles_profiles[0]?.id_profile === userId,
+      };
+    });
+    articles.sort((a, b) => a.distance - b.distance);
+    articles = articles.filter((article: IArticleData) => {
+      return !excludedArticles.includes(article.id);
+    });
+    return articles;
+  },
 };
 export default articleFactory;

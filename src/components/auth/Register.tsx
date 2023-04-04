@@ -59,20 +59,10 @@ export default function Register() {
               'Une erreur est survenue lors de la création du compte. Merci de réessayer.',
             );
           }
+          setLoading(false);
         } else {
-          //add avatar, location and username to profile table
-          let {data, error: err} = await supabase.from('profiles').insert([
-            {
-              avatar_url: 'default/avatar.png',
-              location: '{cityName:Lille,latitude:0,longitude:0}',
-              username: 'Flo',
-              full_name: 'Flo',
-            },
-          ]);
-          if (!err) {
-            console.log('Profile created', data);
-            setLoading(false);
-          }
+          console.log('Profile created', auth.data);
+          setLoading(false);
         }
       }
     }

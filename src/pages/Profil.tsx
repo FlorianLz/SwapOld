@@ -1,4 +1,12 @@
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Button,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
@@ -87,6 +95,7 @@ export default function Profil({session}: {session: any}) {
         />
         <View style={styles.InfosContainer}>
           {selectedComponent === 'articles' &&
+            articles.length > 0 &&
             articles.map(article => (
               <React.Fragment key={article.id}>
                 <SingleArticleCard
@@ -97,6 +106,21 @@ export default function Profil({session}: {session: any}) {
                 />
               </React.Fragment>
             ))}
+          {selectedComponent === 'articles' && articles.length === 0 && (
+            <View>
+              <Text style={{textAlign: 'center', marginTop: 20}}>
+                Vous n'avez pas encore publié d'articles
+              </Text>
+              <Text style={{textAlign: 'center', marginTop: 20}}>
+                Publiez votre premier article dès maintenant !
+              </Text>
+              <Pressable
+                onPress={() => navigation.navigate('HubPublication')}
+                style={styles.ButtonAddArticle}>
+                <Text style={styles.ButtonText}>Publier un article</Text>
+              </Pressable>
+            </View>
+          )}
           {selectedComponent === 'propositions' && (
             <RecapProposition session={session} navigation={navigation} />
           )}
@@ -176,5 +200,22 @@ const styles = StyleSheet.create({
   },
   InfosContainer: {
     marginBottom: 32,
+  },
+  ButtonAddArticle: {
+    height: 50,
+    backgroundColor: '#5DB075',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    marginTop: 20,
+    position: 'relative',
+    zIndex: 0,
+  },
+  ButtonText: {
+    color: 'white',
+    display: 'flex',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

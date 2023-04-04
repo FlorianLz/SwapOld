@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, {useCallback, useEffect} from 'react';
 import {
   Dimensions,
   Image,
@@ -11,7 +11,11 @@ import {
 import {Text} from 'react-native-elements';
 import {useState} from 'react';
 import articleRepository from '../../repository/article.repository';
-import { ParamListBase, useIsFocused, useNavigation } from "@react-navigation/native";
+import {
+  ParamListBase,
+  useIsFocused,
+  useNavigation,
+} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ImagePickerResponse, launchCamera} from 'react-native-image-picker';
 import imageService from '../../services/image.service';
@@ -233,21 +237,27 @@ export default function AddArticle({
 
   return (
     <View style={styles.container}>
-      <Text h4 style={styles.title}>
-        Publier un article
-      </Text>
-      {!hideRetour && (
-        <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
+      {!hideRetour ? (
+        <Pressable
+          style={styles.Header}
+          onPress={() =>
+            navigation.navigate('SingleArticle', {id: article_sender.id})
+          }>
           <IconAnt
             style={styles.BackIcon}
             name="arrowleft"
-            size={16}
+            size={24}
             color="#000"
           />
-          <Text style={styles.backTitle}>Publier un article</Text>
+          <Text h4 style={styles.backTitle}>
+            Publier un article
+          </Text>
         </Pressable>
+      ) : (
+        <Text h4 style={styles.title}>
+          Publier un article
+        </Text>
       )}
-      {hideRetour && <View style={styles.Header}></View>}
       <View style={{position: 'relative', zIndex: 100, minHeight: '80%'}}>
         <Text style={styles.Title}>Titre de l'article</Text>
         <TextInput
@@ -267,7 +277,7 @@ export default function AddArticle({
         />
 
         <Text style={styles.Title}>Localisation</Text>
-        <View style={[Platform.select({ios: {zIndex: 1, backgroundColor: "#fff"}, android:{backgroundColor: "#fff"}})]}>
+        <View style={[Platform.select({ios: {zIndex: 1}})]}>
           <AutocompleteDropdown
             direction={Platform.select({ios: 'down'})}
             dataSet={suggestionsList}
@@ -285,33 +295,42 @@ export default function AddArticle({
               autoCorrect: true,
               autoCapitalize: 'none',
               style: {
-                borderRadius: 8,
-                color: '#BDBDBD',
                 backgroundColor: '#F6F6F6',
-                height: 40,
+                height: 48,
+                paddingLeft: 20,
+                borderRadius: 4,
+                borderColor: '#E8E8E8',
+                borderWidth: 1,
+                marginBottom: 8,
+                color: '#BDBDBD',
+                fontWeight: 'normal',
+                fontSize: 14,
               },
             }}
             rightButtonsContainerStyle={{
               backgroundColor: '#F6F6F6',
-              height: 40,
+              height: 47,
+              marginTop: 1,
+              marginRight: 1,
             }}
             inputContainerStyle={{
-              borderRadius: 8,
+              borderRadius: 4,
               backgroundColor: '#F6F6F6',
-              height: 40,
+              height: 47,
             }}
             suggestionsListContainerStyle={{
               backgroundColor: 'white',
               maxHeight: 165,
+              zIndex: 100,
             }}
             containerStyle={{
               flexGrow: 1,
               flexShrink: 1,
               marginBottom: 16,
               borderColor: '#E8E8E8',
-              height: 40,
+              height: 50,
               borderWidth: 1,
-              borderRadius: 8,
+              borderRadius: 4,
             }}
             renderItem={item => <Text style={{padding: 15}}>{item.title}</Text>}
             EmptyResultComponent={
@@ -368,7 +387,7 @@ export default function AddArticle({
             )}
           </View>
         ) : (
-          <View style={{backgroundColor:'white'}}>
+          <View style={{backgroundColor: 'white'}}>
             <Pressable
               style={styles.Button}
               onPress={initMediaPicker}
@@ -382,9 +401,17 @@ export default function AddArticle({
             </Pressable>
           </View>
         )}
+        <View style={styles.containerMessages}>
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+          {onPublication && !published && (
+            <Text style={styles.base}>
+              Publication en cours, veuillez patienter...
+            </Text>
+          )}
+          {published && <Text style={styles.success}>{msgPublished}</Text>}
+        </View>
       </View>
       <View style={styles.containerAddArticle}>
-        {error ? <Text style={styles.error}>{error}</Text> : null}
         {!onPublication && !published && (
           <Pressable
             style={styles.ButtonAddArticle}
@@ -393,10 +420,6 @@ export default function AddArticle({
             <Text style={styles.ButtonText}>Publier cet article</Text>
           </Pressable>
         )}
-        {onPublication && !published && (
-          <Text>Publication en cours, veuillez patienter...</Text>
-        )}
-        {published && <Text>{msgPublished}</Text>}
       </View>
     </View>
   );
@@ -406,6 +429,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    marginTop: 20,
+    marginBottom: 20,
   },
   backTitle: {
     color: '#000',
@@ -423,11 +448,13 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#F6F6F6',
-    borderRadius: 8,
+    height: 50,
+    paddingLeft: 20,
+    borderRadius: 4,
     borderColor: '#E8E8E8',
-    height: 40,
-    marginBottom: 8,
     borderWidth: 1,
+    marginBottom: 8,
+    fontWeight: 'normal',
   },
   Title: {
     fontSize: 12,
@@ -481,12 +508,20 @@ const styles = StyleSheet.create({
   },
   containerAddArticle: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 8,
     width: '100%',
   },
   error: {
     color: 'red',
-    marginBottom: 10,
+    paddingTop: 10,
+  },
+  success: {
+    color: '#5DB075',
+    paddingTop: 10,
+  },
+  base: {
+    color: '#000',
+    paddingTop: 10,
   },
   title: {
     color: '#000',
