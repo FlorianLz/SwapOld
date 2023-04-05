@@ -73,7 +73,7 @@ export default function Profil({session}: {session: any}) {
           <Icon name="location" size={14} color="#696969" />
           <Text style={styles.city_name}>{userInfos?.city_name}</Text>
         </Text>
-        <SwitchSelector
+        {isFocused ? (<SwitchSelector
           initial={0}
           onPress={(value: any) => setSelectedComponent(value)}
           textColor={'#000'}
@@ -92,7 +92,7 @@ export default function Profil({session}: {session: any}) {
             {label: 'Propositions', value: 'propositions'},
           ]}
           accessibilityLabel="gender-switch-selector"
-        />
+        />): null}
         <View style={styles.InfosContainer}>
           {selectedComponent === 'articles' &&
             articles.length > 0 &&
