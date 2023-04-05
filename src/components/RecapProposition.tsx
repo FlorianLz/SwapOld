@@ -320,16 +320,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   swapContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 10,
+    gap: 10,
     borderRadius: 4,
     borderBottomWidth: 2,
   },
   swapLeft: {
-    width: '45%',
+    width: '100%',
     flexDirection: 'row',
     gap: 10,
     alignItems: 'center',
@@ -339,7 +340,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   swapRight: {
-    width: '45%',
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     gap: 10,
