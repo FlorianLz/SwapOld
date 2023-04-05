@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import { ActivityIndicator, Image, ScrollView, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {
   ParamListBase,
   useIsFocused,
@@ -23,8 +29,12 @@ export default function Favoris({session}: {session: any}) {
       });
   }, [isFocused, session.user.id]);
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.containerScrollView}>
-      <Text h4 style={styles.title}>Favoris</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.containerScrollView}>
+      <Text h4 style={styles.title}>
+        Favoris
+      </Text>
       <View style={styles.ModeAffichageContainer}>
         <View style={styles.ModeAffichage}>
           {articles.map(article => (

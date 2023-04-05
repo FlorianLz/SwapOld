@@ -10,7 +10,11 @@ import {
 import React, {useEffect, useState} from 'react';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
-import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {
+  ParamListBase,
+  useIsFocused,
+  useNavigation,
+} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
@@ -26,6 +30,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
+  const isFocused = useIsFocused();
   useEffect(() => {
     articleService
       .getArticleById(id, session?.user.id)
@@ -34,7 +39,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
         setLoading(true);
         setIsLiked(result.isLiked);
       });
-  }, [id]);
+  }, [isFocused]);
 
   function handleDelete() {
     articleService.deleteArticle(article.id, session.user.id).then(result => {
@@ -161,7 +166,9 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
                   onPress={() => setModalVisible(!modalVisible)}>
-                  <Text style={[styles.textStyle, styles.TextClose]}>Annuler</Text>
+                  <Text style={[styles.textStyle, styles.TextClose]}>
+                    Annuler
+                  </Text>
                 </Pressable>
               </View>
             </View>
@@ -186,7 +193,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
               </Text>
             </View>
           </View>
-          {session?.user && (
+          {session?.user && !article.isOwner && (
             <Pressable
               style={styles.Button}
               onPress={() => {

@@ -26,17 +26,19 @@ export default function SwapProposition({
         article_sender.article.id,
         session.user.id,
       )
-      .then((result: IArticleData[]) => {
+      .then((result: any) => {
         console.log('result');
         console.log(result);
+        console.log(Object.prototype.toString.call(result));
         if (result?.length === 0 || result === undefined) {
+          let article = article_sender;
           navigation.navigate('AddArticle', {
             privateArticle: true,
             article_sender: {article_sender},
           });
         }
         setArticlesPublished(result as IArticleData[]);
-    });
+      });
   }, [isFocused]);
   return (
     <View style={styles.container}>

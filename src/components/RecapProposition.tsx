@@ -89,8 +89,8 @@ export default function RecapProposition({session, navigation}: any) {
                               style={[styles.Localisation, styles.TextRight]}>
                               {swap.id_article_receiver.location.cityName},{' '}
                               {locationHelper.getDistanceFromLatLonInKm(
-                                swap.id_article_receiver.location.latitude,
-                                swap.id_article_receiver.location.longitude,
+                                swap.id_article_receiver.location?.latitude,
+                                swap.id_article_receiver.location?.longitude,
                                 location.coords?.latitude,
                                 location.coords?.longitude,
                               )}

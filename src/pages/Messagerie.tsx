@@ -36,7 +36,9 @@ export default function Messagerie({session}: {session: any}) {
   }, [isFocused, session.user.id]);
   return (
     <>
-      <ScrollView style={styles.container} contentContainerStyle={styles.containerScrollView}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.containerScrollView}>
         <Text h4 style={styles.title}>
           Messagerie
         </Text>
@@ -54,7 +56,8 @@ export default function Messagerie({session}: {session: any}) {
             );
           })}
         {swaps.length === 0 && (
-          <View style={{alignItems: 'center', flex: 1, justifyContent: 'center'}}>
+          <View
+            style={{alignItems: 'center', flex: 1, justifyContent: 'center'}}>
             <Image
               source={require('../assets/img/voidMessages.png')}
               style={{width: 200, height: 200}}

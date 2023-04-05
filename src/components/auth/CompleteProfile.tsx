@@ -235,7 +235,10 @@ export default function CompleteProfile() {
           </View>
         </>
       )}
-      <TouchableOpacity style={styles.button} onPress={handleCompleteProfile} disabled={loadingUpdate}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleCompleteProfile}
+        disabled={loadingUpdate}>
         <Text style={styles.buttonText}>Valider</Text>
       </TouchableOpacity>
 

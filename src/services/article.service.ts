@@ -38,16 +38,13 @@ const articleService = {
       userId,
     );
 
-    const rawSwaps =
-      await articleRepository.getAllMyPropositionsToSwap(
-        userId,
-      );
+    const rawSwaps = await articleRepository.getAllMyPropositionsToSwap(userId);
 
     const articles = await articleFactory.getAllMyPropositionsToSwap(
       rawArticles,
       userId,
       id_article,
-      rawSwaps
+      rawSwaps,
     );
 
     return articles.sort((a, b) => b.id - a.id);

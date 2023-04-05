@@ -14,12 +14,12 @@ const articleFactory = {
         id: article.id,
         title: article.title,
         distance: locationHelper.getDistanceFromLatLonInKm(
-          location.coords.latitude,
-          location.coords.longitude,
-          article.location.latitude,
-          article.location.longitude,
+          location.coords?.latitude,
+          location.coords?.longitude,
+          article.location?.latitude,
+          article.location?.longitude,
         ),
-        location_name: article.location.cityName,
+        location_name: article.location?.cityName,
         images: imagesHelper.getPublicUrlByImageName(
           article.articles_images[0]?.image_name ?? 'default/default.png',
         ),
@@ -31,30 +31,34 @@ const articleFactory = {
     return articles;
   },
   getArticleById: async (rawArticle: any, userId: string) => {
+    console.log(rawArticle);
+    if (Object.keys(rawArticle).length === 0) {
+      return null;
+    }
     const images =
-      rawArticle.articles_images.length > 0
+      rawArticle.articles_images?.length > 0
         ? rawArticle.articles_images.map((image: any) => {
             return imagesHelper.getPublicUrlByImageName(image.image_name);
           })
         : [imagesHelper.getPublicUrlByImageName('default/default.png')];
     let location = await locationHelper.getUserLocation();
     return <IArticleData>{
-      id: rawArticle.id,
-      title: rawArticle.title,
-      created_at: rawArticle.created_at,
-      description: rawArticle.description,
+      id: rawArticle?.id,
+      title: rawArticle?.title,
+      created_at: rawArticle?.created_at,
+      description: rawArticle?.description,
       distance: locationHelper.getDistanceFromLatLonInKm(
-        location.coords.latitude,
-        location.coords.longitude,
-        rawArticle.location.latitude,
-        rawArticle.location.longitude,
+        location.coords?.latitude,
+        location.coords?.longitude,
+        rawArticle?.location?.latitude,
+        rawArticle?.location?.longitude,
       ),
-      location_name: rawArticle.location.cityName,
+      location_name: rawArticle?.location?.cityName,
       images: images,
-      id_profile: rawArticle.articles_profiles[0].id_profile,
-      username: rawArticle.articles_profiles[0].profiles.username,
-      isLiked: rawArticle.articles_favorites?.length > 0,
-      isOwner: rawArticle.articles_profiles[0]?.id_profile === userId,
+      id_profile: rawArticle?.articles_profiles[0]?.id_profile,
+      username: rawArticle?.articles_profiles[0]?.profiles.username,
+      isLiked: rawArticle?.articles_favorites?.length > 0,
+      isOwner: rawArticle?.articles_profiles[0]?.id_profile === userId,
     };
   },
   toggleLikeArticle: async (like: any) => {
@@ -76,12 +80,12 @@ const articleFactory = {
         id: article.id_article_receiver.id,
         title: article.id_article_receiver.title,
         distance: locationHelper.getDistanceFromLatLonInKm(
-          location.coords.latitude,
-          location.coords.longitude,
-          article.id_article_receiver.location.latitude,
-          article.id_article_receiver.location.longitude,
+          location.coords?.latitude,
+          location.coords?.longitude,
+          article.id_article_receiver.location?.latitude,
+          article.id_article_receiver.location?.longitude,
         ),
-        location_name: article.id_article_receiver.location.cityName,
+        location_name: article.id_article_receiver.location?.cityName,
         images: imagesHelper.getPublicUrlByImageName(
           article.id_article_receiver.articles_images[0]?.image_name,
         ),
@@ -134,12 +138,12 @@ const articleFactory = {
         id: article.id,
         title: article.title,
         distance: locationHelper.getDistanceFromLatLonInKm(
-          location.coords.latitude,
-          location.coords.longitude,
-          article.location.latitude,
-          article.location.longitude,
+          location.coords?.latitude,
+          location.coords?.longitude,
+          article.location?.latitude,
+          article.location?.longitude,
         ),
-        location_name: article.location.cityName,
+        location_name: article.location?.cityName,
         images: imagesHelper.getPublicUrlByImageName(
           article.articles_images[0]?.image_name ?? 'default/default.png',
         ),

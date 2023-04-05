@@ -66,6 +66,7 @@ export default function AddArticle({
     setOnPublication(false);
     setMsgPublished('');
     setError('');
+    console.log(article_sender);
   }, [isFocused]);
 
   const resize = async (newTab: ImagePickerResponse[]) => {
@@ -241,7 +242,9 @@ export default function AddArticle({
         <Pressable
           style={styles.Header}
           onPress={() =>
-            navigation.navigate('SingleArticle', {id: article_sender.id})
+            navigation.navigate('SingleArticle', {
+              id: article_sender.article_sender.article.id,
+            })
           }>
           <IconAnt
             style={styles.BackIcon}
@@ -401,7 +404,7 @@ export default function AddArticle({
             </Pressable>
           </View>
         )}
-        <View style={styles.containerMessages}>
+        <View>
           {error ? <Text style={styles.error}>{error}</Text> : null}
           {onPublication && !published && (
             <Text style={styles.base}>
