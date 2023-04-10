@@ -1,4 +1,4 @@
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Image, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import IconIon from 'react-native-vector-icons/Ionicons';
@@ -26,6 +26,7 @@ export default function SingleArticleCard({
     article.isLiked ?? false,
   );
   const [error, setError] = useState<string>('');
+  const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
   return (
     <View
       style={
@@ -37,22 +38,7 @@ export default function SingleArticleCard({
         onPress={() => {
           {
             url === 'SwapProposition'
-              ? articleRepository
-                  .swapArticle(
-                    session.user.id,
-                    article_sender.article.id_profile,
-                    article_sender.article.id,
-                    article.id,
-                  )
-                  .then(result => {
-                    if (!result.error) {
-                      navigation.navigate('Profil');
-                    } else {
-                      setError(
-                        'Vous avez deja proposé un échange pour cet article',
-                      );
-                    }
-                  })
+              ? setModalChoiceVisible(true)
               : url === 'Messagerie'
               ? navigation.navigate('MessagesScreen', {
                   session: session,
@@ -116,6 +102,49 @@ export default function SingleArticleCard({
           )}
         </View>
       </Pressable>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalChoiceVisible}
+        onRequestClose={() => {
+          setModalChoiceVisible(!modalChoiceVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Vous souhaitez proposer un échange avec cette proposition ?
+            </Text>
+            <Pressable
+              style={[styles.button]}
+              onPress={() => {
+                articleRepository
+                  .swapArticle(
+                    session.user.id,
+                    article_sender.article.id_profile,
+                    article_sender.article.id,
+                    article.id,
+                  )
+                  .then(result => {
+                    if (!result.error) {
+                      navigation.navigate('Profil');
+                    } else {
+                      setError(
+                        'Vous avez deja proposé un échange pour cet article',
+                      );
+                    }
+                  });
+                setModalChoiceVisible(false);
+              }}>
+              <Text style={styles.textStyle}>oui</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalChoiceVisible(!modalChoiceVisible)}>
+              <Text style={[styles.textStyle, styles.TextClose]}>Annuler</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -217,5 +246,56 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderTopLeftRadius: 4,
     borderBottomLeftRadius: 4,
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 0,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: '90%',
+  },
+  button: {
+    borderRadius: 4,
+    height: 40,
+    backgroundColor: '#5DB075',
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 8,
+    paddingTop: 8,
+    width: '100%',
+  },
+  buttonClose: {
+    backgroundColor: 'transparent',
+  },
+  TextClose: {
+    color: '#000',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#666666',
+    marginBottom: 20,
+    textAlign: 'center',
   },
 });

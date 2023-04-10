@@ -73,26 +73,28 @@ export default function Profil({session}: {session: any}) {
           <Icon name="location" size={14} color="#696969" />
           <Text style={styles.city_name}>{userInfos?.city_name}</Text>
         </Text>
-        {isFocused ? (<SwitchSelector
-          initial={0}
-          onPress={(value: any) => setSelectedComponent(value)}
-          textColor={'#000'}
-          selectedColor={'#fff'}
-          buttonColor={'#5DB075'}
-          backgroundColor={'#fff'}
-          borderColor={'#5DB075'}
-          borderRadius={4}
-          touchableProps={{activeOpacity: 1}}
-          borderWidth={1}
-          style={styles.SwitchContainer}
-          height={46}
-          hasPadding={true}
-          options={[
-            {label: 'Articles publiés', value: 'articles'},
-            {label: 'Propositions', value: 'propositions'},
-          ]}
-          accessibilityLabel="gender-switch-selector"
-        />): null}
+        {isFocused ? (
+          <SwitchSelector
+            initial={0}
+            onPress={(value: any) => setSelectedComponent(value)}
+            textColor={'#000'}
+            selectedColor={'#fff'}
+            buttonColor={'#5DB075'}
+            backgroundColor={'#fff'}
+            borderColor={'#5DB075'}
+            borderRadius={4}
+            touchableProps={{activeOpacity: 1}}
+            borderWidth={1}
+            style={styles.SwitchContainer}
+            height={46}
+            hasPadding={true}
+            options={[
+              {label: 'Articles publiés', value: 'articles'},
+              {label: 'Propositions', value: 'propositions'},
+            ]}
+            accessibilityLabel="gender-switch-selector"
+          />
+        ) : null}
         <View style={styles.InfosContainer}>
           {selectedComponent === 'articles' &&
             articles.length > 0 &&

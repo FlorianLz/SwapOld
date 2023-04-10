@@ -53,6 +53,7 @@ export default function Login() {
           value={email}
           placeholder="Email"
           autoCapitalize={'none'}
+          placeholderTextColor={'#000'}
         />
         <View style={styles.passwordContainer}>
           <TextInput
@@ -61,6 +62,7 @@ export default function Login() {
             value={password}
             secureTextEntry={!viewPassword}
             placeholder="Mot de passe..."
+            placeholderTextColor={'#000'}
             autoCapitalize={'none'}
           />
           {viewPassword ? (
@@ -115,6 +117,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   input: {
+    color: '#000',
     height: 50,
     backgroundColor: '#F6F6F6',
     paddingLeft: 20,

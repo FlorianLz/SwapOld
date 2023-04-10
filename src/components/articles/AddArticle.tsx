@@ -99,6 +99,7 @@ export default function AddArticle({
   };
 
   function handleUpload() {
+    console.log(title, content, selectedItem, images.length);
     if (
       title === '' ||
       content === '' ||
@@ -261,7 +262,13 @@ export default function AddArticle({
           Publier un article
         </Text>
       )}
-      <View style={{position: 'relative', zIndex: 100, minHeight: '80%'}}>
+      <View
+        style={{
+          position: 'relative',
+          zIndex: 100,
+          minHeight: '80%',
+          backgroundColor: '#fff',
+        }}>
         <Text style={styles.Title}>Titre de l'article</Text>
         <TextInput
           style={styles.input}
@@ -513,6 +520,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 8,
     width: '100%',
+    zIndex: 0,
   },
   error: {
     color: 'red',

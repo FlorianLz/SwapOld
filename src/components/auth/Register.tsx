@@ -77,6 +77,7 @@ export default function Register() {
           value={email}
           placeholder="Email"
           autoCapitalize={'none'}
+          placeholderTextColor={'#000'}
         />
         <View style={styles.passwordContainer}>
           <TextInput
@@ -86,6 +87,7 @@ export default function Register() {
             secureTextEntry={!viewPassword}
             placeholder="Mot de passe..."
             autoCapitalize={'none'}
+            placeholderTextColor={'#000'}
           />
           {viewPassword ? (
             <Icon
@@ -112,6 +114,7 @@ export default function Register() {
           secureTextEntry={true}
           placeholder="Confirmation du mot de passe..."
           autoCapitalize={'none'}
+          placeholderTextColor={'#000'}
         />
       </View>
       {error !== '' && (
@@ -148,6 +151,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   input: {
+    color: '#000',
     height: 50,
     backgroundColor: '#F6F6F6',
     paddingLeft: 20,

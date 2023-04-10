@@ -1,7 +1,7 @@
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {supabase} from '../lib/initSupabase';
-import {StyleSheet, View, Alert} from 'react-native';
-import {Button, Input} from 'react-native-elements';
+import {StyleSheet, View, Alert, Text, TextInput} from 'react-native';
+import {Button} from 'react-native-elements';
 import {Session} from '@supabase/supabase-js';
 
 export default function Account({
@@ -13,18 +13,22 @@ export default function Account({
   const [avatarUrl, setAvatarUrl] = useState('');
 
   useEffect(() => {
-    if (session) getProfile();
+    if (session) {
+      getProfile();
+    }
   }, [session]);
 
   async function getProfile() {
     console.log('getProfile');
     try {
       setLoading(true);
-      if (!session?.user) throw new Error('No user on the session!');
+      if (!session?.user) {
+        throw new Error('No user on the session!');
+      }
 
       let {data, error, status} = await supabase
         .from('profiles')
-        .select(`username, avatar_url, full_name`)
+        .select('username, avatar_url, full_name')
         .eq('id', session?.user.id)
         .single();
       console.log('data', data);
@@ -76,40 +80,44 @@ export default function Account({
   }
 
   return (
-    <View>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input label="Email" value={session?.user?.email} disabled />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input
-          label="Username"
-          value={username || ''}
-          onChangeText={text => setUsername(text)}
-        />
-      </View>
-
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button
-          title={loading ? 'Loading ...' : 'Update'}
-          onPress={() => updateProfile()}
-          disabled={loading}
-        />
-      </View>
+    <View style={styles.container}>
+      <Text style={styles.Title}>Email</Text>
+      <TextInput style={styles.input} value={session?.user?.email} disabled />
+      <Text style={styles.Title}>Username</Text>
+      <TextInput
+        style={styles.input}
+        value={username || ''}
+        onChangeText={text => setUsername(text)}
+      />
+      <Button
+        title={loading ? 'Loading ...' : 'Update'}
+        onPress={() => updateProfile()}
+        disabled={loading}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  Title: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
   container: {
-    marginTop: 40,
-    padding: 12,
-  },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
-  },
-  mt20: {
     marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  input: {
+    color: '#000',
+    height: 50,
+    backgroundColor: '#F6F6F6',
+    paddingLeft: 20,
+    width: '100%',
+    borderRadius: 4,
+    borderColor: '#E8E8E8',
+    borderWidth: 1,
+    marginBottom: 12,
   },
 });
