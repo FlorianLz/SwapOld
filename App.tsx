@@ -171,7 +171,7 @@ const App = () => {
           name="UpdateProfil"
           initialParams={{session: session}}
           component={Account}
-          options={{headerShown: true}}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>
