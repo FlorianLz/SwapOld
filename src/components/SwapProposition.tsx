@@ -9,7 +9,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import IArticleData from '../interfaces/articleInterface';
 import articleService from '../services/article.service';
 import SingleArticleCard from '../components/articles/SingleArticleCard';
-import IconAnt from "react-native-vector-icons/AntDesign";
+import IconAnt from 'react-native-vector-icons/AntDesign';
 export default function SwapProposition({
   route,
 }: {params: {session: object; id: number; article_sender: any}} | any) {
@@ -79,10 +79,18 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
   },
-  Title: {
-    color: '#fff',
+  containerHeaderInfos: {
+    flexDirection: 'column',
+  },
+  BackSecond: {
+    color: '#000',
     fontFamily: 'Roboto',
-    fontSize: 28,
+    fontSize: 12,
+  },
+  BackText: {
+    color: '#000',
+    fontFamily: 'Roboto',
+    fontSize: 16,
   },
   Icon: {
     marginRight: 20,
