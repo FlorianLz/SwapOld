@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {supabase} from '../lib/initSupabase';
 import messageService from '../services/message.service';
@@ -6,6 +6,9 @@ import messageFactory from '../factory/message.factory';
 import {GiftedChat, IMessage, Send} from 'react-native-gifted-chat';
 import 'dayjs/locale/fr';
 import Icon from 'react-native-vector-icons/Ionicons';
+import IconAnt from 'react-native-vector-icons/AntDesign';
+import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 export default function MessagesScreen({
   route,
@@ -33,7 +36,7 @@ export default function MessagesScreen({
       : article.receiverInfos.avatar_url,
   };
   const [messages, setMessages] = useState<any>([]);
-
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
     console.log('Hello from useEffect');
     messageService
@@ -102,6 +105,13 @@ export default function MessagesScreen({
 
   return (
     <View style={styles.container}>
+      <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
+        <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
+        <View style={styles.containerHeaderInfos}>
+          <Text style={styles.BackText}>{article.title}</Text>
+          <Text style={styles.BackSecond}>{article.title}</Text>
+        </View>
+      </Pressable>
       <GiftedChat
         inverted={true}
         locale={'fr'}
@@ -159,6 +169,31 @@ export default function MessagesScreen({
   );
 }
 const styles = StyleSheet.create({
+  Header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+  containerHeaderInfos: {
+    flexDirection: 'column',
+  },
+  BackSecond: {
+    color: '#000',
+    fontFamily: 'Roboto',
+    fontSize: 12,
+  },
+  BackText: {
+    color: '#000',
+    fontFamily: 'Roboto',
+    fontSize: 16,
+  },
+  Icon: {
+    marginLeft: 20,
+    marginRight: 20,
+  },
+
   container: {
     marginLeft: 20,
     marginRight: 20,
