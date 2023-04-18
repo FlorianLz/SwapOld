@@ -46,7 +46,9 @@ export default function SwapProposition({
       <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
         <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
         <View style={styles.containerHeaderInfos}>
-          <Text style={styles.BackText}>Veuillez sélectionner un article pour finaliser la proposition</Text>
+          <Text style={styles.BackText}>
+            Veuillez sélectionner un article pour finaliser la proposition
+          </Text>
         </View>
       </Pressable>
       <View style={styles.ModeAffichageContainer}>

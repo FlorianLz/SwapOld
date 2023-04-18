@@ -10,6 +10,7 @@ import {
   Pressable,
   Platform,
   Dimensions,
+  Modal,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 import {Session} from '@supabase/supabase-js';
@@ -24,9 +25,9 @@ import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
 import locationService from '../services/location.service';
 import imagesHelper from '../helpers/images.helper';
-import { ImagePickerResponse, launchCamera } from "react-native-image-picker";
-import ImageResizer from "@bam.tech/react-native-image-resizer";
-import imageRepository from "../repository/image.repository";
+import {ImagePickerResponse, launchCamera} from 'react-native-image-picker';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
+import imageRepository from '../repository/image.repository';
 
 export default function Account({route}: {params: {session: Session}} | any) {
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,7 @@ export default function Account({route}: {params: {session: Session}} | any) {
   const [images, setImages] = useState<ImagePickerResponse[]>([]);
   const [resizedImages, setResizedImages] = useState<[] | any>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<
     | {
         title: string;
@@ -113,7 +115,7 @@ export default function Account({route}: {params: {session: Session}} | any) {
       } else {
         //Update image profile
         let img = '';
-        if(resizedImages.length > 0){
+        if (resizedImages.length > 0) {
           const avatar = imageRepository.uploadImage(
             resizedImages[0],
             session?.user.id + '/avatar/',
@@ -237,13 +239,9 @@ export default function Account({route}: {params: {session: Session}} | any) {
         </View>
       </Pressable>
       <Pressable style={styles.ContainerImage} onPress={initMediaPicker}>
-        <View
-          style={styles.ImageBackground}>
+        <View style={styles.ImageBackground}>
           {avatarUrl != null && avatarUrl !== '' && (
-            <Image
-              style={styles.Image}
-              source={{uri: avatarUrl}}
-            />
+            <Image style={styles.Image} source={{uri: avatarUrl}} />
           )}
         </View>
       </Pressable>
@@ -332,11 +330,44 @@ export default function Account({route}: {params: {session: Session}} | any) {
         />
         <View style={{width: 10}} />
       </View>
-      <Button
-        title={loading ? 'Loading ...' : 'Update'}
-        onPress={() => updateProfile()}
-        disabled={loading}
-      />
+      <Pressable
+        style={styles.Button}
+        onPress={() => {
+          console.log('edit');
+          setModalChoiceVisible(true);
+        }}>
+        <Text style={styles.ButtonText}>Mise a jour du profil</Text>
+      </Pressable>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalChoiceVisible}
+        onRequestClose={() => {
+          setModalChoiceVisible(!modalChoiceVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Voulez vous modifer votre profil ?
+            </Text>
+            <Pressable
+              style={[styles.button, styles.buttonSecondary]}
+              onPress={() => {
+                updateProfile();
+                setModalChoiceVisible(false);
+              }}>
+              <Text style={[styles.textStyle]}>
+                oui
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalChoiceVisible(!modalChoiceVisible)}>
+              <Text style={[styles.textStyle, styles.TextClose]}>Annuler</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -401,5 +432,80 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 100,
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 0,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: '90%',
+  },
+  button: {
+    borderRadius: 4,
+    height: 40,
+    backgroundColor: '#5DB075',
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 8,
+    paddingTop: 8,
+    width: '100%',
+  },
+  buttonClose: {
+    backgroundColor: 'transparent',
+  },
+  TextClose: {
+    color: '#000',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  textStyleSecondary: {
+    color: '#5DB075',
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#666666',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  ButtonTextNonDispo: {
+    backgroundColor: '#F04242',
+  },
+  buttonSecondary: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#5DB075',
+  },
+  Button: {
+    backgroundColor: '#5DB075',
+    height: 60,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ButtonText: {
+    color: '#fff',
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });

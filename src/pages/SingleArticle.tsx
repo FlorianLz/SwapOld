@@ -55,7 +55,12 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
     <ScrollView style={styles.container}>
       {loading ? (
         <>
-          <View style={[styles.Figure, article.status !== 0 ? styles.ButtonTextNonDispo : null]} />
+          <View
+            style={[
+              styles.Figure,
+              article.status !== 0 ? styles.ButtonTextNonDispo : null,
+            ]}
+          />
           <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
             <IconAnt
               style={styles.Icon}
@@ -422,5 +427,5 @@ const styles = StyleSheet.create({
   },
   ButtonTextNonDispo: {
     backgroundColor: '#F04242',
-  }
+  },
 });
