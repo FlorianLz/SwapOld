@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {supabase} from '../lib/initSupabase';
 import messageService from '../services/message.service';
@@ -128,6 +128,30 @@ export default function MessagesScreen({
             <Send {...props} containerStyle={styles.sendContainer}>
               <Icon style={styles.icon} name="send" size={20} color="#000" />
             </Send>
+          );
+        }}
+        renderBubble={props => {
+          return (
+            <View
+              style={{
+                backgroundColor:
+                  props.currentMessage?.user?._id === session.user.id
+                    ? '#5DB075'
+                    : '#D9D9D9',
+                borderRadius: 8,
+                padding: 10,
+                marginBottom: 10,
+              }}>
+              <Text
+                style={{
+                  color:
+                    props.currentMessage?.user?._id === session.user.id
+                      ? '#fff'
+                      : '#000',
+                }}>
+                {props.currentMessage?.text}
+              </Text>
+            </View>
           );
         }}
       />
