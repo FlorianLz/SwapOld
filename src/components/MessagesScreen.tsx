@@ -190,7 +190,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   Icon: {
-    marginLeft: 20,
     marginRight: 20,
   },
 

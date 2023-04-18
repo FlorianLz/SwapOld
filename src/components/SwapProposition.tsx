@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {
   ParamListBase,
   useIsFocused,
@@ -9,6 +9,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import IArticleData from '../interfaces/articleInterface';
 import articleService from '../services/article.service';
 import SingleArticleCard from '../components/articles/SingleArticleCard';
+import IconAnt from "react-native-vector-icons/AntDesign";
 export default function SwapProposition({
   route,
 }: {params: {session: object; id: number; article_sender: any}} | any) {
@@ -42,9 +43,12 @@ export default function SwapProposition({
   }, [isFocused]);
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Veuillez sélectionner un article pour finaliser la proposition
-      </Text>
+      <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
+        <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
+        <View style={styles.containerHeaderInfos}>
+          <Text style={styles.BackText}>Veuillez sélectionner un article pour finaliser la proposition</Text>
+        </View>
+      </Pressable>
       <View style={styles.ModeAffichageContainer}>
         <View style={styles.ModeAffichage}>
           {isFocused
@@ -68,6 +72,22 @@ export default function SwapProposition({
 }
 
 const styles = StyleSheet.create({
+  Header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+  Title: {
+    color: '#fff',
+    fontFamily: 'Roboto',
+    fontSize: 28,
+  },
+  Icon: {
+    marginRight: 20,
+  },
+
   container: {
     marginLeft: 20,
     marginRight: 20,
