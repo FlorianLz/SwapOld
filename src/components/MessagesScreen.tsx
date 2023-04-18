@@ -108,7 +108,7 @@ export default function MessagesScreen({
       <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
         <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
         <View style={styles.containerHeaderInfos}>
-          <Text style={styles.BackText}>{article.title}</Text>
+          <Text style={styles.BackText}>{article.ownerInfos.username}</Text>
           <Text style={styles.BackSecond}>{article.title}</Text>
         </View>
       </Pressable>

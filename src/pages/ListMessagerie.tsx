@@ -43,7 +43,7 @@ export default function ListMessagerie({
         }>
         <Image style={styles.Image} source={{uri: article.images}} />
         <View style={styles.InfosContainer}>
-          <Text style={styles.Name}>{actualUser.name}</Text>
+          <Text style={styles.Name}>{article.ownerInfos.username}</Text>
           <Text style={styles.Title}>{article.title}</Text>
         </View>
       </View>
