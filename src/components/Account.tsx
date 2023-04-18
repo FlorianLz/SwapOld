@@ -336,7 +336,7 @@ export default function Account({route}: {params: {session: Session}} | any) {
           console.log('edit');
           setModalChoiceVisible(true);
         }}>
-        <Text style={styles.ButtonText}>Mise a jour du profil</Text>
+        <Text style={styles.ButtonText}>Mise à jour du profil</Text>
       </Pressable>
       <Modal
         animationType="fade"
@@ -351,14 +351,12 @@ export default function Account({route}: {params: {session: Session}} | any) {
               Voulez vous modifer votre profil ?
             </Text>
             <Pressable
-              style={[styles.button, styles.buttonSecondary]}
+              style={[styles.button]}
               onPress={() => {
                 updateProfile();
                 setModalChoiceVisible(false);
               }}>
-              <Text style={[styles.textStyle]}>
-                oui
-              </Text>
+              <Text style={[styles.textStyle]}>oui</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonClose]}
