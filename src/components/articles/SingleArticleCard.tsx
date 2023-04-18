@@ -1,5 +1,5 @@
 import {Image, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import IconIon from 'react-native-vector-icons/Ionicons';
 import IconFeather from 'react-native-vector-icons/Feather';
@@ -27,13 +27,19 @@ export default function SingleArticleCard({
   );
   const [error, setError] = useState<string>('');
   const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
+  useEffect(() => {
+    console.log('article', modeAffichage);
+  }, []);
   return (
     <View
-      style={
+      style={[
         modeAffichage === 'mode1'
           ? styles.AffichageMode1
-          : styles.AffichageMode2
-      }>
+          : styles.AffichageMode2,
+        modeAffichage === 'mode2' && article.status !== 0
+          ? styles.ArticleNonDispo
+          : null,
+      ]}>
       <Pressable
         onPress={() => {
           {
@@ -297,5 +303,8 @@ const styles = StyleSheet.create({
     color: '#666666',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  ArticleNonDispo: {
+    borderColor: '#F04242',
   },
 });

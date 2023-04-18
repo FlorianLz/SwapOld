@@ -5,6 +5,7 @@ import imageService from './image.service';
 const articleService = {
   getAllArticles: async (userId: any) => {
     const rawArticles = await articleRepository.getAllArticles(userId);
+    console.log(rawArticles);
     return articleFactory.getAllArticles(rawArticles, userId);
   },
   getArticleById: async (id: number, userId: string) => {
@@ -21,6 +22,7 @@ const articleService = {
   },
   searchArticles: async (search: string, userId: string) => {
     const rawArticles = await articleRepository.searchArticles(search, userId);
+    console.log(rawArticles);
     return articleFactory.getAllArticles(rawArticles, userId);
   },
   getAllMyPublishedArticles: async (userId: string) => {

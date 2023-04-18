@@ -21,7 +21,8 @@ const articleRepository = {
     )
   `,
         )
-        .eq('private', false);
+        .eq('private', false)
+        .eq('status', 0);
       return data;
     } else {
       const {data} = await supabase
@@ -45,6 +46,7 @@ const articleRepository = {
   `,
         )
         .eq('private', false)
+        .eq('status', 0)
         .eq('articles_favorites.id_profile', userId)
         .neq('articles_profiles.id_profile', userId);
       return data;
@@ -128,16 +130,16 @@ const articleRepository = {
     }
   },
   searchArticles: async (search: string, userId: string) => {
-    const {data} = await supabase
-      .from('articles')
-      .select(
-        `
+     const {data} = await supabase
+        .from('articles')
+        .select(
+          `
     *,
     articles_images (
       id,
       image_name
     ),
-    articles_profiles (
+    articles_profiles!inner (
       id_profile,
       profiles (
         username
@@ -147,12 +149,13 @@ const articleRepository = {
       id_profile
     )
   `,
-      )
-      .ilike('title', `%${search}%`)
-      .eq('private', false)
-      .eq('articles_favorites.id_profile', userId)
-      .neq('articles_profiles.id_profile', userId);
-    return data;
+        )
+        .ilike('title', `%${search}%`)
+        .eq('private', false)
+        .eq('status', 0)
+        .eq('articles_favorites.id_profile', userId)
+        .neq('articles_profiles.id_profile', userId);
+      return data;
   },
   addArticle: async (
     idUser: string,

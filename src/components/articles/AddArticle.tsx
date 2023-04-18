@@ -70,6 +70,7 @@ export default function AddArticle({
   }, [isFocused]);
 
   const resize = async (newTab: ImagePickerResponse[]) => {
+    let neww = [];
     for (const image of newTab) {
       if (!image || !image.assets) {
         return;
@@ -90,12 +91,12 @@ export default function AddArticle({
             onlyScaleDown: true,
           },
         );
-        let neww = [...resizedImages, result];
-        setResizedImages(neww);
+        neww = [...resizedImages, result];
       } catch (err) {
         console.log('Unable to resize the photo');
       }
     }
+    setResizedImages(neww);
   };
 
   function handleUpload() {
@@ -171,15 +172,18 @@ export default function AddArticle({
     }
   }
 
+  function handleDeleteImage(index: number) {
+    const newImages = resizedImages.filter((img, i) => i !== index);
+    setResizedImages([...newImages]);
+  }
+
   async function initMediaPicker() {
     const result = await launchCamera({mediaType: 'photo'});
 
     if (!result.didCancel) {
-      if (images.length <= maxImages) {
-        let newTab = [...images, result];
-        setImages(newTab);
-        await resize(newTab);
-      }
+      let newTab = [...images, result];
+      setImages([...newTab]);
+      await resize([...newTab]);
     }
   }
 
@@ -371,15 +375,27 @@ export default function AddArticle({
           <View style={styles.ContainerAddImage}>
             {resizedImages.map(
               (image: {uri: string}, index: React.Key | null | undefined) => (
-                <React.Fragment key={index}>
+                <View key={index}>
                   {image && (
-                    <Image
-                      key={index}
-                      source={{uri: image.uri}}
-                      style={styles.Image}
-                    />
+                    <View style={styles.containerIcon}>
+                      <Image
+                        key={index}
+                        source={{uri: image.uri}}
+                        style={styles.Image}
+                      />
+                      <Pressable
+                        style={[styles.ButtonDelete, styles.bgWhite]}
+                        onPress={() => handleDeleteImage(index as number)}>
+                        <IconIco
+                          style={[styles.Icon]}
+                          name="close"
+                          size={18}
+                          color="#000"
+                        />
+                      </Pressable>
+                    </View>
                   )}
-                </React.Fragment>
+                </View>
               ),
             )}
             {resizedImages.length < 5 && (
@@ -540,5 +556,25 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginTop: 20,
     marginBottom: 20,
+  },
+  ButtonDelete: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    zIndex: 10,
+  },
+  containerIcon: {
+    position: 'relative',
+  },
+  bgWhite: {
+    backgroundColor: 'white',
+    borderRadius: 150,
+    width: 25,
+    height: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 3,
+    marginRight: 3,
+    marginLeft: 0,
   },
 });

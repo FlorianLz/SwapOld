@@ -25,6 +25,7 @@ const articleFactory = {
         ),
         isLiked: article.articles_favorites?.length > 0,
         isOwner: article.articles_profiles[0]?.id_profile === userId,
+        status: article.status,
       };
     });
     articles.sort((a, b) => a.distance - b.distance);
@@ -59,6 +60,7 @@ const articleFactory = {
       username: rawArticle?.articles_profiles[0]?.profiles.username,
       isLiked: rawArticle?.articles_favorites?.length > 0,
       isOwner: rawArticle?.articles_profiles[0]?.id_profile === userId,
+      status: rawArticle?.status,
     };
   },
   toggleLikeArticle: async (like: any) => {

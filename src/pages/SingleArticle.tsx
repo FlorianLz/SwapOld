@@ -55,7 +55,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
     <ScrollView style={styles.container}>
       {loading ? (
         <>
-          <View style={styles.Figure} />
+          <View style={[styles.Figure, article.status !== 0 ? styles.ButtonTextNonDispo : null]} />
           <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
             <IconAnt
               style={styles.Icon}
@@ -193,7 +193,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
               </Text>
             </View>
           </View>
-          {session?.user && !article.isOwner && (
+          {session?.user && !article.isOwner && article.status === 0 && (
             <Pressable
               style={styles.Button}
               onPress={() => {
@@ -202,6 +202,11 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
               }}>
               <Text style={styles.ButtonText}>Proposer un échange</Text>
             </Pressable>
+          )}
+          {session?.user && !article.isOwner && article.status !== 0 && (
+            <View style={[styles.Button, styles.ButtonTextNonDispo]}>
+              <Text style={styles.ButtonText}>Article non disponible</Text>
+            </View>
           )}
           <Modal
             animationType="fade"
@@ -355,6 +360,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: 'Roboto',
     fontSize: 16,
+    textAlign: 'center',
   },
   Hide: {
     backfaceVisibility: 'hidden',
@@ -414,4 +420,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  ButtonTextNonDispo: {
+    backgroundColor: '#F04242',
+  }
 });

@@ -30,6 +30,7 @@ export default function Home({session}: {session: any}) {
     articleService
       .searchArticles(searchTerm, session?.user.id)
       .then((result: IArticleData[]) => {
+        console.log('SEARCH RESULT', result);
         setArticles(result as IArticleData[]);
       });
   }

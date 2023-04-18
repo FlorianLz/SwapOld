@@ -338,6 +338,7 @@ const styles = StyleSheet.create({
   iconSwap: {
     width: '10%',
     textAlign: 'center',
+    transform: [{rotate: '90deg'}, {scaleX: -1}],
   },
   swapRight: {
     width: '100%',
