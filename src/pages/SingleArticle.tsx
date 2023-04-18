@@ -219,7 +219,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
                   parmi ceux que vous avez déjà mis en ligne.
                 </Text>
                 <Pressable
-                  style={[styles.button]}
+                  style={[styles.button, styles.buttonSecondary]}
                   onPress={() => {
                     navigation.navigate('AddArticle', {
                       privateArticle: true,
@@ -227,7 +227,7 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
                     });
                     setModalChoiceVisible(false);
                   }}>
-                  <Text style={styles.textStyle}>
+                  <Text style={[styles.textStyle, styles.textStyleSecondary]}>
                     Ajouter un nouvel article
                   </Text>
                 </Pressable>
@@ -337,17 +337,22 @@ const styles = StyleSheet.create({
   },
 
   Button: {
-    backgroundColor: '#D9D9D9',
+    backgroundColor: '#5DB075',
     height: 60,
     marginTop: 50,
     marginRight: 20,
     marginLeft: 20,
-    borderRadius: 50,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  buttonSecondary: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#5DB075',
+  },
   ButtonText: {
-    color: '#000',
+    color: '#fff',
     fontFamily: 'Roboto',
     fontSize: 16,
   },
@@ -399,6 +404,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  textStyleSecondary: {
+    color: '#5DB075',
   },
   modalText: {
     fontSize: 16,
