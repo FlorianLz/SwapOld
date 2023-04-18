@@ -107,7 +107,7 @@ export default function MessagesScreen({
     <View style={styles.container}>
       <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
         <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
-        <Image style={styles.Image} source={{uri: article.ownerInfos.avatar_url}} />
+        <Image style={styles.Image} source={{uri: article.images}} />
         <View style={styles.containerHeaderInfos}>
           <Text style={styles.BackText}>{article.ownerInfos.username}</Text>
           <Text style={styles.BackSecond}>{article.title}</Text>
