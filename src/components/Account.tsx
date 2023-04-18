@@ -23,12 +23,19 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
 import locationService from '../services/location.service';
+import imagesHelper from '../helpers/images.helper';
+import { ImagePickerResponse, launchCamera } from "react-native-image-picker";
+import ImageResizer from "@bam.tech/react-native-image-resizer";
+import imageRepository from "../repository/image.repository";
 
 export default function Account({route}: {params: {session: Session}} | any) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [avatarName, setAvatarName] = useState('');
   const [email, setEmail] = useState('');
+  const [images, setImages] = useState<ImagePickerResponse[]>([]);
+  const [resizedImages, setResizedImages] = useState<[] | any>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [selectedItem, setSelectedItem] = useState<
     | {
@@ -82,7 +89,8 @@ export default function Account({route}: {params: {session: Session}} | any) {
           latitude: data.location.latitude,
           longitude: data.location.longitude,
         });
-        setAvatarUrl(data.avatar_url);
+        setAvatarUrl(imagesHelper.getPublicUrlByImageName(data.avatar_url));
+        setAvatarName(data.avatar_url);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -103,6 +111,18 @@ export default function Account({route}: {params: {session: Session}} | any) {
       if (selectedItem.cityName === '') {
         console.log('Please select a city');
       } else {
+        //Update image profile
+        let img = '';
+        if(resizedImages.length > 0){
+          const avatar = imageRepository.uploadImage(
+            resizedImages[0],
+            session?.user.id + '/avatar/',
+          );
+          const res = await avatar;
+          console.log('res', res);
+          setAvatarName(res);
+          img = res;
+        }
         const updates = {
           username: username,
           updated_at: new Date(),
@@ -111,6 +131,7 @@ export default function Account({route}: {params: {session: Session}} | any) {
             latitude: selectedItem.latitude,
             longitude: selectedItem.longitude,
           },
+          avatar_url: img !== '' ? img : avatarName,
         };
 
         console.log('updates', updates);
@@ -166,6 +187,46 @@ export default function Account({route}: {params: {session: Session}} | any) {
     });
     setCurrentSearch('');
   }, []);
+  const resize = async (newTab: ImagePickerResponse[]) => {
+    let neww = [];
+    for (const image of newTab) {
+      if (!image || !image.assets) {
+        return;
+      }
+
+      try {
+        let result = await ImageResizer.createResizedImage(
+          String(image.assets[0].uri),
+          1200,
+          1200,
+          'PNG',
+          100,
+          0,
+          undefined,
+          false,
+          {
+            mode: 'contain',
+            onlyScaleDown: true,
+          },
+        );
+        neww = [...resizedImages, result];
+        console.log('result', neww);
+      } catch (err) {
+        console.log('Unable to resize the photo');
+      }
+    }
+    setAvatarUrl(neww[0].uri);
+    setResizedImages(neww);
+  };
+  async function initMediaPicker() {
+    const result = await launchCamera({mediaType: 'photo'});
+
+    if (!result.didCancel) {
+      let newTab = [...images, result];
+      setImages([...newTab]);
+      await resize([...newTab]);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -173,6 +234,17 @@ export default function Account({route}: {params: {session: Session}} | any) {
         <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
         <View style={styles.containerHeaderInfos}>
           <Text style={styles.BackText}>Mise à jour du profil</Text>
+        </View>
+      </Pressable>
+      <Pressable style={styles.ContainerImage} onPress={initMediaPicker}>
+        <View
+          style={styles.ImageBackground}>
+          {avatarUrl != null && avatarUrl !== '' && (
+            <Image
+              style={styles.Image}
+              source={{uri: avatarUrl}}
+            />
+          )}
         </View>
       </Pressable>
       <Text style={styles.Title}>Email</Text>
@@ -312,5 +384,22 @@ const styles = StyleSheet.create({
     borderColor: '#E8E8E8',
     borderWidth: 1,
     marginBottom: 12,
+  },
+  ContainerImage: {
+    alignItems: 'center',
+  },
+  ImageBackground: {
+    width: 150,
+    height: 150,
+    backgroundColor: '#fff',
+    borderRadius: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 32,
+  },
+  Image: {
+    width: 140,
+    height: 140,
+    borderRadius: 100,
   },
 });

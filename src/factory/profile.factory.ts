@@ -7,7 +7,7 @@ const profileFactory = {
       username: rawProfile.username,
       full_name: rawProfile.full_name,
       city_name: rawProfile.location.cityName,
-      avatar_url: imagesHelper.getPublicUrlByImageName(rawProfile.avatar),
+      avatar_url: imagesHelper.getPublicUrlByImageName(rawProfile.avatar_url),
     };
   },
 };

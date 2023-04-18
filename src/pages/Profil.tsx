@@ -32,7 +32,7 @@ export default function Profil({session}: {session: any}) {
       setArticles(result);
     });
     profileService.getProfile(session.user.id).then(result => {
-      console.log(result);
+      console.log('res',result);
       setUserInfos(result);
     });
   }, [isFocused]);
