@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {supabase} from '../lib/initSupabase';
 import messageService from '../services/message.service';
@@ -107,6 +107,7 @@ export default function MessagesScreen({
     <View style={styles.container}>
       <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
         <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
+        <Image style={styles.Image} source={{uri: article.ownerInfos.avatar_url}} />
         <View style={styles.containerHeaderInfos}>
           <Text style={styles.BackText}>{article.ownerInfos.username}</Text>
           <Text style={styles.BackSecond}>{article.title}</Text>
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   Icon: {
-    marginRight: 20,
+    marginRight: 10,
   },
 
   container: {
@@ -235,5 +236,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
+  },
+  Image: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+    borderRadius: 50,
   },
 });
