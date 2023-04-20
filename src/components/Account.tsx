@@ -241,6 +241,8 @@ export default function Account({route}: {params: {session: Session}} | any) {
                 );
                 console.log(err.message)
               } else {
+                const auth = await supabase.auth.refreshSession();
+                setSession(auth.data.session);
                 navigation.goBack();
               }
               setLoading(false);
