@@ -2,6 +2,7 @@ import React, {useCallback, useEffect} from 'react';
 import {
   Dimensions,
   Image,
+  KeyboardAvoidingView,
   Platform,
   Pressable,
   StyleSheet,
@@ -273,21 +274,30 @@ export default function AddArticle({
           backgroundColor: '#fff',
         }}>
         <Text style={styles.Title}>Titre de l'article</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Tee shirt blanc..."
-          placeholderTextColor="#BDBDBD"
-          value={title}
-          onChangeText={setTitle}
-        />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          <TextInput
+            style={styles.input}
+            placeholder="Tee shirt blanc..."
+            placeholderTextColor="#BDBDBD"
+            value={title}
+            onChangeText={setTitle}
+          />
+        </KeyboardAvoidingView>
+
         <Text style={styles.Title}>Description de l'article</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Description..."
-          placeholderTextColor="#BDBDBD"
-          value={content}
-          onChangeText={setContent}
-        />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          <TextInput
+            style={styles.input}
+            placeholder="Description..."
+            placeholderTextColor="#BDBDBD"
+            value={content}
+            onChangeText={setContent}
+          />
+        </KeyboardAvoidingView>
 
         <Text style={styles.Title}>Localisation</Text>
         <View style={[Platform.select({ios: {zIndex: 1}})]}>
