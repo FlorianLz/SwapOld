@@ -11,6 +11,8 @@ import {
   Platform,
   Dimensions,
   Modal,
+  ScrollView,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {Button} from 'react-native-elements';
 import {Session} from '@supabase/supabase-js';
@@ -28,6 +30,7 @@ import imagesHelper from '../helpers/images.helper';
 import {ImagePickerResponse, launchCamera} from 'react-native-image-picker';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
 import imageRepository from '../repository/image.repository';
+import authHelper from '../helpers/auth.helper';
 
 export default function Account({route}: {params: {session: Session}} | any) {
   const [loading, setLoading] = useState(true);
@@ -35,10 +38,13 @@ export default function Account({route}: {params: {session: Session}} | any) {
   const [avatarUrl, setAvatarUrl] = useState('');
   const [avatarName, setAvatarName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
   const [images, setImages] = useState<ImagePickerResponse[]>([]);
   const [resizedImages, setResizedImages] = useState<[] | any>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
+  const [error, setError] = useState('');
   const [selectedItem, setSelectedItem] = useState<
     | {
         title: string;
@@ -56,7 +62,7 @@ export default function Account({route}: {params: {session: Session}} | any) {
     cityName: '',
   });
 
-  const session = route.params.session;
+  const [session, setSession] = useState<Session | null>(route.params.session);
 
   useEffect(() => {
     console.log(route.params.session.user);
@@ -104,54 +110,146 @@ export default function Account({route}: {params: {session: Session}} | any) {
   }
 
   async function updateProfile() {
-    try {
-      setLoading(true);
-      if (!session?.user) {
-        console.log('No user on the session!');
-      }
-
-      if (selectedItem.cityName === '') {
-        console.log('Please select a city');
-      } else {
-        //Update image profile
-        let img = '';
-        if (resizedImages.length > 0) {
-          const avatar = imageRepository.uploadImage(
-            resizedImages[0],
-            session?.user.id + '/avatar/',
-          );
-          const res = await avatar;
-          console.log('res', res);
-          setAvatarName(res);
-          img = res;
+    setLoading(true);
+    //Update email
+    if (authHelper.checkEmailIsValid(email)) {
+      const update = await supabase.rpc('update_user_email', {
+        user_id: session?.user.id,
+        new_email: email,
+      });
+      if (update.error) {
+        switch (update.error.code) {
+          case '23505':
+            setError('Cet email est déjà utilisé');
+            break;
+          default:
+            setError(
+              'Une erreur est survenue lors de la mise à jour de votre email',
+            );
+            break;
         }
-        const updates = {
-          username: username,
-          updated_at: new Date(),
-          location: {
-            cityName: selectedItem.cityName,
-            latitude: selectedItem.latitude,
-            longitude: selectedItem.longitude,
-          },
-          avatar_url: img !== '' ? img : avatarName,
-        };
+      } else {
+        //Update password
+        if (
+          password !== '' &&
+          passwordConfirm !== '' &&
+          password === passwordConfirm &&
+          authHelper.checkPasswordIsValid(password)
+        ) {
+          const updatePassword = await supabase.rpc('update_user_password', {
+            user_id: session?.user.id,
+            new_password: password,
+          });
+          if (updatePassword.error) {
+            setError(
+              'Une erreur est survenue lors de la mise à jour de votre mot de passe',
+            );
+          } else {
+            //Update reste du profil
+            if (selectedItem.cityName === '') {
+              setError('Veuillez renseigner votre ville');
+              setLoading(false);
+            } else {
+              //Update image profile
+              let img = '';
+              if (resizedImages.length > 0) {
+                const avatar = imageRepository.uploadImage(
+                  resizedImages[0],
+                  session?.user.id + '/avatar/',
+                );
+                const res = await avatar;
+                console.log('res', res);
+                setAvatarName(res);
+                img = res;
+              }
+              const updates = {
+                username: username,
+                updated_at: new Date(),
+                location: {
+                  cityName: selectedItem.cityName,
+                  latitude: selectedItem.latitude,
+                  longitude: selectedItem.longitude,
+                },
+                avatar_url: img !== '' ? img : avatarName,
+              };
 
-        console.log('updates', updates);
+              console.log('updates', updates);
 
-        const {data} = await supabase
-          .from('profiles')
-          .update(updates)
-          .eq('id', session?.user.id)
-          .select();
+              const {error: err} = await supabase
+                .from('profiles')
+                .update(updates)
+                .eq('id', session?.user.id)
+                .select();
+              if (err) {
+                setError(
+                  'Une erreur est survenue lors de la mise à jour de votre profil',
+                );
+              } else {
+                navigation.goBack();
+              }
+              setLoading(false);
+            }
+          }
+        } else {
+          if (password !== '') {
+            if (!authHelper.checkPasswordIsValid(password)) {
+              setError(
+                'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un caractère spécial et un chiffre.',
+              );
+            } else {
+              setError('Les mots de passe ne sont pas identiques.');
+            }
+          } else {
+            //Update reste du profil
+            if (selectedItem.cityName === '') {
+              setError('Veuillez renseigner votre ville');
+              setLoading(false);
+            } else {
+              //Update image profile
+              let img = '';
+              if (resizedImages.length > 0) {
+                const avatar = imageRepository.uploadImage(
+                  resizedImages[0],
+                  session?.user.id + '/avatar/',
+                );
+                const res = await avatar;
+                console.log('res', res);
+                setAvatarName(res);
+                img = res;
+              }
+              const updates = {
+                username: username,
+                updated_at: new Date(),
+                location: {
+                  cityName: selectedItem.cityName,
+                  latitude: selectedItem.latitude,
+                  longitude: selectedItem.longitude,
+                },
+                avatar_url: img !== '' ? img : avatarName,
+              };
 
-        console.log(data);
+              console.log('updates', updates);
+
+              const {error: err} = await supabase
+                .from('profiles')
+                .update(updates)
+                .eq('id', session?.user.id)
+                .select();
+              if (err) {
+                setError(
+                  'Une erreur est survenue lors de la mise à jour de votre profil',
+                );
+                console.log(err.message)
+              } else {
+                navigation.goBack();
+              }
+              setLoading(false);
+            }
+          }
+        }
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    } finally {
-      setLoading(false);
+    } else {
+      setError("Votre Email n'est pas valide");
     }
   }
   const [currentSearch, setCurrentSearch] = useState<string>('');
@@ -232,140 +330,171 @@ export default function Account({route}: {params: {session: Session}} | any) {
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
+      <Pressable
+        style={styles.Header}
+        onPress={() => navigation.goBack()}
+        disabled={loading}>
         <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
         <View style={styles.containerHeaderInfos}>
           <Text style={styles.BackText}>Mise à jour du profil</Text>
         </View>
       </Pressable>
-      <Pressable style={styles.ContainerImage} onPress={initMediaPicker}>
-        <View style={styles.ImageBackground}>
-          {avatarUrl != null && avatarUrl !== '' && (
-            <Image style={styles.Image} source={{uri: avatarUrl}} />
-          )}
-        </View>
-      </Pressable>
-      <Text style={styles.Title}>Email</Text>
-      <TextInput style={styles.input} value={email} />
-      <Text style={styles.Title}>Username</Text>
-      <TextInput
-        style={styles.input}
-        value={username || ''}
-        onChangeText={text => setUsername(text)}
-      />
-      <Text style={styles.Title}>Localisation</Text>
-      <View style={[Platform.select({ios: {zIndex: 1}})]}>
-        <AutocompleteDropdown
-          initialValue={'test'}
-          direction={Platform.select({ios: 'down'})}
-          dataSet={suggestionsList}
-          onChangeText={getSuggestions}
-          onSelectItem={item => {
-            item && setSelectedItem(item);
-          }}
-          debounce={600}
-          suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
-          onClear={onClearPress}
-          loading={loading}
-          useFilter={false} // set false to prevent rerender twice
-          textInputProps={{
-            placeholder: selectedItem?.cityName || 'Localisation...',
-            placeholderTextColor: '#363636',
-            autoCorrect: true,
-            autoCapitalize: 'none',
-            style: {
-              backgroundColor: '#F6F6F6',
-              height: 48,
-              paddingLeft: 20,
-              borderRadius: 4,
-              borderColor: '#E8E8E8',
-              borderWidth: 1,
-              marginBottom: 8,
-              color: '#363636',
-              fontWeight: 'normal',
-              fontSize: 14,
-            },
-          }}
-          rightButtonsContainerStyle={{
-            backgroundColor: '#F6F6F6',
-            height: 47,
-            marginTop: 1,
-            marginRight: 1,
-          }}
-          inputContainerStyle={{
-            borderRadius: 4,
-            backgroundColor: '#F6F6F6',
-            height: 47,
-          }}
-          suggestionsListContainerStyle={{
-            backgroundColor: 'white',
-            maxHeight: 165,
-          }}
-          containerStyle={{
-            flexGrow: 1,
-            flexShrink: 1,
-            marginBottom: 16,
-            borderColor: '#E8E8E8',
-            height: 50,
-            borderWidth: 1,
-            borderRadius: 4,
-          }}
-          renderItem={item => <Text style={{padding: 15}}>{item.title}</Text>}
-          EmptyResultComponent={
-            <View>
-              {currentSearch.length > 0 && (
-                <Text style={{padding: 15}}>Aucun résultat</Text>
-              )}
-            </View>
-          }
-          ChevronIconComponent={
-            <Feather name="chevron-down" size={20} color="#000" />
-          }
-          ClearIconComponent={
-            <Feather name="x-circle" size={18} color="#000" />
-          }
-          inputHeight={50}
-          showChevron={false}
-          closeOnBlur={false}
-        />
-        <View style={{width: 10}} />
-      </View>
-      <Pressable
-        style={styles.Button}
-        onPress={() => {
-          console.log('edit');
-          setModalChoiceVisible(true);
-        }}>
-        <Text style={styles.ButtonText}>Mise à jour du profil</Text>
-      </Pressable>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalChoiceVisible}
-        onRequestClose={() => {
-          setModalChoiceVisible(!modalChoiceVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>
-              Voulez vous modifer votre profil ?
-            </Text>
-            <Pressable
-              style={[styles.button]}
-              onPress={() => {
-                updateProfile();
-                setModalChoiceVisible(false);
-              }}>
-              <Text style={[styles.textStyle]}>oui</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalChoiceVisible(!modalChoiceVisible)}>
-              <Text style={[styles.textStyle, styles.TextClose]}>Annuler</Text>
-            </Pressable>
+      <ScrollView>
+        <Pressable style={styles.ContainerImage} onPress={initMediaPicker}>
+          <View style={styles.ImageBackground}>
+            {avatarUrl != null && avatarUrl !== '' && (
+              <Image style={styles.Image} source={{uri: avatarUrl}} />
+            )}
           </View>
+        </Pressable>
+        <Text style={styles.Title}>Localisation</Text>
+        <View style={[Platform.select({ios: {zIndex: 1}})]}>
+          <AutocompleteDropdown
+            initialValue={'test'}
+            direction={Platform.select({ios: 'down'})}
+            dataSet={suggestionsList}
+            onChangeText={getSuggestions}
+            onSelectItem={item => {
+              item && setSelectedItem(item);
+            }}
+            debounce={600}
+            suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
+            onClear={onClearPress}
+            useFilter={false} // set false to prevent rerender twice
+            textInputProps={{
+              placeholder: selectedItem?.cityName || 'Localisation...',
+              placeholderTextColor: '#363636',
+              autoCorrect: true,
+              autoCapitalize: 'none',
+              style: {
+                backgroundColor: '#F6F6F6',
+                height: 48,
+                paddingLeft: 20,
+                borderRadius: 4,
+                borderColor: '#E8E8E8',
+                borderWidth: 1,
+                marginBottom: 8,
+                color: '#363636',
+                fontWeight: 'normal',
+                fontSize: 14,
+              },
+            }}
+            rightButtonsContainerStyle={{
+              backgroundColor: '#F6F6F6',
+              height: 47,
+              marginTop: 1,
+              marginRight: 1,
+            }}
+            inputContainerStyle={{
+              borderRadius: 4,
+              backgroundColor: '#F6F6F6',
+              height: 47,
+            }}
+            suggestionsListContainerStyle={{
+              backgroundColor: 'white',
+              maxHeight: 165,
+            }}
+            containerStyle={{
+              flexGrow: 1,
+              flexShrink: 1,
+              marginBottom: 16,
+              borderColor: '#E8E8E8',
+              height: 50,
+              borderWidth: 1,
+              borderRadius: 4,
+            }}
+            renderItem={item => <Text style={{padding: 15}}>{item.title}</Text>}
+            EmptyResultComponent={
+              <View>
+                {currentSearch.length > 0 && (
+                  <Text style={{padding: 15}}>Aucun résultat</Text>
+                )}
+              </View>
+            }
+            ChevronIconComponent={
+              <Feather name="chevron-down" size={20} color="#000" />
+            }
+            ClearIconComponent={
+              <Feather name="x-circle" size={18} color="#000" />
+            }
+            inputHeight={50}
+            showChevron={false}
+            closeOnBlur={false}
+          />
+          <Text style={styles.Title}>Email</Text>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={text => setEmail(text)}
+          />
+          <Text style={styles.Title}>Nom d'utilisateur</Text>
+          <TextInput
+            style={styles.input}
+            value={username || ''}
+            onChangeText={text => setUsername(text)}
+          />
+          <Text style={styles.Title}>Mot de passe</Text>
+          <TextInput
+            style={styles.input}
+            value={password || ''}
+            onChangeText={text => setPassword(text)}
+            secureTextEntry={true}
+          />
+          <Text style={styles.Title}>Confirmation du mot de passe</Text>
+          <TextInput
+            style={styles.input}
+            value={passwordConfirm || ''}
+            onChangeText={text => setPasswordConfirm(text)}
+            secureTextEntry={true}
+          />
+          <View style={{width: 10}} />
         </View>
-      </Modal>
+        {error !== '' && (
+          <>
+            <View style={styles.errorMessage}>
+              <Text style={styles.errorMessageText}>{error}</Text>
+            </View>
+          </>
+        )}
+        <Pressable
+          style={styles.Button}
+          onPress={() => {
+            console.log('edit');
+            setModalChoiceVisible(true);
+          }}>
+          <Text style={styles.ButtonText}>Mise à jour du profil</Text>
+        </Pressable>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalChoiceVisible}
+          onRequestClose={() => {
+            setModalChoiceVisible(!modalChoiceVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                Voulez vous modifier votre profil ?
+              </Text>
+              <Pressable
+                style={[styles.button]}
+                onPress={() => {
+                  updateProfile();
+                  setModalChoiceVisible(false);
+                }}>
+                <Text style={[styles.textStyle]}>oui</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalChoiceVisible(!modalChoiceVisible)}>
+                <Text style={[styles.textStyle, styles.TextClose]}>
+                  Annuler
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
     </View>
   );
 }
@@ -504,6 +633,22 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: 'Roboto',
     fontSize: 16,
+    textAlign: 'center',
+  },
+  errorMessage: {
+    color: 'red',
+    marginTop: 20,
+    borderColor: 'red',
+    borderWidth: 1,
+    minHeight: 50,
+    borderRadius: 8,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  errorMessageText: {
+    color: 'red',
     textAlign: 'center',
   },
 });

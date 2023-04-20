@@ -53,7 +53,6 @@ export default function AddArticle({
   const privateArticle = route.params.privateArticle || false;
   const article_sender = route.params.article_sender || null;
   const hideRetour = route.params.hideRetour || false;
-  const maxImages = 5;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const isFocused = useIsFocused();
   useEffect(() => {
