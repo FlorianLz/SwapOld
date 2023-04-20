@@ -344,6 +344,26 @@ export default function Account({route}: {params: {session: Session}} | any) {
             )}
           </View>
         </Pressable>
+        <Text style={styles.Title}>Email</Text>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={text => setEmail(text)}
+          />
+        </KeyboardAvoidingView>
+        <Text style={styles.Title}>Nom d'utilisateur</Text>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          <TextInput
+            style={styles.input}
+            value={username || ''}
+            onChangeText={text => setUsername(text)}
+          />
+        </KeyboardAvoidingView>
         <Text style={styles.Title}>Localisation</Text>
         <View style={[Platform.select({ios: {zIndex: 1}})]}>
           <AutocompleteDropdown
@@ -418,50 +438,31 @@ export default function Account({route}: {params: {session: Session}} | any) {
             showChevron={false}
             closeOnBlur={false}
           />
-          <Text style={styles.Title}>Email</Text>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={text => setEmail(text)}
-            />
-          </KeyboardAvoidingView>
-          <Text style={styles.Title}>Nom d'utilisateur</Text>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-            <TextInput
-              style={styles.input}
-              value={username || ''}
-              onChangeText={text => setUsername(text)}
-            />
-          </KeyboardAvoidingView>
-          <Text style={styles.Title}>Mot de passe</Text>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-            <TextInput
-              style={styles.input}
-              value={password || ''}
-              onChangeText={text => setPassword(text)}
-              secureTextEntry={true}
-            />
-          </KeyboardAvoidingView>
-          <Text style={styles.Title}>Confirmation du mot de passe</Text>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-            <TextInput
-              style={styles.input}
-              value={passwordConfirm || ''}
-              onChangeText={text => setPasswordConfirm(text)}
-              secureTextEntry={true}
-            />
-          </KeyboardAvoidingView>
-          <View style={{width: 10}} />
         </View>
+        <Text style={styles.Title}>Mot de passe</Text>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          <TextInput
+            style={styles.input}
+            value={password || ''}
+            onChangeText={text => setPassword(text)}
+            secureTextEntry={true}
+          />
+        </KeyboardAvoidingView>
+        <Text style={styles.Title}>Confirmation du mot de passe</Text>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+          <TextInput
+            style={styles.input}
+            value={passwordConfirm || ''}
+            onChangeText={text => setPasswordConfirm(text)}
+            secureTextEntry={true}
+          />
+        </KeyboardAvoidingView>
+        <View style={{width: 10}} />
+
         {error !== '' && (
           <>
             <View style={styles.errorMessage}>
