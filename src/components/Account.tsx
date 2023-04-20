@@ -12,16 +12,10 @@ import {
   Dimensions,
   Modal,
   ScrollView,
-  KeyboardAvoidingView,
 } from 'react-native';
-import {Button} from 'react-native-elements';
 import {Session} from '@supabase/supabase-js';
 import IconAnt from 'react-native-vector-icons/AntDesign';
-import {
-  ParamListBase,
-  useIsFocused,
-  useNavigation,
-} from '@react-navigation/native';
+import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
@@ -31,6 +25,7 @@ import {ImagePickerResponse, launchCamera} from 'react-native-image-picker';
 import ImageResizer from '@bam.tech/react-native-image-resizer';
 import imageRepository from '../repository/image.repository';
 import authHelper from '../helpers/auth.helper';
+import {KeyboardAvoidingView} from 'react-native';
 
 export default function Account({route}: {params: {session: Session}} | any) {
   const [loading, setLoading] = useState(true);
@@ -239,7 +234,7 @@ export default function Account({route}: {params: {session: Session}} | any) {
                 setError(
                   'Une erreur est survenue lors de la mise à jour de votre profil',
                 );
-                console.log(err.message)
+                console.log(err.message);
               } else {
                 const auth = await supabase.auth.refreshSession();
                 setSession(auth.data.session);
@@ -341,7 +336,7 @@ export default function Account({route}: {params: {session: Session}} | any) {
           <Text style={styles.BackText}>Mise à jour du profil</Text>
         </View>
       </Pressable>
-      <ScrollView>
+      <ScrollView style={styles.ScrollView}>
         <Pressable style={styles.ContainerImage} onPress={initMediaPicker}>
           <View style={styles.ImageBackground}>
             {avatarUrl != null && avatarUrl !== '' && (
@@ -424,31 +419,47 @@ export default function Account({route}: {params: {session: Session}} | any) {
             closeOnBlur={false}
           />
           <Text style={styles.Title}>Email</Text>
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={text => setEmail(text)}
-          />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={text => setEmail(text)}
+            />
+          </KeyboardAvoidingView>
           <Text style={styles.Title}>Nom d'utilisateur</Text>
-          <TextInput
-            style={styles.input}
-            value={username || ''}
-            onChangeText={text => setUsername(text)}
-          />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <TextInput
+              style={styles.input}
+              value={username || ''}
+              onChangeText={text => setUsername(text)}
+            />
+          </KeyboardAvoidingView>
           <Text style={styles.Title}>Mot de passe</Text>
-          <TextInput
-            style={styles.input}
-            value={password || ''}
-            onChangeText={text => setPassword(text)}
-            secureTextEntry={true}
-          />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <TextInput
+              style={styles.input}
+              value={password || ''}
+              onChangeText={text => setPassword(text)}
+              secureTextEntry={true}
+            />
+          </KeyboardAvoidingView>
           <Text style={styles.Title}>Confirmation du mot de passe</Text>
-          <TextInput
-            style={styles.input}
-            value={passwordConfirm || ''}
-            onChangeText={text => setPasswordConfirm(text)}
-            secureTextEntry={true}
-          />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <TextInput
+              style={styles.input}
+              value={passwordConfirm || ''}
+              onChangeText={text => setPasswordConfirm(text)}
+              secureTextEntry={true}
+            />
+          </KeyboardAvoidingView>
           <View style={{width: 10}} />
         </View>
         {error !== '' && (
@@ -652,5 +663,8 @@ const styles = StyleSheet.create({
   errorMessageText: {
     color: 'red',
     textAlign: 'center',
+  },
+  ScrollView: {
+    marginBottom: 50,
   },
 });
