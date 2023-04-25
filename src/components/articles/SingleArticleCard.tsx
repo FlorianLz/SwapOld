@@ -29,7 +29,7 @@ export default function SingleArticleCard({
   const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
   useEffect(() => {
     console.log('article', modeAffichage);
-    console.log('article', article)
+    console.log('article', article);
   }, []);
   return (
     <View

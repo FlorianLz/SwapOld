@@ -253,7 +253,10 @@ export default function AddArticle({
           onPress={() => {
             console.log(article_sender);
             navigation.navigate('SingleArticle', {
-              id: typeof article_sender.article_sender !== 'undefined' ? article_sender.article_sender.article.id : article_sender.article.id,
+              id:
+                typeof article_sender.article_sender !== 'undefined'
+                  ? article_sender.article_sender.article.id
+                  : article_sender.article.id,
               article_sender: article_sender,
             });
           }}>

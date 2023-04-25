@@ -1,6 +1,7 @@
 export default interface IArticleData {
   id: number;
   title: string;
+  title2?: string;
   description: string;
   created_at: Date;
   location: {latitude: number; longitude: number};

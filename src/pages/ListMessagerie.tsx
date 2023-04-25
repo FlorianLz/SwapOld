@@ -23,7 +23,7 @@ export default function ListMessagerie({
       ? article.ownerInfos.avatar_url
       : article.receiverInfos.avatar_url,
   };
-  console.log('actualUser', article)
+  console.log('actualUser', article);
   return (
     <Pressable
       style={styles.Container}
@@ -44,8 +44,15 @@ export default function ListMessagerie({
         }>
         <Image style={styles.Image} source={{uri: article.images}} />
         <View style={styles.InfosContainer}>
-          <Text style={styles.Name}>Echange avec {article.isOwner ? article.receiverInfos.username : article.ownerInfos.username}</Text>
-          <Text style={styles.Title}>{article.title} contre {article.title2} </Text>
+          <Text style={styles.Name}>
+            Echange avec{' '}
+            {article.isOwner
+              ? article.receiverInfos.username
+              : article.ownerInfos.username}
+          </Text>
+          <Text style={styles.Title}>
+            {article.title} contre {article.title2}{' '}
+          </Text>
         </View>
       </View>
     </Pressable>

@@ -72,7 +72,10 @@ const articleService = {
       userId,
     );
   },
-  getSwapsByStateAndProfileForMessages: async (state: 0 | 1 | 2, userId: string) => {
+  getSwapsByStateAndProfileForMessages: async (
+    state: 0 | 1 | 2,
+    userId: string,
+  ) => {
     const rawArticles = await articleRepository.getSwapsByStateAndProfile(
       userId,
       state,

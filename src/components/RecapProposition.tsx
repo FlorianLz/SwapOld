@@ -67,7 +67,6 @@ export default function RecapProposition({session, navigation}: any) {
         });
         setNbPropositionsRecues(nbPropositionsRecuesTemp);
         setNbPropositionsEnvoyees(nbPropositionsEnvoyeesTemp);
-
       });
     articleRepository
       .getSwapsByStateAndProfile(session.user.id, 2)
@@ -88,7 +87,9 @@ export default function RecapProposition({session, navigation}: any) {
       <View style={{flexDirection: 'column'}}>
         <Pressable onPress={() => setActiveIndex(activeIndex === 0 ? -1 : 0)}>
           <View style={styles.header}>
-            <Text style={styles.header_text}>Reçues ({nbPropositionsRecues})</Text>
+            <Text style={styles.header_text}>
+              Reçues ({nbPropositionsRecues})
+            </Text>
             <Icon
               name="chevron-right"
               size={30}
@@ -127,12 +128,10 @@ export default function RecapProposition({session, navigation}: any) {
                               }}
                             />
                             <View>
-                              <Text
-                                style={[styles.swap_title]}>
+                              <Text style={[styles.swap_title]}>
                                 {swap.id_article_sender.title}
                               </Text>
-                              <Text
-                                style={[styles.Localisation]}>
+                              <Text style={[styles.Localisation]}>
                                 {swap.id_article_sender.location.cityName},{' '}
                                 {locationHelper.getDistanceFromLatLonInKm(
                                   swap.id_article_sender.location?.latitude,
@@ -152,7 +151,8 @@ export default function RecapProposition({session, navigation}: any) {
                           />
                           <View style={styles.swapRight}>
                             <View>
-                              <Text style={[styles.swap_title, styles.TextRight]}>
+                              <Text
+                                style={[styles.swap_title, styles.TextRight]}>
                                 {swap.id_article_receiver.title}
                               </Text>
                               <Text style={styles.Localisation}>
@@ -193,8 +193,12 @@ export default function RecapProposition({session, navigation}: any) {
             onRequestClose={() => {
               setModalChoiceVisible(!modalChoiceVisible);
             }}>
-            <Pressable style={styles.centeredView} onPress={()=>(setModalChoiceVisible(!modalChoiceVisible))}>
-              <Pressable style={styles.modalView} onPress={(event)=>event.stopPropagation()}>
+            <Pressable
+              style={styles.centeredView}
+              onPress={() => setModalChoiceVisible(!modalChoiceVisible)}>
+              <Pressable
+                style={styles.modalView}
+                onPress={event => event.stopPropagation()}>
                 <Text style={styles.modalText}>
                   Voulez-vous accepter l'échange de "{nomArticleModale1}" contre
                   "{nomArticleModale2}" ?
@@ -239,7 +243,7 @@ export default function RecapProposition({session, navigation}: any) {
                 </Pressable>
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
-                  onPress={(event) => {
+                  onPress={event => {
                     event.stopPropagation(); // Ajouter cette ligne pour éviter que le onPress du container ne soit appelé
                     navigation.navigate('SingleArticle', {
                       id: idArticleModale,
@@ -258,7 +262,9 @@ export default function RecapProposition({session, navigation}: any) {
 
         <Pressable onPress={() => setActiveIndex(activeIndex === 1 ? -1 : 1)}>
           <View style={styles.header}>
-            <Text style={styles.header_text}>Envoyées ({nbPropositionsEnvoyees})</Text>
+            <Text style={styles.header_text}>
+              Envoyées ({nbPropositionsEnvoyees})
+            </Text>
             <Icon
               name="chevron-right"
               size={30}
@@ -346,7 +352,9 @@ export default function RecapProposition({session, navigation}: any) {
 
         <Pressable onPress={() => setActiveIndex(activeIndex === 2 ? -1 : 2)}>
           <View style={styles.header}>
-            <Text style={styles.header_text}>Acceptées ({nbPropositionsAcceptees})</Text>
+            <Text style={styles.header_text}>
+              Acceptées ({nbPropositionsAcceptees})
+            </Text>
             <Icon
               name="chevron-right"
               size={30}
