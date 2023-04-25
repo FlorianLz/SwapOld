@@ -117,6 +117,55 @@ const articleFactory = {
     articles.sort((a, b) => a.distance - b.distance);
     return articles;
   },
+  getSwapsByStateAndProfileForMessages: async (rawArticles: any, userId: string) => {
+    if (!rawArticles) {
+      return [];
+    }
+    let articles: IArticleData[] = [];
+    let location = await locationHelper.getUserLocation();
+    articles = rawArticles.map((article: any) => {
+      return <IArticleData>{
+        id: article.id_article_receiver.id,
+        title: article.id_article_receiver.articles_profiles[0]?.id_profile ===
+          userId ? article.id_article_sender.title : article.id_article_receiver.title,
+        title2: article.id_article_receiver.articles_profiles[0]?.id_profile === userId ? article.id_article_receiver.title : article.id_article_sender.title,
+        distance: locationHelper.getDistanceFromLatLonInKm(
+          location.coords?.latitude,
+          location.coords?.longitude,
+          article.id_article_receiver.location?.latitude,
+          article.id_article_receiver.location?.longitude,
+        ),
+        location_name: article.id_article_receiver.location?.cityName,
+        images: imagesHelper.getPublicUrlByImageName(
+          article.id_article_receiver.articles_profiles[0]?.id_profile ===
+          userId ? article.id_article_sender.articles_images[0]?.image_name : article.id_article_receiver.articles_images[0]?.image_name,
+        ),
+        isLiked: article.id_article_receiver.articles_favorites?.length > 0,
+        isOwner:
+          article.id_article_receiver.articles_profiles[0]?.id_profile ===
+          userId,
+        ownerInfos: {
+          id: article.id_article_receiver.articles_profiles[0]?.id_profile,
+          username:
+            article.id_article_receiver.articles_profiles[0]?.profiles.username,
+          avatar_url: imagesHelper.getPublicUrlByImageName(
+            article.id_article_receiver.articles_profiles[0]?.profiles
+              .avatar_url,
+          ),
+        },
+        receiverInfos: {
+          id: article.id_article_sender.articles_profiles[0]?.id_profile,
+          username:
+            article.id_article_sender.articles_profiles[0]?.profiles.username,
+          avatar_url: imagesHelper.getPublicUrlByImageName(
+            article.id_article_sender.articles_profiles[0]?.profiles.avatar_url,
+          ),
+        },
+      };
+    });
+    articles.sort((a, b) => a.distance - b.distance);
+    return articles;
+  },
   getAllMyPropositionsToSwap: async (
     rawArticles: any,
     userId: string,
@@ -151,6 +200,7 @@ const articleFactory = {
         ),
         isLiked: article.articles_favorites?.length > 0,
         isOwner: article.articles_profiles[0]?.id_profile === userId,
+        status: article.status,
       };
     });
     articles.sort((a, b) => a.distance - b.distance);

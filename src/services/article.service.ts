@@ -72,5 +72,15 @@ const articleService = {
       userId,
     );
   },
+  getSwapsByStateAndProfileForMessages: async (state: 0 | 1 | 2, userId: string) => {
+    const rawArticles = await articleRepository.getSwapsByStateAndProfile(
+      userId,
+      state,
+    );
+    return await articleFactory.getSwapsByStateAndProfileForMessages(
+      rawArticles.data,
+      userId,
+    );
+  },
 };
 export default articleService;

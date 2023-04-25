@@ -19,7 +19,7 @@ export default function Messagerie({session}: {session: any}) {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
     articleService
-      .getSwapsByStateAndProfile(2, session.user.id)
+      .getSwapsByStateAndProfileForMessages(2, session.user.id)
       .then((result: IArticleData[]) => {
         setSwaps(result as IArticleData[]);
       });

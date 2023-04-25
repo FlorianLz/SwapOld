@@ -200,7 +200,7 @@ const articleRepository = {
     )
   `,
       )
-      .eq('articles_profiles.id_profile', idUser);
+      .eq('articles_profiles.id_profile', idUser).eq('status', 0);
     return data;
   },
   deleteArticle: async (articleId: number, idUser: string) => {

@@ -136,8 +136,12 @@ export default function AddArticle({
               articleRepository
                 .swapArticle(
                   session.user.id,
-                  article_sender.article.id_profile,
-                  article_sender.article.id,
+                  typeof article_sender.article_sender !== 'undefined'
+                    ? article_sender.article_sender.article.id
+                    : article_sender.article.id,
+                  typeof article_sender.article_sender !== 'undefined'
+                    ? article_sender.article_sender.article.id
+                    : article_sender.article.id,
                   result.id_article,
                 )
                 .then((result: any) => {
@@ -246,11 +250,13 @@ export default function AddArticle({
       {!hideRetour ? (
         <Pressable
           style={styles.Header}
-          onPress={() =>
+          onPress={() => {
+            console.log(article_sender);
             navigation.navigate('SingleArticle', {
-              id: article_sender.article_sender.article.id,
-            })
-          }>
+              id: typeof article_sender.article_sender !== 'undefined' ? article_sender.article_sender.article.id : article_sender.article.id,
+              article_sender: article_sender,
+            });
+          }}>
           <IconAnt
             style={styles.BackIcon}
             name="arrowleft"

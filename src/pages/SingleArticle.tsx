@@ -20,8 +20,16 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconIon from 'react-native-vector-icons/Ionicons';
 import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
-export default ({route}: {params: {session: object; id: number}} | any) => {
+export default ({
+  route,
+}:
+  | {params: {session: object; id: number; showPropositionButton: boolean}}
+  | any) => {
   const {id, session} = route.params;
+  let {showPropositionButton} = route.params;
+  if (typeof showPropositionButton === 'undefined') {
+    showPropositionButton = true;
+  }
   const [article, setArticle] = React.useState<IArticleData>(
     {} as IArticleData,
   );
@@ -198,16 +206,19 @@ export default ({route}: {params: {session: object; id: number}} | any) => {
               </Text>
             </View>
           </View>
-          {session?.user && !article.isOwner && article.status === 0 && (
-            <Pressable
-              style={styles.Button}
-              onPress={() => {
-                console.log('edit');
-                setModalChoiceVisible(true);
-              }}>
-              <Text style={styles.ButtonText}>Proposer un échange</Text>
-            </Pressable>
-          )}
+          {session?.user &&
+            !article.isOwner &&
+            article.status === 0 &&
+            showPropositionButton && (
+              <Pressable
+                style={styles.Button}
+                onPress={() => {
+                  console.log('edit');
+                  setModalChoiceVisible(true);
+                }}>
+                <Text style={styles.ButtonText}>Proposer un échange</Text>
+              </Pressable>
+            )}
           {session?.user && !article.isOwner && article.status !== 0 && (
             <View style={[styles.Button, styles.ButtonTextNonDispo]}>
               <Text style={styles.ButtonText}>Article non disponible</Text>

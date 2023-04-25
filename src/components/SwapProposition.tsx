@@ -33,6 +33,7 @@ export default function SwapProposition({
         console.log(Object.prototype.toString.call(result));
         if (result?.length === 0 || result === undefined) {
           let article = article_sender;
+          console.log('article sender' + article_sender);
           navigation.navigate('AddArticle', {
             privateArticle: true,
             article_sender: {article_sender},
