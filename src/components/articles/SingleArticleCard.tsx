@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   Infos: {
     alignItems: 'flex-start',
     justifyContent: 'center',
-    height: 55,
+    height: 70,
     width: '100%',
     padding: 10,
   },
@@ -231,6 +231,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 4,
+    width: '80%',
   },
   Localisation: {
     color: '#696969',
