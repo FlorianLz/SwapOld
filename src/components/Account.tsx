@@ -57,7 +57,9 @@ export default function Account({route}: {params: {session: Session}} | any) {
     cityName: '',
   });
 
-  const [session, setSession] = useState<Session | null>(route.params.session);
+  const [session, setSession] = useState<Session | null | any>(
+    route.params.session,
+  );
 
   useEffect(() => {
     console.log(route.params.session.user);
@@ -146,13 +148,13 @@ export default function Account({route}: {params: {session: Session}} | any) {
               setLoading(false);
             } else {
               //Update image profile
-              let img = '';
+              let img: boolean | string = '';
               if (resizedImages.length > 0) {
                 const avatar = imageRepository.uploadImage(
                   resizedImages[0],
                   session?.user.id + '/avatar/',
                 );
-                const res = await avatar;
+                const res: any = await avatar;
                 console.log('res', res);
                 setAvatarName(res);
                 img = res;
@@ -201,13 +203,13 @@ export default function Account({route}: {params: {session: Session}} | any) {
               setLoading(false);
             } else {
               //Update image profile
-              let img = '';
+              let img: boolean | string = '';
               if (resizedImages.length > 0) {
                 const avatar = imageRepository.uploadImage(
                   resizedImages[0],
                   session?.user.id + '/avatar/',
                 );
-                const res = await avatar;
+                const res: any = await avatar;
                 console.log('res', res);
                 setAvatarName(res);
                 img = res;
@@ -285,7 +287,7 @@ export default function Account({route}: {params: {session: Session}} | any) {
     setCurrentSearch('');
   }, []);
   const resize = async (newTab: ImagePickerResponse[]) => {
-    let neww = [];
+    let ResizeImage: any[] = [];
     for (const image of newTab) {
       if (!image || !image.assets) {
         return;
@@ -306,14 +308,14 @@ export default function Account({route}: {params: {session: Session}} | any) {
             onlyScaleDown: true,
           },
         );
-        neww = [...resizedImages, result];
-        console.log('result', neww);
+        ResizeImage = [...resizedImages, result];
+        console.log('result', ResizeImage);
       } catch (err) {
         console.log('Unable to resize the photo');
       }
     }
-    setAvatarUrl(neww[0].uri);
-    setResizedImages(neww);
+    setAvatarUrl(ResizeImage[0].uri);
+    setResizedImages(ResizeImage);
   };
   async function initMediaPicker() {
     const result = await launchCamera({mediaType: 'photo'});

@@ -35,7 +35,12 @@ export default function RecapProposition({session, navigation}: any) {
   const [swaps, setSwaps] = React.useState<any[]>([]);
   const [swapsAccepted, setSwapsAccepted] = React.useState<any[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [location, setLocation] = useState({});
+  const [location, setLocation] = useState({
+    coords: {
+      latitude: 0,
+      longitude: 0,
+    },
+  });
   const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
   const [idSwapModale, setIdSwapModale] = useState(0);
   const [idArticleModale, setIdArticleModale] = useState(0);
@@ -81,7 +86,7 @@ export default function RecapProposition({session, navigation}: any) {
         });
         setNbPropositionsAcceptees(nbPropositionsAccepteesTemp);
       });
-  }, [isFocused]);
+  }, [isFocused, session.user.id]);
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'column'}}>
@@ -216,8 +221,8 @@ export default function RecapProposition({session, navigation}: any) {
                               res.data[0].id_article_receiver,
                               1,
                             )
-                            .then(res => {
-                              if (res) {
+                            .then(data => {
+                              if (data) {
                                 updateSwapsState();
                                 navigation.navigate('Messagerie');
                               }
