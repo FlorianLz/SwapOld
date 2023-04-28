@@ -38,7 +38,6 @@ export default function MessagesScreen({
   const [messages, setMessages] = useState<any>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
-    console.log('Hello from useEffect');
     messageService
       .getMessagesForArticle(article.id, session.user.id)
       .then(res => {
@@ -46,7 +45,6 @@ export default function MessagesScreen({
         messageService
           .updateReadMessagesForArticle(article.id, session.user.id)
           .then(() => {
-            console.log('messages updated');
           });
       });
   }, []);
@@ -64,7 +62,6 @@ export default function MessagesScreen({
         },
         payload => {
           let {new: newRecord} = payload;
-          console.log('newRecord', newRecord);
           let userToAdd =
             newRecord.id_first_profile === session.user.id
               ? actualUser
@@ -82,7 +79,6 @@ export default function MessagesScreen({
             messageService
               .updateReadMessagesForArticle(article.id, session.user.id)
               .then(() => {
-                console.log('messages updated');
               });
           }
         },
@@ -91,7 +87,6 @@ export default function MessagesScreen({
   }, []);
 
   const onSend = useCallback(async (message: any = []) => {
-    console.log('message cree', message);
     setMessages((previousMessages: IMessage[] | undefined) =>
       GiftedChat.append(previousMessages, message),
     );
@@ -162,6 +157,14 @@ export default function MessagesScreen({
                 }}>
                 {props.currentMessage?.text}
               </Text>
+            </View>
+          );
+        }}
+        renderChatEmpty={() => {
+          return (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>Vous pouvez commencer à discuter avec {otherUser.name} concernant l'échange suivant :</Text>
+              <Text style={styles.emptyText}>{article.title} contre {article.title2} </Text>
             </View>
           );
         }}
@@ -242,5 +245,19 @@ const styles = StyleSheet.create({
     height: 50,
     marginRight: 10,
     borderRadius: 50,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column-reverse',
+  },
+  emptyText: {
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    color: '#000',
+    transform: [{scaleY: -1}],
+    textAlign: 'center',
+    padding: 5,
   },
 });

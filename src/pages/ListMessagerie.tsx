@@ -62,11 +62,13 @@ const styles = StyleSheet.create({
   Title: {
     color: 'black',
     fontSize: 14,
+    width: '86%',
   },
   ListContainer: {
     display: 'flex',
     flexDirection: 'row',
     borderRadius: 4,
+    alignItems: 'center',
   },
   InfosContainer: {
     borderBottomWidth: 1,
@@ -74,6 +76,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     width: '100%',
     borderBottomColor: '#E8E8E8',
+    marginTop: 8,
   },
   Image: {
     height: 50,
