@@ -219,7 +219,7 @@ export default function RecapProposition({session, navigation}: any) {
                             .then(res => {
                               if (res) {
                                 updateSwapsState();
-                                navigation.navigate('HubPublication');
+                                navigation.navigate('Messagerie');
                               }
                             });
                         }
