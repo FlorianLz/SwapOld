@@ -42,7 +42,7 @@ export default ({
   useEffect(() => {
     articleService
       .getArticleById(id, session?.user.id)
-      .then((result: IArticleData) => {
+      .then((result: IArticleData | any) => {
         setArticle(result as IArticleData);
         setLoading(true);
         setIsLiked(result.isLiked);
