@@ -67,10 +67,10 @@ export default function AddArticle({
     setMsgPublished('');
     setError('');
     console.log(article_sender);
-  }, [isFocused]);
+  }, [article_sender, isFocused]);
 
   const resize = async (newTab: ImagePickerResponse[]) => {
-    let neww = [];
+    let resizeImage: any[] = [];
     for (const image of newTab) {
       if (!image || !image.assets) {
         return;
@@ -91,12 +91,12 @@ export default function AddArticle({
             onlyScaleDown: true,
           },
         );
-        neww = [...resizedImages, result];
+        resizeImage = [...resizedImages, result];
       } catch (err) {
         console.log('Unable to resize the photo');
       }
     }
-    setResizedImages(neww);
+    setResizedImages(resizeImage);
   };
 
   function handleUpload() {
@@ -177,7 +177,9 @@ export default function AddArticle({
   }
 
   function handleDeleteImage(index: number) {
-    const newImages = resizedImages.filter((img, i) => i !== index);
+    const newImages = resizedImages.filter(
+      (img: any, i: number) => i !== index,
+    );
     setResizedImages([...newImages]);
   }
 

@@ -1,5 +1,4 @@
 import {
-  Button,
   Image,
   Pressable,
   ScrollView,
@@ -11,7 +10,11 @@ import React, {useEffect, useState} from 'react';
 import articleService from '../services/article.service';
 import IArticleData from '../interfaces/articleInterface';
 import SingleArticleCard from '../components/articles/SingleArticleCard';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {
+  ParamListBase,
+  useIsFocused,
+  useNavigation,
+} from '@react-navigation/native';
 import RecapProposition from '../components/RecapProposition';
 import IconAwe from 'react-native-vector-icons/FontAwesome5';
 import IconMat from 'react-native-vector-icons/MaterialIcons';
@@ -19,11 +22,12 @@ import {supabase} from '../lib/initSupabase';
 import profileService from '../services/profile.service';
 import SwitchSelector from 'react-native-switch-selector';
 import Icon from 'react-native-vector-icons/EvilIcons';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 export default function Profil({session}: {session: any}) {
   const [selectedComponent, setSelectedComponent] = useState('articles');
   const [articles, setArticles] = useState<IArticleData[]>([]);
   const [userInfos, setUserInfos] = useState<any>([]);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -35,7 +39,7 @@ export default function Profil({session}: {session: any}) {
       console.log('res', result);
       setUserInfos(result);
     });
-  }, [isFocused]);
+  }, [isFocused, session.user.id]);
   return (
     <ScrollView>
       <View style={styles.ContainerTop}>

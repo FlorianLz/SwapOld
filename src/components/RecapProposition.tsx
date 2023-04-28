@@ -35,7 +35,12 @@ export default function RecapProposition({session, navigation}: any) {
   const [swaps, setSwaps] = React.useState<any[]>([]);
   const [swapsAccepted, setSwapsAccepted] = React.useState<any[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [location, setLocation] = useState({});
+  const [location, setLocation] = useState({
+    coords: {
+      latitude: 0,
+      longitude: 0,
+    },
+  });
   const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
   const [idSwapModale, setIdSwapModale] = useState(0);
   const [idArticleModale, setIdArticleModale] = useState(0);
@@ -81,7 +86,7 @@ export default function RecapProposition({session, navigation}: any) {
         });
         setNbPropositionsAcceptees(nbPropositionsAccepteesTemp);
       });
-  }, [isFocused]);
+  }, [isFocused, session.user.id]);
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'column'}}>
@@ -216,17 +221,17 @@ export default function RecapProposition({session, navigation}: any) {
                               res.data[0].id_article_receiver,
                               1,
                             )
-                            .then(res => {
-                              if (res) {
+                            .then(data => {
+                              if (data) {
                                 updateSwapsState();
-                                navigation.navigate('HubPublication');
+                                navigation.navigate('Messagerie');
                               }
                             });
                         }
                       });
                     setModalChoiceVisible(!modalChoiceVisible);
                   }}>
-                  <Text style={styles.textStyle}>Oui</Text>
+                  <Text style={styles.textStyle}>Accepter</Text>
                 </Pressable>
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
@@ -239,10 +244,12 @@ export default function RecapProposition({session, navigation}: any) {
                       });
                     setModalChoiceVisible(!modalChoiceVisible);
                   }}>
-                  <Text style={[styles.textStyle, styles.TextClose]}>Non</Text>
+                  <Text style={[styles.textStyle, styles.TextClose]}>
+                    Refuser
+                  </Text>
                 </Pressable>
                 <Pressable
-                  style={[styles.button, styles.buttonClose]}
+                  style={[styles.buttonClose, styles.MinHeight]}
                   onPress={event => {
                     event.stopPropagation(); // Ajouter cette ligne pour éviter que le onPress du container ne soit appelé
                     navigation.navigate('SingleArticle', {
@@ -588,5 +595,14 @@ const styles = StyleSheet.create({
     color: '#666666',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  MinHeight: {
+    borderRadius: 4,
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 8,
+    paddingTop: 8,
+    width: '100%',
   },
 });

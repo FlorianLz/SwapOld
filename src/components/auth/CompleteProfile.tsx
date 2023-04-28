@@ -13,18 +13,19 @@ import {Text} from 'react-native-elements';
 import locationService from '../../services/location.service';
 import {AutocompleteDropdown} from 'react-native-autocomplete-dropdown';
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
+import {ParamListBase, useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 export default function CompleteProfile() {
   const [userName, setUserName] = React.useState('');
   const [session, setSession] = React.useState({});
   const [error, setError] = useState('');
   const [loadingUpdate, setLoadingUpdate] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   React.useEffect(() => {
     //getSession supabase
-    supabase.auth.getSession().then(session => {
-      setSession(session.data.session ?? {});
+    supabase.auth.getSession().then(sessionSupa => {
+      setSession(sessionSupa.data.session ?? {});
     });
   }, []);
 
@@ -52,7 +53,7 @@ export default function CompleteProfile() {
       return;
     }
 
-    const {data, error} = await supabase
+    const {data, error: errorMessage} = await supabase
       .from('profiles')
       .update({
         username: userName,
@@ -66,17 +67,17 @@ export default function CompleteProfile() {
         avatar_url: 'default/avatar.png',
       })
       .eq('id', session.user.id);
-    if (error) {
-      if (error.code === '23505') {
+    if (errorMessage) {
+      if (errorMessage.code === '23505') {
         setError("Ce nom d'utilisateur est déjà utilisé");
       }
-      if (error.code === '23514') {
+      if (errorMessage.code === '23514') {
         setError("Le nom d'utilisateur doit faire entre 3 et 10 caractères");
       }
       setLoadingUpdate(false);
     } else {
       setError('');
-      navigation.navigate('HomePageScreen', {screen: 'HomePage'});
+      navigation.navigate('HomePageScreen', {screen: 'Profil'});
     }
     console.log(data, error);
   };
@@ -94,7 +95,7 @@ export default function CompleteProfile() {
         longitude: number;
         cityName: string;
       }
-    | unknown
+    | any
   >({
     id: '',
     title: '',
