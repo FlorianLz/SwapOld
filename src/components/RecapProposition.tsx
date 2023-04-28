@@ -226,7 +226,7 @@ export default function RecapProposition({session, navigation}: any) {
                       });
                     setModalChoiceVisible(!modalChoiceVisible);
                   }}>
-                  <Text style={styles.textStyle}>Oui</Text>
+                  <Text style={styles.textStyle}>Accepter</Text>
                 </Pressable>
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
@@ -239,7 +239,7 @@ export default function RecapProposition({session, navigation}: any) {
                       });
                     setModalChoiceVisible(!modalChoiceVisible);
                   }}>
-                  <Text style={[styles.textStyle, styles.TextClose]}>Non</Text>
+                  <Text style={[styles.textStyle, styles.TextClose]}>Refuser</Text>
                 </Pressable>
                 <Pressable
                   style={[styles.button, styles.buttonClose]}

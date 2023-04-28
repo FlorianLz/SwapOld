@@ -142,7 +142,7 @@ export default function SingleArticleCard({
                   });
                 setModalChoiceVisible(false);
               }}>
-              <Text style={styles.textStyle}>oui</Text>
+              <Text style={styles.textStyle}>Accepter</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonClose]}
