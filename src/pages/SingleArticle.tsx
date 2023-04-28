@@ -302,6 +302,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: 'Roboto',
     fontSize: 28,
+    marginRight: 20,
+    width: '80%',
   },
   Icon: {
     marginLeft: 20,
@@ -342,7 +344,7 @@ const styles = StyleSheet.create({
 
   Bottom: {
     paddingLeft: 20,
-    PaddingRight: 20,
+    marginRight: 20,
   },
   TextTitle: {
     color: '#696969',
