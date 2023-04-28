@@ -35,7 +35,7 @@ const messageFactory = {
       user: {
         _id: userToAdd.id,
         name: userToAdd.name,
-        avatar: imagesHelper.getPublicUrlByImageName(userToAdd.avatar_url),
+        avatar: userToAdd.avatar,
       },
       createdAt: message.created_at,
       otherId: isSender ? message.id_second_profile : message.id_first_profile,

@@ -404,5 +404,16 @@ const articleRepository = {
       .eq('id_profile_sender', idUser);
     return data;
   },
+  async getDateLastMessageByIdArticle() {
+    const {data} = await supabase
+      .from('articles_chat_profiles')
+      .select(
+        `
+    *
+  `,
+      )
+      .order('created_at', {ascending: false});
+    return data;
+  },
 };
 export default articleRepository;

@@ -109,7 +109,7 @@ export default function MessagesScreen({
         <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
         <Image style={styles.Image} source={{uri: article.images}} />
         <View style={styles.containerHeaderInfos}>
-          <Text style={styles.BackText}>{article.ownerInfos.username}</Text>
+          <Text style={styles.BackText}>{otherUser.name}</Text>
           <Text style={styles.BackSecond}>{article.title}</Text>
         </View>
       </Pressable>

@@ -21,16 +21,22 @@ export default function Messagerie({session}: {session: any}) {
     articleService
       .getSwapsByStateAndProfileForMessages(2, session.user.id)
       .then((result: IArticleData[]) => {
-        setSwaps(result as IArticleData[]);
+        articleService.getDateLastMessageByIdArticle().then((results: any) => {
+          let articles = [...result];
+          articles.sort((a, b) => {
+            const aIndex = results.indexOf(a.id);
+            const bIndex = results.indexOf(b.id);
+            return aIndex - bIndex;
+          });
+          setSwaps(articles as IArticleData[]);
+        });
       });
     articleRepository
       .getArticlesIdWhereMessageNotRead(session.user.id)
       .then((result: any) => {
-        console.log(result);
         let resultsId = [
           ...new Set(result.data.map((item: any) => item.id_article)),
         ];
-        console.log(resultsId);
         setNotReadArticles(resultsId as number[]);
       });
   }, [isFocused, session.user.id]);

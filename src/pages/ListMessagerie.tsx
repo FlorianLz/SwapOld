@@ -14,15 +14,6 @@ export default function ListMessagerie({
   article_sender?: any;
   notRead?: boolean;
 }) {
-  const actualUser = {
-    id: session.user.id,
-    name: article.isOwner
-      ? article.ownerInfos.username
-      : article.receiverInfos.username,
-    avatar: article.isOwner
-      ? article.ownerInfos.avatar_url
-      : article.receiverInfos.avatar_url,
-  };
   console.log('actualUser', article);
   return (
     <Pressable
