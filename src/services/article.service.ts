@@ -1,6 +1,7 @@
 import articleRepository from '../repository/article.repository';
 import articleFactory from '../factory/article.factory';
 import imageService from './image.service';
+import IArticleData from "../interfaces/articleInterface";
 
 const articleService = {
   getAllArticles: async (userId: any) => {
@@ -83,6 +84,12 @@ const articleService = {
     return await articleFactory.getSwapsByStateAndProfileForMessages(
       rawArticles.data,
       userId,
+    );
+  },
+  getDateLastMessageByIdArticle: async () => {
+    const rawArticles = await articleRepository.getDateLastMessageByIdArticle();
+    return await articleFactory.getDateLastMessageByIdArticle(
+      rawArticles as IArticleData[],
     );
   },
 };

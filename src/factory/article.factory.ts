@@ -221,5 +221,17 @@ const articleFactory = {
     });
     return articles;
   },
+  getDateLastMessageByIdArticle: async (
+    rawArticles: IArticleData[],
+  ) => {
+    let tab: [] = [];
+    rawArticles.forEach((article: any) => {
+      console.log(article.id_article);
+      if (!tab.includes(article.id_article as never)) {
+        tab.push(article.id_article as never);
+      }
+    });
+    return tab;
+  },
 };
 export default articleFactory;
