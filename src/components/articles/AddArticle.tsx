@@ -295,6 +295,7 @@ export default function AddArticle({
             placeholderTextColor="#BDBDBD"
             value={title}
             onChangeText={setTitle}
+            maxLength={40}
           />
         </KeyboardAvoidingView>
 
