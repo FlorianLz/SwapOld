@@ -20,6 +20,7 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import IconIon from 'react-native-vector-icons/Ionicons';
 import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
+import articleRepository from '../repository/article.repository';
 export default ({
   route,
 }:
@@ -38,6 +39,7 @@ export default ({
   const [modalVisible, setModalVisible] = useState(false);
   const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
+  const [isProposed, setIsProposed] = React.useState<boolean>(false);
   const isFocused = useIsFocused();
   useEffect(() => {
     articleService
@@ -47,6 +49,11 @@ export default ({
         setLoading(true);
         setIsLiked(result.isLiked);
       });
+    articleRepository.getAllArticlesIdsWithSwap(id).then((result: any) => {
+      if (result.length > 0) {
+        setIsProposed(true);
+      }
+    });
   }, [isFocused]);
 
   function handleDelete() {
@@ -114,10 +121,9 @@ export default ({
                       />
                     )}
                   </Pressable>
-                ) : article.isOwner ? (
+                ) : article.isOwner && !isProposed ? (
                   <Pressable
                     onPress={() => {
-                      console.log('edit');
                       setModalVisible(true);
                     }}>
                     <IconMat

@@ -415,5 +415,19 @@ const articleRepository = {
       .order('created_at', {ascending: false});
     return data;
   },
+  getAllArticlesIdsWithSwap: async (idArticle: string) => {
+    const {data} = await supabase
+      .from('swap')
+      .select(
+        `
+    state
+  `,
+      )
+      .or(
+        `id_article_sender.eq.${idArticle},id_article_receiver.eq.${idArticle}`,
+      )
+      .neq('state', 1);
+    return data;
+  },
 };
 export default articleRepository;
