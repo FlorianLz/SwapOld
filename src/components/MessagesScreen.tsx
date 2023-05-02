@@ -38,7 +38,7 @@ export default function MessagesScreen({
   const [messages, setMessages] = useState<any>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
-    console.log('RRRRRRRRR')
+    console.log('RRRRRRRRR');
     messageService
       .getMessagesForArticle(article.id, session.user.id)
       .then(res => {

@@ -37,7 +37,7 @@ export default function Messagerie({session}: {session: any}) {
         let resultsId = [
           ...new Set(result.data.map((item: any) => item.id_article)),
         ];
-        console.log('resultsId', resultsId)
+        console.log('resultsId', resultsId);
         setNotReadArticles(resultsId as number[]);
       });
   }, [isFocused, session.user.id]);
