@@ -221,9 +221,7 @@ const articleFactory = {
     });
     return articles;
   },
-  getDateLastMessageByIdArticle: async (
-    rawArticles: IArticleData[],
-  ) => {
+  getDateLastMessageByIdArticle: async (rawArticles: IArticleData[]) => {
     let tab: [] = [];
     rawArticles.forEach((article: any) => {
       console.log(article.id_article);

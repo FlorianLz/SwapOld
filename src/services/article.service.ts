@@ -1,7 +1,7 @@
 import articleRepository from '../repository/article.repository';
 import articleFactory from '../factory/article.factory';
 import imageService from './image.service';
-import IArticleData from "../interfaces/articleInterface";
+import IArticleData from '../interfaces/articleInterface';
 
 const articleService = {
   getAllArticles: async (userId: any) => {
