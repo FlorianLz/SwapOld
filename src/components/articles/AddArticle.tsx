@@ -66,7 +66,7 @@ export default function AddArticle({
     setOnPublication(false);
     setMsgPublished('');
     setError('');
-    console.log(article_sender);
+    console.log('ARTICLE SENDER', article_sender);
   }, [article_sender, isFocused]);
 
   const resize = async (newTab: ImagePickerResponse[]) => {
@@ -133,12 +133,13 @@ export default function AddArticle({
               }
             }
             if (privateArticle) {
+              console.log('article_sender private article', article_sender);
               articleRepository
                 .swapArticle(
                   session.user.id,
                   typeof article_sender.article_sender !== 'undefined'
-                    ? article_sender.article_sender.article.id
-                    : article_sender.article.id,
+                    ? article_sender.article_sender.article.id_profile
+                    : article_sender.article.id_profile,
                   typeof article_sender.article_sender !== 'undefined'
                     ? article_sender.article_sender.article.id
                     : article_sender.article.id,
@@ -146,7 +147,7 @@ export default function AddArticle({
                 )
                 .then((result: any) => {
                   if (result.error) {
-                    console.log('error', result.error);
+                    console.log('error', result.error, result.message);
                   }
                 });
             }
@@ -165,7 +166,7 @@ export default function AddArticle({
                 "Une erreur est survenue lors de l'upload des images. Vous allez être redirigé vers la page de modification de l'article dans quelques secondes...",
               );
               setTimeout(() => {
-                navigation.navigate('HubPublication');
+                navigation.navigate('HomePageScreen', {screen: 'Profil'});
               }, 4000);
             }
           } else {

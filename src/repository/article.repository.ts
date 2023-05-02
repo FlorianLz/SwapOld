@@ -267,10 +267,10 @@ const articleRepository = {
     // Insérer l'échange dans la base de données
     const {error: insertError} = await supabase.from('swap').insert([
       {
-        id_profile_sender,
-        id_profile_receiver,
-        id_article_sender,
-        id_article_receiver,
+        id_profile_sender: id_profile_sender,
+        id_profile_receiver: id_profile_receiver,
+        id_article_sender: id_article_sender,
+        id_article_receiver: id_article_receiver,
       },
     ]);
 
