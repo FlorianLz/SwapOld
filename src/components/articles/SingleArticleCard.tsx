@@ -1,4 +1,4 @@
-import {Image, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
+import { Dimensions, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import IconIon from 'react-native-vector-icons/Ionicons';
@@ -225,13 +225,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 75,
     padding: 10,
+    width: Dimensions.get('window').width - 155,
   },
   Title: {
     color: 'black',
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 4,
-    width: '80%',
+    width: '100%',
     height: 40,
   },
   Localisation: {
