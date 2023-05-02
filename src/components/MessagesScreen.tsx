@@ -38,14 +38,16 @@ export default function MessagesScreen({
   const [messages, setMessages] = useState<any>([]);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   useEffect(() => {
+    console.log('RRRRRRRRR')
     messageService
       .getMessagesForArticle(article.id, session.user.id)
       .then(res => {
         setMessages(res);
-        messageService
-          .updateReadMessagesForArticle(article.id, session.user.id)
-          .then(() => {
-          });
+        console.log('res', res);
+        messageService.updateReadMessagesForArticle(
+          article.id,
+          session.user.id,
+        );
       });
   }, []);
 
@@ -61,6 +63,7 @@ export default function MessagesScreen({
           filter: 'id_article=eq.' + article.id,
         },
         payload => {
+          console.log('UPDATE REALTIME');
           let {new: newRecord} = payload;
           let userToAdd =
             newRecord.id_first_profile === session.user.id
@@ -76,14 +79,17 @@ export default function MessagesScreen({
             setMessages((previousMessages: IMessage[] | undefined) =>
               GiftedChat.append(previousMessages, msg as any),
             );
+            console.log('UPD');
             messageService
               .updateReadMessagesForArticle(article.id, session.user.id)
-              .then(() => {
-              });
+              .then(() => {});
           }
         },
       )
       .subscribe();
+    return () => {
+      supabase.removeAllChannels();
+    };
   }, []);
 
   const onSend = useCallback(async (message: any = []) => {
@@ -95,6 +101,7 @@ export default function MessagesScreen({
       otherId,
       message[0].text,
       article.id,
+      false,
     );
   }, []);
 
@@ -163,8 +170,13 @@ export default function MessagesScreen({
         renderChatEmpty={() => {
           return (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>Vous pouvez commencer à discuter avec {otherUser.name} concernant l'échange suivant :</Text>
-              <Text style={styles.emptyText}>{article.title} contre {article.title2} </Text>
+              <Text style={styles.emptyText}>
+                Vous pouvez commencer à discuter avec {otherUser.name}{' '}
+                concernant l'échange suivant :
+              </Text>
+              <Text style={styles.emptyText}>
+                {article.title} contre {article.title2}{' '}
+              </Text>
             </View>
           );
         }}

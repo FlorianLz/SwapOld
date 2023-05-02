@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   Title: {
     color: 'black',
     fontSize: 14,
-    width: '86%',
+    width: '84%',
   },
   ListContainer: {
     display: 'flex',
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: 'black',
     paddingBottom: 16,
-    width: '100%',
+    width: '80%',
     borderBottomColor: '#E8E8E8',
     marginTop: 8,
   },
@@ -84,8 +84,9 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     marginRight: 16,
     borderRadius: 8,
+    marginLeft: 8,
   },
   notRead: {
-    backgroundColor: '#F8F8F8',
+    backgroundColor: '#D6D6D6',
   },
 });

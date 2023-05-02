@@ -14,12 +14,14 @@ const messageService = {
     otherId: string,
     msgInput: string,
     idArticle: number,
+    readByReceiver: boolean,
   ) => {
     return await messageRepository.sendMessage(
       myId,
       otherId,
       msgInput,
       idArticle,
+      readByReceiver,
     );
   },
   updateReadMessagesForArticle: (articleId: string, userId: string) => {
