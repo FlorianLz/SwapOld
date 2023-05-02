@@ -232,6 +232,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 4,
     width: '80%',
+    height: 40,
   },
   Localisation: {
     color: '#696969',
