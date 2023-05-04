@@ -49,6 +49,7 @@ export default function MessagesScreen({
   const [echangeTermine, setEchangeTermine] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
+    console.log(article)
     setEchangeTermine(article.status2);
     messageService
       .getMessagesForArticle(article.id, session.user.id)
@@ -124,6 +125,14 @@ export default function MessagesScreen({
     if (!error) {
       setEchangeTermine(true);
       setModalVisible(!modalVisible);
+      const echangeValide = await articleRepository.getEchangeValide(
+        article.id2,
+      );
+      const {data} = echangeValide;
+      if (!data || data[0].echange_valide) {
+        await articleRepository.updateArticleStatus(article.id);
+        await articleRepository.updateArticleStatus(article.id2);
+      }
     }
   };
 
@@ -149,7 +158,7 @@ export default function MessagesScreen({
               <Text style={styles.BackSecond}>Valider l'échange</Text>
             </Pressable>
           ) : (
-            <Text style={styles.BackSecond}>Echange validé</Text>
+            <Text style={styles.BackSecond}>Échange terminé</Text>
           )}
         </View>
         <GiftedChat

@@ -1,5 +1,6 @@
 export default interface IArticleData {
   id: number;
+  id2?: number;
   title: string;
   title2?: string;
   description: string;

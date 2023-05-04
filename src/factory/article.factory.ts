@@ -129,6 +129,7 @@ const articleFactory = {
     articles = rawArticles.map((article: any) => {
       return <IArticleData>{
         id: article.id_article_receiver.id,
+        id2: article.id_article_sender.id,
         title:
           article.id_article_receiver.articles_profiles[0]?.id_profile ===
           userId

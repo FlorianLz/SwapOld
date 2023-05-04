@@ -439,5 +439,26 @@ const articleRepository = {
     }
     return {error: false, data};
   },
+  updateArticleStatus: async (id: number) => {
+    const {data, error} = await supabase
+      .from('articles')
+      .update({status: 2})
+      .eq('id', id);
+    if (error) {
+      return {error: true, message: error.message};
+    }
+    return {error: false, data};
+  },
+  getEchangeValide: async (id: number) => {
+    const {data} = await supabase
+      .from('articles')
+      .select(
+        `
+    echange_valide
+  `,
+      )
+      .eq('id', id);
+    return {data};
+  },
 };
 export default articleRepository;

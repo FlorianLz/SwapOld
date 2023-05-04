@@ -49,6 +49,7 @@ export default function RecapProposition({session, navigation}: any) {
   const [nbPropositionsRecues, setNbPropositionsRecues] = useState(0);
   const [nbPropositionsEnvoyees, setNbPropositionsEnvoyees] = useState(0);
   const [nbPropositionsAcceptees, setNbPropositionsAcceptees] = useState(0);
+  const [nbPropositionsTerminees, setNbPropositionsTerminees] = useState(0);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -76,14 +77,19 @@ export default function RecapProposition({session, navigation}: any) {
     articleRepository
       .getSwapsByStateAndProfile(session.user.id, 2)
       .then(res => {
+        console.log(res)
         setSwapsAccepted(res.data);
         console.log(res.data);
         let nbPropositionsAccepteesTemp = 0;
+        let nbPropositionsTermineesTemp = 0;
         res.data?.forEach((swap: any) => {
-          if (swap.state === 2) {
+          if (swap.state === 2 && swap.id_article_sender.status === 1) {
             nbPropositionsAccepteesTemp++;
+          } else {
+            nbPropositionsTermineesTemp++;
           }
         });
+        setNbPropositionsTerminees(nbPropositionsTermineesTemp);
         setNbPropositionsAcceptees(nbPropositionsAccepteesTemp);
       });
   }, [isFocused, session.user.id]);
@@ -377,7 +383,97 @@ export default function RecapProposition({session, navigation}: any) {
             swapsAccepted.map((swap: any) => {
               return (
                 <View key={swap.id}>
-                  {swap.state === 2 ? (
+                  {swap.state === 2 && swap.id_article_sender.status === 1 ? (
+                    <View style={styles.swapContainer}>
+                      <View style={styles.swapLeft}>
+                        <Image
+                          style={styles.image}
+                          source={{
+                            uri: imagesHelper.getPublicUrlByImageName(
+                              swap.id_article_sender.articles_images[0]
+                                .image_name,
+                            ),
+                          }}
+                        />
+                        <View>
+                          <Text style={styles.swap_title}>
+                            {swap.id_article_sender.title}
+                          </Text>
+                          <Text style={styles.Localisation}>
+                            {swap.id_article_sender.location.cityName},{' '}
+                            {locationHelper.getDistanceFromLatLonInKm(
+                              swap.id_article_sender.location.latitude,
+                              swap.id_article_sender.location.longitude,
+                              location.coords.latitude,
+                              location.coords.longitude,
+                            )}
+                            km
+                          </Text>
+                        </View>
+                      </View>
+                      <IconIco
+                        name="swap-horizontal"
+                        size={30}
+                        color="#000"
+                        style={styles.iconSwap}
+                      />
+                      <View style={styles.swapRight}>
+                        <View>
+                          <Text style={[styles.swap_title, styles.TextRight]}>
+                            {swap.id_article_receiver.title}
+                          </Text>
+                          <Text style={[styles.Localisation, styles.TextRight]}>
+                            {swap.id_article_receiver.location.cityName},{' '}
+                            {locationHelper.getDistanceFromLatLonInKm(
+                              swap.id_article_receiver.location.latitude,
+                              swap.id_article_receiver.location.longitude,
+                              location.coords.latitude,
+                              location.coords.longitude,
+                            )}
+                            km
+                          </Text>
+                        </View>
+                        <Image
+                          style={styles.image}
+                          source={{
+                            uri: imagesHelper.getPublicUrlByImageName(
+                              swap.id_article_receiver.articles_images[0]
+                                .image_name,
+                            ),
+                          }}
+                        />
+                      </View>
+                    </View>
+                  ) : null}
+                </View>
+              );
+            })
+          ) : (
+            <Text>Vous n'avez pas envoyée de demande</Text>
+          )}
+        </ScrollView>
+
+        <Pressable onPress={() => setActiveIndex(activeIndex === 3 ? -1 : 3)}>
+          <View style={styles.header}>
+            <Text style={styles.header_text}>
+              Terminées ({nbPropositionsTerminees})
+            </Text>
+            <Icon
+              name="chevron-right"
+              size={30}
+              color="#000"
+              style={
+                activeIndex === 3 ? styles.iconActive : styles.iconInactive
+              }
+            />
+          </View>
+        </Pressable>
+        <ScrollView style={{display: activeIndex === 3 ? 'flex' : 'none'}}>
+          {nbPropositionsTerminees > 0 ? (
+            swapsAccepted.map((swap: any) => {
+              return (
+                <View key={swap.id}>
+                  {swap.state === 2 && swap.id_article_sender.status === 2 ? (
                     <View style={styles.swapContainer}>
                       <View style={styles.swapLeft}>
                         <Image
