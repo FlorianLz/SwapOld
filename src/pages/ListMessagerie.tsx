@@ -14,7 +14,6 @@ export default function ListMessagerie({
   article_sender?: any;
   notRead?: boolean;
 }) {
-  console.log('actualUser', article);
   return (
     <Pressable
       style={styles.Container}

@@ -16,4 +16,6 @@ export default interface IArticleData {
   ownerInfos?: {id: number; username: string; avatar_url: string};
   receiverInfos?: {id: number; username: string; avatar_url: string};
   status: number;
+  status1?: boolean;
+  status2?: boolean;
 }

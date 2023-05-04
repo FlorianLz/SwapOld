@@ -139,6 +139,11 @@ const articleFactory = {
           userId
             ? article.id_article_receiver.title
             : article.id_article_sender.title,
+        status2:
+          article.id_article_receiver.articles_profiles[0]?.id_profile ===
+          userId
+            ? article.id_article_receiver.echange_valide
+            : article.id_article_sender.echange_valide,
         distance: locationHelper.getDistanceFromLatLonInKm(
           location.coords?.latitude,
           location.coords?.longitude,
