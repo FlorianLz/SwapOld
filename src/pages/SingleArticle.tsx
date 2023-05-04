@@ -6,6 +6,7 @@ import {
   View,
   ScrollView,
   Modal,
+  SafeAreaView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import articleService from '../services/article.service';
@@ -67,222 +68,226 @@ export default ({
   }
 
   return (
-    <ScrollView style={styles.container}>
-      {loading ? (
-        <>
-          <View
-            style={[
-              styles.Figure,
-              article.status !== 0 ? styles.ButtonTextNonDispo : null,
-            ]}
-          />
-          <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
-            <IconAnt
-              style={styles.Icon}
-              name="arrowleft"
-              size={24}
-              color="#fff"
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.container}>
+        {loading ? (
+          <>
+            <View
+              style={[
+                styles.Figure,
+                article.status !== 0 ? styles.ButtonTextNonDispo : null,
+              ]}
             />
-            <Text style={styles.Title}>{article.title}</Text>
-          </Pressable>
-          <View style={styles.Top}>
-            <Image
-              source={{
-                uri: article.images[0] + '?width=150&height=100',
-              }}
-              style={styles.Image}
-            />
-            <View style={styles.RightImage}>
-              <View style={styles.RightImageIcon}>
-                {session?.user && !article.isOwner ? (
-                  <Pressable
-                    onPress={() => {
-                      articleService
-                        .toggleLikeArticle(article.id, session.user.id)
-                        .then(result => {
-                          if (!result.error) {
-                            setIsLiked(result.isLiked);
-                          }
-                        });
-                    }}>
-                    {isLiked ? (
-                      <IconIon
-                        style={styles.Icon}
-                        name="ios-bookmark"
-                        size={24}
+            <Pressable
+              style={styles.Header}
+              onPress={() => navigation.goBack()}>
+              <IconAnt
+                style={styles.Icon}
+                name="arrowleft"
+                size={24}
+                color="#fff"
+              />
+              <Text style={styles.Title}>{article.title}</Text>
+            </Pressable>
+            <View style={styles.Top}>
+              <Image
+                source={{
+                  uri: article.images[0] + '?width=150&height=100',
+                }}
+                style={styles.Image}
+              />
+              <View style={styles.RightImage}>
+                <View style={styles.RightImageIcon}>
+                  {session?.user && !article.isOwner ? (
+                    <Pressable
+                      onPress={() => {
+                        articleService
+                          .toggleLikeArticle(article.id, session.user.id)
+                          .then(result => {
+                            if (!result.error) {
+                              setIsLiked(result.isLiked);
+                            }
+                          });
+                      }}>
+                      {isLiked ? (
+                        <IconIon
+                          style={styles.Icon}
+                          name="ios-bookmark"
+                          size={24}
+                          color="#fff"
+                        />
+                      ) : (
+                        <IconIon
+                          style={styles.Icon}
+                          name="ios-bookmark-outline"
+                          size={24}
+                          color="#fff"
+                        />
+                      )}
+                    </Pressable>
+                  ) : article.isOwner && !isProposed ? (
+                    <Pressable
+                      onPress={() => {
+                        setModalVisible(true);
+                      }}>
+                      <IconMat
+                        style={[styles.Icon]}
+                        name="delete"
+                        size={20}
                         color="#fff"
                       />
-                    ) : (
-                      <IconIon
-                        style={styles.Icon}
-                        name="ios-bookmark-outline"
-                        size={24}
-                        color="#fff"
-                      />
-                    )}
-                  </Pressable>
-                ) : article.isOwner && !isProposed ? (
-                  <Pressable
-                    onPress={() => {
-                      setModalVisible(true);
-                    }}>
-                    <IconMat
-                      style={[styles.Icon]}
-                      name="delete"
-                      size={20}
+                    </Pressable>
+                  ) : (
+                    <IconIon
+                      style={[styles.Icon, styles.Hide]}
+                      name="ios-bookmark"
+                      size={24}
                       color="#fff"
                     />
-                  </Pressable>
-                ) : (
-                  <IconIon
-                    style={[styles.Icon, styles.Hide]}
-                    name="ios-bookmark"
+                  )}
+                  <IconAnt
+                    style={styles.Icon}
+                    name="sharealt"
                     size={24}
                     color="#fff"
                   />
-                )}
-                <IconAnt
-                  style={styles.Icon}
-                  name="sharealt"
-                  size={24}
-                  color="#fff"
-                />
+                </View>
+                <View>
+                  {typeof article.images !== 'string'
+                    ? article.images?.map((image: string, index: number) => {
+                        if (index > 0 && index < 5) {
+                          return (
+                            <Image
+                              key={index}
+                              style={styles.ImageMinify}
+                              source={{uri: article.images[1]}}
+                            />
+                          );
+                        }
+                      })
+                    : null}
+                </View>
+              </View>
+            </View>
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    Voulez-vous vraiment supprimer cet article ?
+                  </Text>
+                  <Pressable
+                    style={[styles.button]}
+                    onPress={() => handleDelete()}>
+                    <Text style={styles.textStyle}>Confirmer</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => setModalVisible(!modalVisible)}>
+                    <Text style={[styles.textStyle, styles.TextClose]}>
+                      Annuler
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Modal>
+            <View style={styles.Bottom}>
+              <View>
+                <Text style={styles.TextTitle}>Localisation</Text>
+                <Text style={styles.TextSubtitle}>
+                  <Icon name="location" size={16} color="#696969" />
+                  {article.location_name} ({article.distance} km)
+                </Text>
               </View>
               <View>
-                {typeof article.images !== 'string'
-                  ? article.images?.map((image: string, index: number) => {
-                      if (index > 0 && index < 5) {
-                        return (
-                          <Image
-                            key={index}
-                            style={styles.ImageMinify}
-                            source={{uri: article.images[1]}}
-                          />
-                        );
-                      }
-                    })
-                  : null}
+                <Text style={styles.TextTitle}>Description</Text>
+                <Text style={styles.TextSubtitle}>{article.description}</Text>
               </View>
-            </View>
-          </View>
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>
-                  Voulez-vous vraiment supprimer cet article ?
+              <View>
+                <Text style={styles.TextTitle}>Posté par</Text>
+                <Text style={styles.TextSubtitle}>
+                  {article?.username} le
+                  {' ' + new Date(article?.created_at).toLocaleDateString()}
                 </Text>
-                <Pressable
-                  style={[styles.button]}
-                  onPress={() => handleDelete()}>
-                  <Text style={styles.textStyle}>Confirmer</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => setModalVisible(!modalVisible)}>
-                  <Text style={[styles.textStyle, styles.TextClose]}>
-                    Annuler
-                  </Text>
-                </Pressable>
               </View>
             </View>
-          </Modal>
-          <View style={styles.Bottom}>
-            <View>
-              <Text style={styles.TextTitle}>Localisation</Text>
-              <Text style={styles.TextSubtitle}>
-                <Icon name="location" size={16} color="#696969" />
-                {article.location_name} ({article.distance} km)
-              </Text>
-            </View>
-            <View>
-              <Text style={styles.TextTitle}>Description</Text>
-              <Text style={styles.TextSubtitle}>{article.description}</Text>
-            </View>
-            <View>
-              <Text style={styles.TextTitle}>Posté par</Text>
-              <Text style={styles.TextSubtitle}>
-                {article?.username} le
-                {' ' + new Date(article?.created_at).toLocaleDateString()}
-              </Text>
-            </View>
-          </View>
-          {session?.user &&
-            !article.isOwner &&
-            article.status === 0 &&
-            showPropositionButton && (
-              <Pressable
-                style={styles.Button}
-                onPress={() => {
-                  console.log('edit');
-                  setModalChoiceVisible(true);
-                }}>
-                <Text style={styles.ButtonText}>Proposer un échange</Text>
-              </Pressable>
+            {session?.user &&
+              !article.isOwner &&
+              article.status === 0 &&
+              showPropositionButton && (
+                <Pressable
+                  style={styles.Button}
+                  onPress={() => {
+                    console.log('edit');
+                    setModalChoiceVisible(true);
+                  }}>
+                  <Text style={styles.ButtonText}>Proposer un échange</Text>
+                </Pressable>
+              )}
+            {session?.user && !article.isOwner && article.status !== 0 && (
+              <View style={[styles.Button, styles.ButtonTextNonDispo]}>
+                <Text style={styles.ButtonText}>Article non disponible</Text>
+              </View>
             )}
-          {session?.user && !article.isOwner && article.status !== 0 && (
-            <View style={[styles.Button, styles.ButtonTextNonDispo]}>
-              <Text style={styles.ButtonText}>Article non disponible</Text>
-            </View>
-          )}
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalChoiceVisible}
-            onRequestClose={() => {
-              setModalChoiceVisible(!modalChoiceVisible);
-            }}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>
-                  Vous souhaitez proposer un échange pour cet objet. Vous avez
-                  Vous avez la possibilité de proposer un nouvel article
-                  uniquement pour cet échanger, ou de sélectionner un article
-                  parmi ceux que vous avez déjà mis en ligne.
-                </Text>
-                <Pressable
-                  style={[styles.button, styles.buttonSecondary]}
-                  onPress={() => {
-                    navigation.navigate('AddArticle', {
-                      privateArticle: true,
-                      article_sender: {article},
-                    });
-                    setModalChoiceVisible(false);
-                  }}>
-                  <Text style={[styles.textStyle, styles.textStyleSecondary]}>
-                    Ajouter un nouvel article
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalChoiceVisible}
+              onRequestClose={() => {
+                setModalChoiceVisible(!modalChoiceVisible);
+              }}>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    Vous souhaitez proposer un échange pour cet objet. Vous avez
+                    Vous avez la possibilité de proposer un nouvel article
+                    uniquement pour cet échanger, ou de sélectionner un article
+                    parmi ceux que vous avez déjà mis en ligne.
                   </Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.button]}
-                  onPress={() => {
-                    navigation.navigate('SwapProposition', {
-                      article_sender: {article},
-                    });
-                    setModalChoiceVisible(false);
-                  }}>
-                  <Text style={styles.textStyle}>
-                    Choisir un article déjà publié
-                  </Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => setModalChoiceVisible(!modalChoiceVisible)}>
-                  <Text style={[styles.textStyle, styles.TextClose]}>
-                    Annuler
-                  </Text>
-                </Pressable>
+                  <Pressable
+                    style={[styles.button, styles.buttonSecondary]}
+                    onPress={() => {
+                      navigation.navigate('AddArticle', {
+                        privateArticle: true,
+                        article_sender: {article},
+                      });
+                      setModalChoiceVisible(false);
+                    }}>
+                    <Text style={[styles.textStyle, styles.textStyleSecondary]}>
+                      Ajouter un nouvel article
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.button]}
+                    onPress={() => {
+                      navigation.navigate('SwapProposition', {
+                        article_sender: {article},
+                      });
+                      setModalChoiceVisible(false);
+                    }}>
+                    <Text style={styles.textStyle}>
+                      Choisir un article déjà publié
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => setModalChoiceVisible(!modalChoiceVisible)}>
+                    <Text style={[styles.textStyle, styles.TextClose]}>
+                      Annuler
+                    </Text>
+                  </Pressable>
+                </View>
               </View>
-            </View>
-          </Modal>
-        </>
-      ) : null}
-    </ScrollView>
+            </Modal>
+          </>
+        ) : null}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -306,7 +311,7 @@ const styles = StyleSheet.create({
   },
   Title: {
     color: '#fff',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 28,
     marginRight: 20,
     width: '80%',
@@ -354,7 +359,7 @@ const styles = StyleSheet.create({
   },
   TextTitle: {
     color: '#696969',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontWeight: 'normal',
     fontSize: 16,
     paddingBottom: 8,
@@ -382,7 +387,7 @@ const styles = StyleSheet.create({
   },
   ButtonText: {
     color: '#fff',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 16,
     textAlign: 'center',
   },

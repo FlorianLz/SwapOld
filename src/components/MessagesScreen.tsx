@@ -1,4 +1,4 @@
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import { Image, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React, {useCallback, useEffect, useState} from 'react';
 import {supabase} from '../lib/initSupabase';
 import messageService from '../services/message.service';
@@ -106,7 +106,8 @@ export default function MessagesScreen({
   }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView>
+      <View style={styles.container}>
       <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
         <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
         <Image style={styles.Image} source={{uri: article.images}} />
@@ -182,6 +183,7 @@ export default function MessagesScreen({
         }}
       />
     </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
@@ -197,12 +199,12 @@ const styles = StyleSheet.create({
   },
   BackSecond: {
     color: '#000',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 12,
   },
   BackText: {
     color: '#000',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 16,
   },
   Icon: {
@@ -265,7 +267,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column-reverse',
   },
   emptyText: {
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 16,
     color: '#000',
     transform: [{scaleY: -1}],

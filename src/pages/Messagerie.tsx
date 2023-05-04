@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
+import {Image, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import {
   ParamListBase,
   useIsFocused,
@@ -42,7 +42,7 @@ export default function Messagerie({session}: {session: any}) {
       });
   }, [isFocused, session.user.id]);
   return (
-    <>
+    <SafeAreaView>
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.containerScrollView}>
@@ -52,7 +52,7 @@ export default function Messagerie({session}: {session: any}) {
         {swaps &&
           swaps.map((swap: any) => {
             return (
-              <Text key={swap.id}>
+              <Text key={swap.id} style={styles.containerMessages}>
                 <ListMessagerie
                   navigation={navigation}
                   article={swap}
@@ -75,7 +75,7 @@ export default function Messagerie({session}: {session: any}) {
           </View>
         )}
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
@@ -85,6 +85,9 @@ const styles = StyleSheet.create({
   container: {
     marginLeft: 20,
     marginRight: 20,
+  },
+  containerMessages: {
+    marginBottom: 10,
   },
   title: {
     color: '#000',

@@ -12,6 +12,7 @@ import {
   Dimensions,
   Modal,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import {Session} from '@supabase/supabase-js';
 import IconAnt from 'react-native-vector-icons/AntDesign';
@@ -62,7 +63,6 @@ export default function Account({route}: {params: {session: Session}} | any) {
   );
 
   useEffect(() => {
-    console.log(route.params.session.user);
     if (session) {
       getProfile();
     }
@@ -328,190 +328,199 @@ export default function Account({route}: {params: {session: Session}} | any) {
   }
 
   return (
-    <View style={styles.container}>
-      <Pressable
-        style={styles.Header}
-        onPress={() => navigation.goBack()}
-        disabled={loading}>
-        <IconAnt style={styles.Icon} name="arrowleft" size={24} color="#000" />
-        <View style={styles.containerHeaderInfos}>
-          <Text style={styles.BackText}>Mise à jour du profil</Text>
-        </View>
-      </Pressable>
-      <ScrollView style={styles.ScrollView}>
-        <Pressable style={styles.ContainerImage} onPress={initMediaPicker}>
-          <View style={styles.ImageBackground}>
-            {avatarUrl != null && avatarUrl !== '' && (
-              <Image style={styles.Image} source={{uri: avatarUrl}} />
-            )}
-          </View>
-        </Pressable>
-        <Text style={styles.Title}>Email</Text>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={text => setEmail(text)}
-          />
-        </KeyboardAvoidingView>
-        <Text style={styles.Title}>Nom d'utilisateur</Text>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-          <TextInput
-            style={styles.input}
-            value={username || ''}
-            onChangeText={text => setUsername(text)}
-          />
-        </KeyboardAvoidingView>
-        <Text style={styles.Title}>Localisation</Text>
-        <View style={[Platform.select({ios: {zIndex: 1}})]}>
-          <AutocompleteDropdown
-            initialValue={'test'}
-            direction={Platform.select({ios: 'down'})}
-            dataSet={suggestionsList}
-            onChangeText={getSuggestions}
-            onSelectItem={item => {
-              item && setSelectedItem(item);
-            }}
-            debounce={600}
-            suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
-            onClear={onClearPress}
-            useFilter={false} // set false to prevent rerender twice
-            textInputProps={{
-              placeholder: selectedItem?.cityName || 'Localisation...',
-              placeholderTextColor: '#363636',
-              autoCorrect: true,
-              autoCapitalize: 'none',
-              style: {
-                backgroundColor: '#F6F6F6',
-                height: 48,
-                paddingLeft: 20,
-                borderRadius: 4,
-                borderColor: '#E8E8E8',
-                borderWidth: 1,
-                marginBottom: 8,
-                color: '#363636',
-                fontWeight: 'normal',
-                fontSize: 14,
-              },
-            }}
-            rightButtonsContainerStyle={{
-              backgroundColor: '#F6F6F6',
-              height: 47,
-              marginTop: 1,
-              marginRight: 1,
-            }}
-            inputContainerStyle={{
-              borderRadius: 4,
-              backgroundColor: '#F6F6F6',
-              height: 47,
-            }}
-            suggestionsListContainerStyle={{
-              backgroundColor: 'white',
-              maxHeight: 165,
-            }}
-            containerStyle={{
-              flexGrow: 1,
-              flexShrink: 1,
-              marginBottom: 16,
-              borderColor: '#E8E8E8',
-              height: 50,
-              borderWidth: 1,
-              borderRadius: 4,
-            }}
-            renderItem={item => <Text style={{padding: 15}}>{item.title}</Text>}
-            EmptyResultComponent={
-              <View>
-                {currentSearch.length > 0 && (
-                  <Text style={{padding: 15}}>Aucun résultat</Text>
-                )}
-              </View>
-            }
-            ChevronIconComponent={
-              <Feather name="chevron-down" size={20} color="#000" />
-            }
-            ClearIconComponent={
-              <Feather name="x-circle" size={18} color="#000" />
-            }
-            inputHeight={50}
-            showChevron={false}
-            closeOnBlur={false}
-          />
-        </View>
-        <Text style={styles.Title}>Mot de passe</Text>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-          <TextInput
-            style={styles.input}
-            value={password || ''}
-            onChangeText={text => setPassword(text)}
-            secureTextEntry={true}
-          />
-        </KeyboardAvoidingView>
-        <Text style={styles.Title}>Confirmation du mot de passe</Text>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-          <TextInput
-            style={styles.input}
-            value={passwordConfirm || ''}
-            onChangeText={text => setPasswordConfirm(text)}
-            secureTextEntry={true}
-          />
-        </KeyboardAvoidingView>
-        <View style={{width: 10}} />
-
-        {error !== '' && (
-          <>
-            <View style={styles.errorMessage}>
-              <Text style={styles.errorMessageText}>{error}</Text>
-            </View>
-          </>
-        )}
+    <SafeAreaView>
+      <View style={styles.container}>
         <Pressable
-          style={styles.Button}
-          onPress={() => {
-            console.log('edit');
-            setModalChoiceVisible(true);
-          }}>
-          <Text style={styles.ButtonText}>Mise à jour du profil</Text>
-        </Pressable>
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalChoiceVisible}
-          onRequestClose={() => {
-            setModalChoiceVisible(!modalChoiceVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>
-                Voulez vous modifier votre profil ?
-              </Text>
-              <Pressable
-                style={[styles.button]}
-                onPress={() => {
-                  updateProfile();
-                  setModalChoiceVisible(false);
-                }}>
-                <Text style={[styles.textStyle]}>Accepter</Text>
-              </Pressable>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalChoiceVisible(!modalChoiceVisible)}>
-                <Text style={[styles.textStyle, styles.TextClose]}>
-                  Annuler
-                </Text>
-              </Pressable>
-            </View>
+          style={styles.Header}
+          onPress={() => navigation.goBack()}
+          disabled={loading}>
+          <IconAnt
+            style={styles.Icon}
+            name="arrowleft"
+            size={24}
+            color="#000"
+          />
+          <View style={styles.containerHeaderInfos}>
+            <Text style={styles.BackText}>Mise à jour du profil</Text>
           </View>
-        </Modal>
-      </ScrollView>
-    </View>
+        </Pressable>
+        <ScrollView style={styles.ScrollView}>
+          <Pressable style={styles.ContainerImage} onPress={initMediaPicker}>
+            <View style={styles.ImageBackground}>
+              {avatarUrl != null && avatarUrl !== '' && (
+                <Image style={styles.Image} source={{uri: avatarUrl}} />
+              )}
+            </View>
+          </Pressable>
+          <Text style={styles.Title}>Email</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={text => setEmail(text)}
+            />
+          </KeyboardAvoidingView>
+          <Text style={styles.Title}>Nom d'utilisateur</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <TextInput
+              style={styles.input}
+              value={username || ''}
+              onChangeText={text => setUsername(text)}
+            />
+          </KeyboardAvoidingView>
+          <Text style={styles.Title}>Localisation</Text>
+          <View style={[Platform.select({ios: {zIndex: 1}})]}>
+            <AutocompleteDropdown
+              initialValue={'test'}
+              direction={Platform.select({ios: 'down'})}
+              dataSet={suggestionsList}
+              onChangeText={getSuggestions}
+              onSelectItem={item => {
+                item && setSelectedItem(item);
+              }}
+              debounce={600}
+              suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
+              onClear={onClearPress}
+              useFilter={false} // set false to prevent rerender twice
+              textInputProps={{
+                placeholder: selectedItem?.cityName || 'Localisation...',
+                placeholderTextColor: '#363636',
+                autoCorrect: true,
+                autoCapitalize: 'none',
+                style: {
+                  backgroundColor: '#F6F6F6',
+                  height: 48,
+                  paddingLeft: 20,
+                  borderRadius: 4,
+                  borderColor: '#E8E8E8',
+                  borderWidth: 1,
+                  marginBottom: 8,
+                  color: '#363636',
+                  fontWeight: 'normal',
+                  fontSize: 14,
+                },
+              }}
+              rightButtonsContainerStyle={{
+                backgroundColor: '#F6F6F6',
+                height: 47,
+                marginTop: 1,
+                marginRight: 1,
+              }}
+              inputContainerStyle={{
+                borderRadius: 4,
+                backgroundColor: '#F6F6F6',
+                height: 47,
+              }}
+              suggestionsListContainerStyle={{
+                backgroundColor: 'white',
+                maxHeight: 165,
+              }}
+              containerStyle={{
+                flexGrow: 1,
+                flexShrink: 1,
+                marginBottom: 16,
+                borderColor: '#E8E8E8',
+                height: 50,
+                borderWidth: 1,
+                borderRadius: 4,
+              }}
+              renderItem={item => (
+                <Text style={{padding: 15}}>{item.title}</Text>
+              )}
+              EmptyResultComponent={
+                <View>
+                  {currentSearch.length > 0 && (
+                    <Text style={{padding: 15}}>Aucun résultat</Text>
+                  )}
+                </View>
+              }
+              ChevronIconComponent={
+                <Feather name="chevron-down" size={20} color="#000" />
+              }
+              ClearIconComponent={
+                <Feather name="x-circle" size={18} color="#000" />
+              }
+              inputHeight={50}
+              showChevron={false}
+              closeOnBlur={false}
+            />
+          </View>
+          <Text style={styles.Title}>Mot de passe</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <TextInput
+              style={styles.input}
+              value={password || ''}
+              onChangeText={text => setPassword(text)}
+              secureTextEntry={true}
+            />
+          </KeyboardAvoidingView>
+          <Text style={styles.Title}>Confirmation du mot de passe</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <TextInput
+              style={styles.input}
+              value={passwordConfirm || ''}
+              onChangeText={text => setPasswordConfirm(text)}
+              secureTextEntry={true}
+            />
+          </KeyboardAvoidingView>
+          <View style={{width: 10}} />
+
+          {error !== '' && (
+            <>
+              <View style={styles.errorMessage}>
+                <Text style={styles.errorMessageText}>{error}</Text>
+              </View>
+            </>
+          )}
+          <Pressable
+            style={styles.Button}
+            onPress={() => {
+              console.log('edit');
+              setModalChoiceVisible(true);
+            }}>
+            <Text style={styles.ButtonText}>Mise à jour du profil</Text>
+          </Pressable>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalChoiceVisible}
+            onRequestClose={() => {
+              setModalChoiceVisible(!modalChoiceVisible);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>
+                  Voulez vous modifier votre profil ?
+                </Text>
+                <Pressable
+                  style={[styles.button]}
+                  onPress={() => {
+                    updateProfile();
+                    setModalChoiceVisible(false);
+                  }}>
+                  <Text style={[styles.textStyle]}>Accepter</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalChoiceVisible(!modalChoiceVisible)}>
+                  <Text style={[styles.textStyle, styles.TextClose]}>
+                    Annuler
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -527,12 +536,12 @@ const styles = StyleSheet.create({
   },
   BackSecond: {
     color: '#000',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 12,
   },
   BackText: {
     color: '#000',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 16,
   },
   Icon: {
@@ -647,7 +656,7 @@ const styles = StyleSheet.create({
   },
   ButtonText: {
     color: '#fff',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 16,
     textAlign: 'center',
   },

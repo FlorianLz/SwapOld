@@ -16,7 +16,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import RecapProposition from '../components/RecapProposition';
-import IconAwe from 'react-native-vector-icons/FontAwesome5';
+import IconAwe from 'react-native-vector-icons/FontAwesome';
 import IconMat from 'react-native-vector-icons/MaterialIcons';
 import {supabase} from '../lib/initSupabase';
 import profileService from '../services/profile.service';
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   Title: {
     color: '#fff',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 28,
   },
   ContainerImage: {
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   full_name: {
     color: '#000',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 28,
     textAlign: 'center',
     marginBottom: 8,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   city_name: {
     color: '#000',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 14,
     textAlign: 'center',
   },

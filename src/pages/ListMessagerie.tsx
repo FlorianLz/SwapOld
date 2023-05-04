@@ -36,7 +36,7 @@ export default function ListMessagerie({
         <Image style={styles.Image} source={{uri: article.images}} />
         <View style={styles.InfosContainer}>
           <Text style={styles.Name}>
-            Echange avec{' '}
+            Échange avec{' '}
             {article.isOwner
               ? article.receiverInfos.username
               : article.ownerInfos.username}

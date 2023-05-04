@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Button,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {
   ParamListBase,
   useIsFocused,
@@ -23,33 +30,35 @@ export default function HubPublication({session}: {session: any}) {
       });
   }, [isFocused]);
   return (
-    <ScrollView>
-      <Button
-        title={'Recap des proposition'}
-        onPress={() => navigation.navigate('RecapProposition')}
-      />
-      <Button
-        title={'Ajouter un article'}
-        onPress={() => navigation.navigate('AddArticle')}
-      />
-      <Text>Articles publiés</Text>
-      <View style={styles.ModeAffichageContainer}>
-        <View style={styles.ModeAffichage}>
-          {isFocused
-            ? articlesPublished.map(article => (
-                <SingleArticleCard
-                  key={article.id}
-                  modeAffichage={'mode2'}
-                  article={article}
-                  navigation={navigation}
-                  session={session}
-                  hideLike={true}
-                />
-              ))
-            : null}
+    <SafeAreaView>
+      <ScrollView>
+        <Button
+          title={'Recap des proposition'}
+          onPress={() => navigation.navigate('RecapProposition')}
+        />
+        <Button
+          title={'Ajouter un article'}
+          onPress={() => navigation.navigate('AddArticle')}
+        />
+        <Text>Articles publiés</Text>
+        <View style={styles.ModeAffichageContainer}>
+          <View style={styles.ModeAffichage}>
+            {isFocused
+              ? articlesPublished.map(article => (
+                  <SingleArticleCard
+                    key={article.id}
+                    modeAffichage={'mode2'}
+                    article={article}
+                    navigation={navigation}
+                    session={session}
+                    hideLike={true}
+                  />
+                ))
+              : null}
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

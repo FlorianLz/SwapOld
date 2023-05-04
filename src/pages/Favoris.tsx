@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Image,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
@@ -29,37 +30,40 @@ export default function Favoris({session}: {session: any}) {
       });
   }, [isFocused, session.user.id]);
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.containerScrollView}>
-      <Text h4 style={styles.title}>
-        Favoris
-      </Text>
-      <View style={styles.ModeAffichageContainer}>
-        <View style={styles.ModeAffichage}>
-          {articles.map(article => (
-            <SingleArticleCard
-              key={article.id}
-              modeAffichage={'mode2'}
-              article={article}
-              navigation={navigation}
-              session={session}
+    <SafeAreaView>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.containerScrollView}>
+        <Text h4 style={styles.title}>
+          Favoris
+        </Text>
+        <View style={styles.ModeAffichageContainer}>
+          <View style={styles.ModeAffichage}>
+            {articles.map(article => (
+              <SingleArticleCard
+                key={article.id}
+                modeAffichage={'mode2'}
+                article={article}
+                navigation={navigation}
+                session={session}
+              />
+            ))}
+          </View>
+        </View>
+        {articles.length === 0 && (
+          <View
+            style={{alignItems: 'center', flex: 1, justifyContent: 'center'}}>
+            <Image
+              source={require('../assets/img/voidFavorites.png')}
+              style={{width: 200, height: 200}}
             />
-          ))}
-        </View>
-      </View>
-      {articles.length === 0 && (
-        <View style={{alignItems: 'center', flex: 1, justifyContent: 'center'}}>
-          <Image
-            source={require('../assets/img/voidFavorites.png')}
-            style={{width: 200, height: 200}}
-          />
-          <Text style={styles.notFoundTitle}>
-            Aucun favoris pour le moment...
-          </Text>
-        </View>
-      )}
-    </ScrollView>
+            <Text style={styles.notFoundTitle}>
+              Aucun favoris pour le moment...
+            </Text>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

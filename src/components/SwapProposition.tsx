@@ -87,12 +87,12 @@ const styles = StyleSheet.create({
   },
   BackSecond: {
     color: '#000',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 12,
   },
   BackText: {
     color: '#000',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 16,
   },
   Icon: {

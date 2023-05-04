@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  SafeAreaView,
   StyleSheet,
   TextInput,
   View,
@@ -249,178 +250,196 @@ export default function AddArticle({
   }, []);
 
   return (
-    <View style={styles.container}>
-      {!hideRetour ? (
-        <Pressable
-          style={styles.Header}
-          onPress={() => {
-            console.log(article_sender);
-            navigation.navigate('SingleArticle', {
-              id:
-                typeof article_sender.article_sender !== 'undefined'
-                  ? article_sender.article_sender.article.id
-                  : article_sender.article.id,
-              article_sender: article_sender,
-            });
-          }}>
-          <IconAnt
-            style={styles.BackIcon}
-            name="arrowleft"
-            size={24}
-            color="#000"
-          />
-          <Text h4 style={styles.backTitle}>
+    <SafeAreaView>
+      <View style={styles.container}>
+        {!hideRetour ? (
+          <Pressable
+            style={styles.Header}
+            onPress={() => {
+              console.log(article_sender);
+              navigation.navigate('SingleArticle', {
+                id:
+                  typeof article_sender.article_sender !== 'undefined'
+                    ? article_sender.article_sender.article.id
+                    : article_sender.article.id,
+                article_sender: article_sender,
+              });
+            }}>
+            <IconAnt
+              style={styles.BackIcon}
+              name="arrowleft"
+              size={24}
+              color="#000"
+            />
+            <Text h4 style={styles.backTitle}>
+              Publier un article
+            </Text>
+          </Pressable>
+        ) : (
+          <Text h4 style={styles.title}>
             Publier un article
           </Text>
-        </Pressable>
-      ) : (
-        <Text h4 style={styles.title}>
-          Publier un article
-        </Text>
-      )}
-      <View
-        style={{
-          position: 'relative',
-          zIndex: 100,
-          minHeight: '80%',
-          backgroundColor: '#fff',
-        }}>
-        <Text style={styles.Title}>Titre de l'article</Text>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-          <TextInput
-            style={styles.input}
-            placeholder="Tee shirt blanc..."
-            placeholderTextColor="#BDBDBD"
-            value={title}
-            onChangeText={setTitle}
-            maxLength={40}
-          />
-        </KeyboardAvoidingView>
+        )}
+        <View
+          style={{
+            position: 'relative',
+            zIndex: 100,
+            minHeight: '80%',
+            backgroundColor: '#fff',
+          }}>
+          <Text style={styles.Title}>Titre de l'article</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <TextInput
+              style={styles.input}
+              placeholder="Tee shirt blanc..."
+              placeholderTextColor="#BDBDBD"
+              value={title}
+              onChangeText={setTitle}
+              maxLength={40}
+            />
+          </KeyboardAvoidingView>
 
-        <Text style={styles.Title}>Description de l'article</Text>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-          <TextInput
-            style={styles.input}
-            placeholder="Description..."
-            placeholderTextColor="#BDBDBD"
-            value={content}
-            onChangeText={setContent}
-          />
-        </KeyboardAvoidingView>
+          <Text style={styles.Title}>Description de l'article</Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+            <TextInput
+              style={styles.input}
+              placeholder="Description..."
+              placeholderTextColor="#BDBDBD"
+              value={content}
+              onChangeText={setContent}
+            />
+          </KeyboardAvoidingView>
 
-        <Text style={styles.Title}>Localisation</Text>
-        <View style={[Platform.select({ios: {zIndex: 1}})]}>
-          <AutocompleteDropdown
-            direction={Platform.select({ios: 'down'})}
-            dataSet={suggestionsList}
-            onChangeText={getSuggestions}
-            onSelectItem={item => {
-              item && setSelectedItem(item);
-            }}
-            debounce={600}
-            suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
-            onClear={onClearPress}
-            loading={loading}
-            useFilter={false} // set false to prevent rerender twice
-            textInputProps={{
-              placeholder: 'Localisation...',
-              autoCorrect: true,
-              autoCapitalize: 'none',
-              style: {
+          <Text style={styles.Title}>Localisation</Text>
+          <View style={[Platform.select({ios: {zIndex: 1}})]}>
+            <AutocompleteDropdown
+              direction={Platform.select({ios: 'down'})}
+              dataSet={suggestionsList}
+              onChangeText={getSuggestions}
+              onSelectItem={item => {
+                item && setSelectedItem(item);
+              }}
+              debounce={600}
+              suggestionsListMaxHeight={Dimensions.get('window').height * 0.4}
+              onClear={onClearPress}
+              loading={loading}
+              useFilter={false} // set false to prevent rerender twice
+              textInputProps={{
+                placeholder: 'Localisation...',
+                autoCorrect: true,
+                autoCapitalize: 'none',
+                style: {
+                  backgroundColor: '#F6F6F6',
+                  height: 48,
+                  paddingLeft: 20,
+                  borderRadius: 4,
+                  borderColor: '#E8E8E8',
+                  borderWidth: 1,
+                  marginBottom: 8,
+                  color: '#BDBDBD',
+                  fontWeight: 'normal',
+                  fontSize: 14,
+                },
+              }}
+              rightButtonsContainerStyle={{
                 backgroundColor: '#F6F6F6',
-                height: 48,
-                paddingLeft: 20,
+                height: 47,
+                marginTop: 1,
+                marginRight: 1,
+              }}
+              inputContainerStyle={{
                 borderRadius: 4,
+                backgroundColor: '#F6F6F6',
+                height: 47,
+              }}
+              suggestionsListContainerStyle={{
+                backgroundColor: 'white',
+                maxHeight: 165,
+                zIndex: 100,
+              }}
+              containerStyle={{
+                flexGrow: 1,
+                flexShrink: 1,
+                marginBottom: 16,
                 borderColor: '#E8E8E8',
+                height: 50,
                 borderWidth: 1,
-                marginBottom: 8,
-                color: '#BDBDBD',
-                fontWeight: 'normal',
-                fontSize: 14,
-              },
-            }}
-            rightButtonsContainerStyle={{
-              backgroundColor: '#F6F6F6',
-              height: 47,
-              marginTop: 1,
-              marginRight: 1,
-            }}
-            inputContainerStyle={{
-              borderRadius: 4,
-              backgroundColor: '#F6F6F6',
-              height: 47,
-            }}
-            suggestionsListContainerStyle={{
-              backgroundColor: 'white',
-              maxHeight: 165,
-              zIndex: 100,
-            }}
-            containerStyle={{
-              flexGrow: 1,
-              flexShrink: 1,
-              marginBottom: 16,
-              borderColor: '#E8E8E8',
-              height: 50,
-              borderWidth: 1,
-              borderRadius: 4,
-            }}
-            renderItem={item => <Text style={{padding: 15}}>{item.title}</Text>}
-            EmptyResultComponent={
-              <View>
-                {currentSearch.length > 0 && (
-                  <Text style={{padding: 15}}>Aucun résultat</Text>
-                )}
-              </View>
-            }
-            ChevronIconComponent={
-              <Feather name="chevron-down" size={20} color="#000" />
-            }
-            ClearIconComponent={
-              <Feather name="x-circle" size={18} color="#000" />
-            }
-            inputHeight={50}
-            showChevron={false}
-            closeOnBlur={false}
-          />
-          <View style={{width: 10}} />
-        </View>
-
-        <Text style={styles.Title}>
-          Photos de l’article ({resizedImages.length}/5)
-        </Text>
-
-        {resizedImages.length > 0 ? (
-          <View style={styles.ContainerAddImage}>
-            {resizedImages.map(
-              (image: {uri: string}, index: React.Key | null | undefined) => (
-                <View key={index}>
-                  {image && (
-                    <View style={styles.containerIcon}>
-                      <Image
-                        key={index}
-                        source={{uri: image.uri}}
-                        style={styles.Image}
-                      />
-                      <Pressable
-                        style={[styles.ButtonDelete, styles.bgWhite]}
-                        onPress={() => handleDeleteImage(index as number)}>
-                        <IconIco
-                          style={[styles.Icon]}
-                          name="close"
-                          size={18}
-                          color="#000"
-                        />
-                      </Pressable>
-                    </View>
+                borderRadius: 4,
+              }}
+              renderItem={item => (
+                <Text style={{padding: 15}}>{item.title}</Text>
+              )}
+              EmptyResultComponent={
+                <View>
+                  {currentSearch.length > 0 && (
+                    <Text style={{padding: 15}}>Aucun résultat</Text>
                   )}
                 </View>
-              ),
-            )}
-            {resizedImages.length < 5 && (
+              }
+              ChevronIconComponent={
+                <Feather name="chevron-down" size={20} color="#000" />
+              }
+              ClearIconComponent={
+                <Feather name="x-circle" size={18} color="#000" />
+              }
+              inputHeight={50}
+              showChevron={false}
+              closeOnBlur={false}
+            />
+            <View style={{width: 10}} />
+          </View>
+
+          <Text style={styles.Title}>
+            Photos de l’article ({resizedImages.length}/5)
+          </Text>
+
+          {resizedImages.length > 0 ? (
+            <View style={styles.ContainerAddImage}>
+              {resizedImages.map(
+                (image: {uri: string}, index: React.Key | null | undefined) => (
+                  <View key={index}>
+                    {image && (
+                      <View style={styles.containerIcon}>
+                        <Image
+                          key={index}
+                          source={{uri: image.uri}}
+                          style={styles.Image}
+                        />
+                        <Pressable
+                          style={[styles.ButtonDelete, styles.bgWhite]}
+                          onPress={() => handleDeleteImage(index as number)}>
+                          <IconIco
+                            style={[styles.Icon]}
+                            name="close"
+                            size={18}
+                            color="#000"
+                          />
+                        </Pressable>
+                      </View>
+                    )}
+                  </View>
+                ),
+              )}
+              {resizedImages.length < 5 && (
+                <Pressable
+                  style={styles.Button}
+                  onPress={initMediaPicker}
+                  disabled={resizedImages.length > 4}>
+                  <IconIco
+                    style={styles.Icon}
+                    name="add-circle-outline"
+                    size={45}
+                    color="#000"
+                  />
+                </Pressable>
+              )}
+            </View>
+          ) : (
+            <View style={{backgroundColor: 'white'}}>
               <Pressable
                 style={styles.Button}
                 onPress={initMediaPicker}
@@ -432,44 +451,30 @@ export default function AddArticle({
                   color="#000"
                 />
               </Pressable>
-            )}
-          </View>
-        ) : (
-          <View style={{backgroundColor: 'white'}}>
-            <Pressable
-              style={styles.Button}
-              onPress={initMediaPicker}
-              disabled={resizedImages.length > 4}>
-              <IconIco
-                style={styles.Icon}
-                name="add-circle-outline"
-                size={45}
-                color="#000"
-              />
-            </Pressable>
-          </View>
-        )}
-        <View>
-          {error ? <Text style={styles.error}>{error}</Text> : null}
-          {onPublication && !published && (
-            <Text style={styles.base}>
-              Publication en cours, veuillez patienter...
-            </Text>
+            </View>
           )}
-          {published && <Text style={styles.success}>{msgPublished}</Text>}
+          <View>
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+            {onPublication && !published && (
+              <Text style={styles.base}>
+                Publication en cours, veuillez patienter...
+              </Text>
+            )}
+            {published && <Text style={styles.success}>{msgPublished}</Text>}
+          </View>
+        </View>
+        <View style={styles.containerAddArticle}>
+          {!onPublication && !published && (
+            <Pressable
+              style={styles.ButtonAddArticle}
+              onPress={handleUpload}
+              disabled={onPublication}>
+              <Text style={styles.ButtonText}>Publier cet article</Text>
+            </Pressable>
+          )}
         </View>
       </View>
-      <View style={styles.containerAddArticle}>
-        {!onPublication && !published && (
-          <Pressable
-            style={styles.ButtonAddArticle}
-            onPress={handleUpload}
-            disabled={onPublication}>
-            <Text style={styles.ButtonText}>Publier cet article</Text>
-          </Pressable>
-        )}
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
@@ -482,7 +487,7 @@ const styles = StyleSheet.create({
   },
   backTitle: {
     color: '#000',
-    fontFamily: 'Roboto',
+    fontFamily: 'System',
     fontSize: 12,
   },
   BackIcon: {

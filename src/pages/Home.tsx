@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import { SafeAreaView, View } from "react-native";
 import ListArticles from '../components/articles/ListArticles';
 import {useIsFocused} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
@@ -36,7 +36,7 @@ export default function Home({session}: {session: any}) {
   }
 
   return (
-    <View>
+    <SafeAreaView>
       <SearchBar onSubmit={handleSearchSubmit} />
       {isFocused ? (
         <ListArticles
@@ -45,6 +45,6 @@ export default function Home({session}: {session: any}) {
           searchTermText={searchTermText}
         />
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 }
