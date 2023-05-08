@@ -19,54 +19,68 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  /**
+   * Crée un nouveau compte utilisateur avec l'email et le mot de passe fournis.
+   * Vérifie que l'email est valide et que les mots de passe saisis correspondent.
+   * Affiche une erreur si une erreur survient lors de la création du compte ou si un compte existe déjà avec cette adresse email.
+   * @async
+   * @function signUpWithEmail
+   * @returns {Promise<void>}
+   */
   async function signUpWithEmail() {
-    //Vérification de l'email et du mot de passe
+    // Vérifie si les champs email et mot de passe sont remplis
     if (email === '' || password === '') {
       setError('Tous les champs doivent être remplis');
     } else {
       let errorInputs = false;
-      //Check si l'email est valide
+      // Vérifie si l'email est valide
       if (!authHelper.checkEmailIsValid(email)) {
         errorInputs = true;
         setError("Merci d'entrer une adresse email valide");
       } else {
-        //Check si le mot de passe est valide
+        // Vérifie si le mot de passe est valide
         if (!authHelper.checkPasswordIsValid(password)) {
           errorInputs = true;
           setError(
             'Le mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un caractère spécial et un chiffre.',
           );
         } else {
+          // Vérifie si les deux mots de passe sont identiques
           if (password !== confirmPassword) {
             errorInputs = true;
             setError('Les mots de passe ne sont pas identiques.');
           }
         }
       }
+      // Si tous les champs sont valides, tente de créer un nouveau compte utilisateur avec l'email et le mot de passe fournis
       if (!errorInputs) {
         setLoading(true);
         let auth = await supabase.auth.signUp({
           email: email,
           password: password,
         });
-        console.log(auth.error);
         if (auth.error) {
           let err: string = String(auth.error);
+          // Affiche une erreur si un compte existe déjà avec cette adresse email
           if (err === 'AuthApiError: User already registered') {
             setError('Un compte existe déjà avec cette adresse email.');
           } else {
+            // Affiche une erreur si une erreur survient lors de la création du compte
             setError(
               'Une erreur est survenue lors de la création du compte. Merci de réessayer.',
             );
           }
           setLoading(false);
         } else {
-          console.log('Profile created', auth.data);
           setLoading(false);
         }
       }
     }
   }
+
+  /**
+   * Permet de se crée un compte sur l'application
+   */
 
   return (
     <ScrollView>
@@ -133,6 +147,10 @@ export default function Register() {
     </ScrollView>
   );
 }
+
+/**
+ * Styles
+ */
 
 const styles = StyleSheet.create({
   button: {

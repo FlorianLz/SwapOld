@@ -29,8 +29,15 @@ export default function CompleteProfile() {
     });
   }, []);
 
+  /**
+   * Fonction appelée lorsque l'utilisateur clique sur le bouton "Valider"
+   * afin de mettre à jour son profil
+   */
   const handleCompleteProfile = async () => {
     setLoadingUpdate(true);
+
+    // Vérifie si le nom d'utilisateur est valide (entre 3 et 10 caractères,
+    // uniquement des lettres et des chiffres)
     if (!/^[a-zA-Z0-9]+$/.test(userName)) {
       if (userName.length < 3 || userName.length > 10) {
         setError("Le nom d'utilisateur doit faire entre 3 et 10 caractères");
@@ -43,6 +50,7 @@ export default function CompleteProfile() {
       return;
     }
 
+    // Vérifie si une ville a bien été sélectionnée dans la liste déroulante
     if (
       !selectedItem.cityName ||
       !selectedItem.latitude ||
@@ -53,7 +61,8 @@ export default function CompleteProfile() {
       return;
     }
 
-    const {data, error: errorMessage} = await supabase
+    // Met à jour le profil de l'utilisateur dans la base de données Supabase
+    const {error: errorMessage} = await supabase
       .from('profiles')
       .update({
         username: userName,
@@ -67,6 +76,8 @@ export default function CompleteProfile() {
         avatar_url: 'default/avatar.png',
       })
       .eq('id', session.user.id);
+
+    // Si une erreur survient, affiche un message d'erreur correspondant
     if (errorMessage) {
       if (errorMessage.code === '23505') {
         setError("Ce nom d'utilisateur est déjà utilisé");
@@ -79,7 +90,6 @@ export default function CompleteProfile() {
       setError('');
       navigation.navigate('HomePageScreen', {screen: 'Profil'});
     }
-    console.log(data, error);
   };
 
   const [loading, setLoading] = useState(false);
@@ -104,9 +114,18 @@ export default function CompleteProfile() {
     cityName: '',
   });
 
+  /**
+   * Cette fonction récupère les suggestions de villes en fonction d'une chaîne de caractères `q`.
+   * Si `q` est inférieure à 3 caractères, la liste des suggestions est vidée et un objet vide est sélectionné.
+   * La fonction appelle le service de localisation pour récupérer les suggestions de villes correspondant à la chaîne de caractères.
+   * @param {string} q - La chaîne de caractères pour laquelle récupérer les suggestions de villes.
+   */
   const getSuggestions = useCallback(async (q: string) => {
+    // Convertit `q` en minuscules pour être utilisé pour la recherche de suggestions
     const filterToken = q.toLowerCase();
+    // Met à jour l'état `currentSearch` avec la valeur de `filterToken`
     setCurrentSearch(filterToken);
+    // Si `q` a moins de 3 caractères, vide la liste des suggestions et sélectionne un objet vide
     if (q.length < 3) {
       setSuggestionsList([]);
       setSelectedItem({
@@ -118,14 +137,24 @@ export default function CompleteProfile() {
       });
       return;
     }
+    // Active l'état `loading` pour afficher une indication de chargement
     setLoading(true);
+    // Appelle le service de localisation pour récupérer les suggestions de villes correspondant à `filterToken`
     const suggestions = await locationService.getCitiesBySearch(filterToken);
+    // Met à jour l'état `suggestionsList` avec les suggestions de villes récupérées
     setSuggestionsList(suggestions);
+    // Désactive l'état `loading` pour masquer l'indication de chargement
     setLoading(false);
   }, []);
 
+  /**
+   * Cette fonction est appelée lorsqu'on appuie sur le bouton "Effacer".
+   * Elle vide la liste des suggestions et sélectionne un objet vide.
+   */
   const onClearPress = useCallback(() => {
+    // Vide la liste des suggestions
     setSuggestionsList([]);
+    // Sélectionne un objet vide
     setSelectedItem({
       cityName: '',
       id: '',
@@ -133,8 +162,13 @@ export default function CompleteProfile() {
       longitude: 0,
       title: '',
     });
+    // Met à jour l'état `currentSearch` avec une chaîne de caractères vide
     setCurrentSearch('');
   }, []);
+
+  /**
+   * permet d'ajouter des informations complementaires du profil
+   */
 
   return (
     <View style={styles.container}>
@@ -251,6 +285,11 @@ export default function CompleteProfile() {
     </View>
   );
 }
+
+/**
+ * Styles
+ */
+
 const styles = StyleSheet.create({
   container: {
     marginLeft: 20,

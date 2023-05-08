@@ -18,31 +18,46 @@ export default function Login() {
   const [viewPassword, setViewPassword] = useState(false);
   const [error, setError] = useState('');
 
+  /**
+   * Cette fonction permet de se connecter avec l'email et le mot de passe fournis par l'utilisateur.
+   * Elle vérifie que l'email et le mot de passe sont remplis, puis vérifie si l'email est valide.
+   * Si les champs sont valides, elle appelle la fonction signInWithPassword de Supabase pour tenter de se connecter.
+   * @throws {Error} Lance une erreur si l'authentification a échoué.
+   */
   async function signInWithPassword() {
-    //Vérification de l'email et du mot de passe
+    // Vérifie que les champs email et password sont remplis
     if (email === '' || password === '') {
       setError('Tous les champs doivent être remplis');
     } else {
       let errorInputs = false;
-      //Check si l'email est valide
+      // Vérifie si l'email est valide
       if (!authHelper.checkEmailIsValid(email)) {
         errorInputs = true;
         setError("Merci d'entrer une adresse email valide");
       }
+      // Si l'email et le mot de passe sont valides, tente de se connecter
       if (!errorInputs) {
+        // Active l'état `loading` pour afficher une indication de chargement
         setLoading(true);
+        // Appelle la fonction signInWithPassword de Supabase pour tenter de se connecter
         let auth = await supabase.auth.signInWithPassword({
           email: email,
           password: password,
         });
-        console.log(auth.error);
+        // Si l'authentification a échoué, déclenche une erreur
         if (auth.error) {
           setError('Identifiants invalides. Merci de réessayer.');
+          throw new Error('Authentification échouée');
         }
+        // Désactive l'état `loading` pour masquer l'indication de chargement
         setLoading(false);
       }
     }
   }
+
+  /**
+   * permet de se connecter sur l'application
+   */
 
   return (
     <ScrollView>
@@ -100,6 +115,11 @@ export default function Login() {
     </ScrollView>
   );
 }
+
+/**
+ * Styles
+ */
+
 const styles = StyleSheet.create({
   button: {
     height: 50,
