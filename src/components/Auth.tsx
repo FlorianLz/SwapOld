@@ -11,6 +11,10 @@ export default function Auth({route}: {params: {step: string}} | any) {
 
   useEffect(() => {}, [isFocused]);
 
+  /**
+   * Affichage du composant Login ou Register en fonction de la valeur de la variable step
+   */
+
   return (
     <ScrollView style={styles.container}>
       <Text h3 style={styles.title}>
@@ -39,6 +43,10 @@ export default function Auth({route}: {params: {step: string}} | any) {
     </ScrollView>
   );
 }
+
+/**
+ * Styles
+ */
 
 const styles = StyleSheet.create({
   container: {

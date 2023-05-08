@@ -17,12 +17,16 @@ import {useIsFocused} from '@react-navigation/native';
 import imagesHelper from '../helpers/images.helper';
 
 export default function RecapProposition({session, navigation}: any) {
+  /**
+   * Met à jour l'état des swaps en appelant une procédure stockée (RPC) sur Supabase.
+   * Cette fonction est asynchrone, car elle attend que la requête RPC soit terminée avant de retourner.
+   * Elle affiche également le résultat de la requête dans la console.
+   */
   async function updateSwapsState() {
     try {
       const {data, error} = await supabase.rpc('update_swaps_state');
 
       if (error) {
-        console.error(error);
         return;
       }
 
@@ -52,15 +56,23 @@ export default function RecapProposition({session, navigation}: any) {
   const [nbPropositionsTerminees, setNbPropositionsTerminees] = useState(0);
   const isFocused = useIsFocused();
 
+  /**
+   * Cette fonction utilise les méthodes des repositories pour récupérer les swaps de l'utilisateur connecté
+   * selon l'état des échanges. Les données récupérées sont stockées dans des variables d'état pour être
+   * utilisées dans l'affichage.
+   * La fonction utilise également la méthode getUserLocation de locationHelper pour récupérer la localisation
+   * de l'utilisateur.
+   */
   useEffect(() => {
     locationHelper.getUserLocation().then(location => {
       setLocation(location);
     });
+    // Récupérer les swaps en cours
     articleRepository
       .getSwapsByStateAndProfile(session.user.id, 0)
       .then(res => {
         setSwaps(res.data);
-        console.log(res.data);
+        // Compter le nombre de propositions reçues et envoyées
         let nbPropositionsRecuesTemp = 0;
         let nbPropositionsEnvoyeesTemp = 0;
         res.data?.forEach((swap: any) => {
@@ -74,12 +86,12 @@ export default function RecapProposition({session, navigation}: any) {
         setNbPropositionsRecues(nbPropositionsRecuesTemp);
         setNbPropositionsEnvoyees(nbPropositionsEnvoyeesTemp);
       });
+    // Récupérer les swaps acceptés
     articleRepository
       .getSwapsByStateAndProfile(session.user.id, 2)
       .then(res => {
-        console.log(res);
         setSwapsAccepted(res.data);
-        console.log(res.data);
+        // Compter le nombre de propositions acceptées et terminées
         let nbPropositionsAccepteesTemp = 0;
         let nbPropositionsTermineesTemp = 0;
         res.data?.forEach((swap: any) => {
@@ -93,6 +105,11 @@ export default function RecapProposition({session, navigation}: any) {
         setNbPropositionsAcceptees(nbPropositionsAccepteesTemp);
       });
   }, [isFocused, session.user.id]);
+
+  /**
+   * Affcihage des propositions reçues , envoyées , acceptées et terminées
+   */
+
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'column'}}>
@@ -242,12 +259,11 @@ export default function RecapProposition({session, navigation}: any) {
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
                   onPress={() => {
-                    console.log('refuser');
-                    articleRepository
-                      .changeStateSwapArticle(idSwapModale, session.user.id, 1)
-                      .then(res => {
-                        console.log(res);
-                      });
+                    articleRepository.changeStateSwapArticle(
+                      idSwapModale,
+                      session.user.id,
+                      1,
+                    );
                     setModalChoiceVisible(!modalChoiceVisible);
                   }}>
                   <Text style={[styles.textStyle, styles.TextClose]}>
@@ -546,6 +562,10 @@ export default function RecapProposition({session, navigation}: any) {
     </View>
   );
 }
+
+/**
+ * Styles
+ */
 
 const styles = StyleSheet.create({
   image: {

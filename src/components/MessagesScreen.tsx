@@ -48,9 +48,15 @@ export default function MessagesScreen({
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [echangeTermine, setEchangeTermine] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  /**
+   * Récupère les messages associés à un article et met à jour le statut de lecture des messages non-lus
+   */
   useEffect(() => {
-    console.log(article);
+    // Met à jour l'état "echangeTermine"
     setEchangeTermine(article.status2);
+
+    // Récupère les messages associés à l'article et met à jour l'état "messages"
     messageService
       .getMessagesForArticle(article.id, session.user.id)
       .then(res => {
@@ -63,34 +69,42 @@ export default function MessagesScreen({
   }, []);
 
   useEffect(() => {
+    // Écoute les changements sur la table "articles_chat_profiles" pour l'article courant
+    // lorsque un nouvel enregistrement est ajouté
+    // et met à jour la liste de messages en conséquence.
     supabase
       .channel('value-db-changes')
       .on(
         'postgres_changes',
         {
-          event: 'INSERT',
+          event: 'INSERT', // surveiller uniquement les enregistrements ajoutés
           schema: 'public',
-          table: 'articles_chat_profiles',
-          filter: 'id_article=eq.' + article.id,
+          table: 'articles_chat_profiles', // nom de la table à surveiller
+          filter: 'id_article=eq.' + article.id, // critère de filtrage pour les enregistrements à surveiller
         },
         payload => {
-          console.log('UPDATE REALTIME');
+          // Obtenir le nouvel enregistrement ajouté
           let {new: newRecord} = payload;
+
+          // Déterminer le profil d'utilisateur correspondant à l'utilisateur de l'autre côté de la conversation
           let userToAdd =
             newRecord.id_first_profile === session.user.id
               ? actualUser
               : otherUser;
+
+          // Formatage du message en un objet IMessage valide pour GiftedChat
           let msg = messageFactory.formatNewMessageReceived(
             newRecord,
             session.user.id,
             userToAdd,
           );
-          //add message only if it's not the current user
+
+          // Ajouter le message à la liste de messages seulement si l'utilisateur courant n'est pas l'expéditeur
           if (msg?.user?._id !== session.user.id) {
             setMessages((previousMessages: IMessage[] | undefined) =>
               GiftedChat.append(previousMessages, msg as any),
             );
-            console.log('UPD');
+            // Mettre à jour la liste de messages lus pour l'article
             messageService
               .updateReadMessagesForArticle(article.id, session.user.id)
               .then(() => {});
@@ -98,15 +112,23 @@ export default function MessagesScreen({
         },
       )
       .subscribe();
+    // Nettoyer l'abonnement lorsque le composant est démonté
     return () => {
       supabase.removeAllChannels();
     };
   }, []);
 
+  /**
+   * Callback appelé lorsque l'utilisateur envoie un nouveau message.
+   * Ajoute le message à la liste des messages de la conversation et envoie le message au serveur via le service de messages.
+   * @param message Le message envoyé par l'utilisateur.
+   */
   const onSend = useCallback(async (message: any = []) => {
+    // Ajoute le message à la liste des messages de la conversation
     setMessages((previousMessages: IMessage[] | undefined) =>
       GiftedChat.append(previousMessages, message),
     );
+    // Envoie le message au serveur via le service de messages
     await messageService.sendMessage(
       session.user.id,
       otherId,
@@ -116,25 +138,41 @@ export default function MessagesScreen({
     );
   }, []);
 
+  /**
+   * Permet de valider l'échange en cours
+   */
   const handleValidate = async () => {
-    console.log(article.id);
+    // Appelle la méthode updateArticleEchangeValide de l'articleRepository pour mettre à jour l'état d'échange de l'article
     const valider = await articleRepository.updateArticleEchangeValide(
       article.id,
     );
+
+    // Si aucune erreur n'est survenue pendant la mise à jour de l'état d'échange de l'article
     const {error} = valider;
     if (!error) {
+      // Met à jour l'état "échange terminé" pour afficher le message approprié à l'utilisateur
       setEchangeTermine(true);
+
+      // Ferme le modal
       setModalVisible(!modalVisible);
+
+      // Appelle la méthode getEchangeValide de l'articleRepository pour récupérer l'état d'échange de l'article associé à l'échange en cours
       const echangeValide = await articleRepository.getEchangeValide(
         article.id2,
       );
       const {data} = echangeValide;
+
+      // Si l'article associé à l'échange en cours est également validé, appelle la méthode updateArticleStatus de l'articleRepository pour mettre à jour l'état des deux articles à "terminé"
       if (!data || data[0].echange_valide) {
         await articleRepository.updateArticleStatus(article.id);
         await articleRepository.updateArticleStatus(article.id2);
       }
     }
   };
+
+  /**
+   * Permet de discuter en temps réel avec un autre utilisateur
+   */
 
   return (
     <SafeAreaView>
@@ -252,6 +290,11 @@ export default function MessagesScreen({
     </SafeAreaView>
   );
 }
+
+/**
+ * Styles
+ */
+
 const styles = StyleSheet.create({
   containerHeader: {
     flexDirection: 'row',

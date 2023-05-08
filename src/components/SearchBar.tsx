@@ -10,13 +10,25 @@ const SearchBar: React.FC<Props> = ({onSubmit}) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterEnabled, setFilterEnabled] = useState(false);
 
+  /**
+   * Fonction qui sera appelée lorsque le formulaire de recherche sera soumis.
+   * Appelle la fonction `onSubmit` avec les valeurs du terme de recherche et du filtre activé.
+   */
   const handleSubmit = () => {
     onSubmit(searchTerm, filterEnabled);
   };
 
+  /**
+   * Fonction qui sera appelée lorsque l'utilisateur active/désactive le filtre de recherche.
+   * Met à jour la variable `filterEnabled` qui sera utilisée lors de la soumission du formulaire.
+   */
   const handleFilterToggle = () => {
     setFilterEnabled(!filterEnabled);
   };
+
+  /**
+   * Barre de recherche
+   */
 
   return (
     <View style={[styles.Flex]}>
@@ -43,6 +55,10 @@ const SearchBar: React.FC<Props> = ({onSubmit}) => {
     </View>
   );
 };
+
+/**
+ * Styles
+ */
 
 const styles = StyleSheet.create({
   Flex: {

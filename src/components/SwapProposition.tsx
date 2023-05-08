@@ -21,6 +21,14 @@ export default function SwapProposition({
     IArticleData[] | []
   >([]);
 
+  /**
+   * Utilise useEffect pour exécuter une fonction asynchrone qui récupère une liste des articles publiés par l'utilisateur actuel,
+   * mais qui ne sont pas encore proposés pour un échange avec un article spécifique. Si cette liste est vide ou indéfinie,
+   * navigue vers la page "Ajouter un article" avec l'indicateur "privateArticle" à true.
+   * Met à jour la liste d'articles publiés avec les résultats de la requête.
+   *
+   * @param {boolean} isFocused - Indique si l'écran actuel a le focus ou non.
+   */
   useEffect(() => {
     articleService
       .getAllMyPublishedArticlesNotProposedForSpecificId(
@@ -28,12 +36,7 @@ export default function SwapProposition({
         session.user.id,
       )
       .then((result: any) => {
-        console.log('result');
-        console.log(result);
-        console.log(Object.prototype.toString.call(result));
         if (result?.length === 0 || result === undefined) {
-          let article = article_sender;
-          console.log('article sender' + article_sender);
           navigation.navigate('AddArticle', {
             privateArticle: true,
             article_sender: {article_sender},
@@ -42,6 +45,11 @@ export default function SwapProposition({
         setArticlesPublished(result as IArticleData[]);
       });
   }, [isFocused]);
+
+  /**
+   * Affiche la liste des articles publiés par l'utilisateur connecté pour qu'il puisse en sélectionner un et le proposer à l'utilisateur qui a publié son article
+   */
+
   return (
     <View style={styles.container}>
       <Pressable style={styles.Header} onPress={() => navigation.goBack()}>
@@ -73,6 +81,10 @@ export default function SwapProposition({
     </View>
   );
 }
+
+/**
+ * Styles
+ */
 
 const styles = StyleSheet.create({
   Header: {
