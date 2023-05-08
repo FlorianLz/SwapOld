@@ -2,6 +2,13 @@ import {supabase} from '../lib/initSupabase';
 import uuid from 'react-native-uuid';
 
 const imageRepository = {
+  /**
+   * Envoie une image vers le service de stockage de Supabase et retourne le chemin vers l'image téléchargée.
+   * @param {object} imageObject - L'objet image contenant l'URI de l'image et son type MIME.
+   * @param {string} [path='/'] - Le chemin relatif dans le bucket de stockage de Supabase où l'image doit être stockée.
+   * @param {string} [bucketName='swapold'] - Le nom du bucket de stockage de Supabase.
+   * @returns {Promise<string | boolean>} - Le chemin vers l'image téléchargée ou `false` si une erreur s'est produite lors de l'envoi de l'image.
+   */
   async uploadImage(imageObject: any, path = '/', bucketName = 'swapold') {
     const imageData = imageObject;
     const uri = imageData.uri;
@@ -14,18 +21,23 @@ const imageRepository = {
     const imageToUpload = new FormData();
 
     imageToUpload.append('file', {uri, type, name});
-    console.log('imageToUpload', imageToUpload);
     const {error} = await supabase.storage
       .from(bucketName)
       .upload(imagePath, imageToUpload);
 
     if (error) {
-      console.error(error);
       return false;
     }
-    console.log('imagePath', imagePath);
     return imagePath;
   },
+
+  /**
+   * Supprime toutes les images d'un article stockées dans le bucket "swapold" de Supabase Storage.
+   * @function deleteAllImagesFromBucket
+   * @param {string} idUser - L'identifiant de l'utilisateur possédant l'article.
+   * @param {number} idArticle - L'identifiant de l'article dont les images doivent être supprimées.
+   * @returns {Promise<Object>} Un objet contenant un booléen "error" indiquant s'il y a eu une erreur lors de la suppression, et éventuellement un message d'erreur dans "message".
+   */
   async deleteAllImagesFromBucket(idUser: string, idArticle: number) {
     let del = await supabase.storage
       .from('swapold')
@@ -37,7 +49,6 @@ const imageRepository = {
         const filesToRemove = del.data.map(
           x => `${idUser}/${idArticle}/${x.name}`,
         );
-        console.log(filesToRemove);
         const {error: supprError} = await supabase.storage
           .from('swapold')
           .remove(filesToRemove);
