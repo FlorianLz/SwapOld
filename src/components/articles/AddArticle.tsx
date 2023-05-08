@@ -57,6 +57,11 @@ export default function AddArticle({
   const hideRetour = route.params.hideRetour || false;
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const isFocused = useIsFocused();
+
+  /**
+   * Réinitialise les valeurs du formulaire d'article.
+   * Cette fonction est déclenchée à chaque fois que l'auteur d'article change ou que la page est rechargée.
+   */
   useEffect(() => {
     setImages([]);
     setResizedImages([]);
@@ -67,17 +72,25 @@ export default function AddArticle({
     setOnPublication(false);
     setMsgPublished('');
     setError('');
-    console.log('ARTICLE SENDER', article_sender);
   }, [article_sender, isFocused]);
 
+  /**
+   * Redimensionne les images sélectionnées par l'utilisateur avec ImageResizer.
+   * @param {ImagePickerResponse[]} newTab - Tableau contenant les images sélectionnées par l'utilisateur.
+   */
   const resize = async (newTab: ImagePickerResponse[]) => {
+    // Initialise un tableau vide pour stocker les images redimensionnées.
     let resizeImage: any[] = [];
+
+    // Boucle à travers chaque élément de newTab.
     for (const image of newTab) {
+      // Vérifie si l'image est définie et si elle possède des informations sur les ressources.
       if (!image || !image.assets) {
         return;
       }
 
       try {
+        // Redimensionne l'image avec ImageResizer.
         let result = await ImageResizer.createResizedImage(
           String(image.assets[0].uri),
           1200,
@@ -92,16 +105,24 @@ export default function AddArticle({
             onlyScaleDown: true,
           },
         );
+
+        // Ajoute l'image redimensionnée au tableau resizeImage.
         resizeImage = [...resizedImages, result];
       } catch (err) {
-        console.log('Unable to resize the photo');
+        // Gère les erreurs lors du redimensionnement de l'image.
+        setError('Impossible de redimensionner la photo');
       }
     }
+
+    // Met à jour le tableau des images redimensionnées.
     setResizedImages(resizeImage);
   };
 
+  /**
+   * Gère la soumission d'un article à publier, y compris les images associées.
+   */
   function handleUpload() {
-    console.log(title, content, selectedItem, images.length);
+    // Vérifie que tous les champs nécessaires ont été remplis.
     if (
       title === '' ||
       content === '' ||
@@ -110,8 +131,11 @@ export default function AddArticle({
     ) {
       setError('Veuillez remplir tous les champs');
     } else {
+      // Déclenche l'affichage du message de publication.
       setOnPublication(true);
       setError('');
+
+      // Appelle la méthode d'ajout d'article de l'API.
       articleRepository
         .addArticle(
           session.user.id,
@@ -123,18 +147,23 @@ export default function AddArticle({
         .then(async (result: any) => {
           if (!result.error) {
             let errorDuringUpload = false;
+
+            // Boucle à travers chaque image redimensionnée et la télécharge sur le serveur.
             for (const image of resizedImages) {
               const add = await imageService.uploadImage(
                 image,
                 result.id_article,
                 session.user.id + '/' + result.id_article + '/',
               );
+
+              // Gère les erreurs d'upload d'image.
               if (add.error) {
                 errorDuringUpload = true;
               }
             }
+
+            // Si l'article est privé, appelle la méthode de mise à jour correspondante.
             if (privateArticle) {
-              console.log('article_sender private article', article_sender);
               articleRepository
                 .swapArticle(
                   session.user.id,
@@ -146,12 +175,14 @@ export default function AddArticle({
                     : article_sender.article.id,
                   result.id_article,
                 )
-                .then((result: any) => {
-                  if (result.error) {
-                    console.log('error', result.error, result.message);
+                .then((data: any) => {
+                  if (data.error) {
+                    setError('error' + data.error + data.message);
                   }
                 });
             }
+
+            // Si aucune erreur ne s'est produite pendant l'upload des images, affiche un message de succès et redirige vers la page de profil.
             if (!errorDuringUpload) {
               setPublished(true);
               setMsgPublished(
@@ -160,9 +191,10 @@ export default function AddArticle({
               setTimeout(() => {
                 navigation.navigate('HomePageScreen', {screen: 'Profil'});
               }, 4000);
+
+              // Sinon, affiche un message d'erreur et redirige vers la page de modification de l'article.
             } else {
               setPublished(true);
-              //Rediriger vers la page de modification de l'article
               setMsgPublished(
                 "Une erreur est survenue lors de l'upload des images. Vous allez être redirigé vers la page de modification de l'article dans quelques secondes...",
               );
@@ -170,6 +202,8 @@ export default function AddArticle({
                 navigation.navigate('HomePageScreen', {screen: 'Profil'});
               }, 4000);
             }
+
+            // Gère les erreurs lors de l'ajout de l'article.
           } else {
             setError("Un problème est survenu lors de l'ajout de l'article");
             setOnPublication(false);
@@ -179,18 +213,30 @@ export default function AddArticle({
   }
 
   function handleDeleteImage(index: number) {
+    // Cette fonction prend en entrée un index qui correspond à l'indice de l'image à supprimer dans le tableau "resizedImages"
     const newImages = resizedImages.filter(
       (img: any, i: number) => i !== index,
     );
+    // Elle utilise la méthode "filter" pour créer un nouveau tableau "newImages" qui ne contient pas l'image correspondant à l'indice donné en entrée
     setResizedImages([...newImages]);
+    // Enfin, elle met à jour le tableau "resizedImages" en y remplaçant son contenu par celui du tableau "newImages". Ainsi, cette fonction permet de supprimer une image du tableau "resizedImages".
   }
 
+  /**
+   * Initialise la caméra pour prendre une photo et ajoute la nouvelle image dans le state "images".
+   * Puis, redimensionne toutes les images présentes dans le state "images".
+   */
   async function initMediaPicker() {
+    // Lance la caméra pour prendre une photo
     const result = await launchCamera({mediaType: 'photo'});
 
+    // Si l'utilisateur n'a pas annulé la prise de photo
     if (!result.didCancel) {
+      // Ajoute la nouvelle image dans le state "images"
       let newTab = [...images, result];
       setImages([...newTab]);
+
+      // Redimensionne toutes les images présentes dans le state "images"
       await resize([...newTab]);
     }
   }
@@ -217,6 +263,11 @@ export default function AddArticle({
     cityName: '',
   });
 
+  /**
+   * Récupère les suggestions de villes en fonction de la chaîne de recherche entrée par l'utilisateur.
+   * @param {string} q - La chaîne de recherche entrée par l'utilisateur.
+   * @returns {Promise<void>} - Une promesse qui résout lorsque les suggestions de villes sont récupérées.
+   */
   const getSuggestions = useCallback(async (q: string) => {
     const filterToken = q.toLowerCase();
     setCurrentSearch(filterToken);
@@ -237,6 +288,9 @@ export default function AddArticle({
     setLoading(false);
   }, []);
 
+  /**
+   * Efface la liste des suggestions et remet les valeurs par défaut pour l'élément sélectionné et la recherche en cours.
+   */
   const onClearPress = useCallback(() => {
     setSuggestionsList([]);
     setSelectedItem({
@@ -249,6 +303,10 @@ export default function AddArticle({
     setCurrentSearch('');
   }, []);
 
+  /**
+   * Affiche un formulaire pour ajouter un nouvelle article.
+   */
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -256,7 +314,6 @@ export default function AddArticle({
           <Pressable
             style={styles.Header}
             onPress={() => {
-              console.log(article_sender);
               navigation.navigate('SingleArticle', {
                 id:
                   typeof article_sender.article_sender !== 'undefined'
@@ -477,6 +534,11 @@ export default function AddArticle({
     </SafeAreaView>
   );
 }
+
+/**
+ * STYLES
+ */
+
 const styles = StyleSheet.create({
   Header: {
     alignItems: 'center',

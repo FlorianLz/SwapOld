@@ -30,14 +30,23 @@ export default function ListArticles({
   const [modeAffichage, setModeAffichage] = useState<string>('mode1');
   const [loading, setLoading] = useState<boolean>(true);
 
+  /**
+   * Utilise l'effet d'effet pour initialiser l'état des articles et la position par défaut de l'utilisateur.
+   * @param articles Un tableau d'objets d'articles.
+   */
   useEffect(() => {
     setArticlesTab(articles as IArticleData[]);
+    // Récupère la position par défaut de l'utilisateur.
     locationHelper.setUserDefaultLocation().then(() => {
       setTimeout(() => {
         setLoading(false);
       }, 1000);
     });
   }, [articles]);
+
+  /**
+   * affiche une liste d'articles en mode grille ou en mode liste.
+   */
 
   return (
     <View style={styles.fullContainer}>
@@ -106,6 +115,10 @@ export default function ListArticles({
     </View>
   );
 }
+
+/**
+ * STYLES
+ */
 
 const styles = StyleSheet.create({
   ModeAffichage: {

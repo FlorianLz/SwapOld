@@ -35,10 +35,11 @@ export default function SingleArticleCard({
   );
   const [error, setError] = useState<string>('');
   const [modalChoiceVisible, setModalChoiceVisible] = useState(false);
-  useEffect(() => {
-    console.log('article', modeAffichage);
-    console.log('article', article);
-  }, []);
+  useEffect(() => {}, []);
+
+  /**
+   * Affiche un article en mode liste ou en mode grille.
+   **/
   return (
     <View
       style={[
@@ -163,6 +164,11 @@ export default function SingleArticleCard({
     </View>
   );
 }
+
+/**
+ * STYLES
+ */
+
 const styles = StyleSheet.create({
   AffichageMode1: {
     display: 'flex',
