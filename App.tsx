@@ -39,46 +39,42 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('Hello from App.tsx useEffect');
     setLoading(true);
+    // Récupération de la session utilisateur
     // eslint-disable-next-line @typescript-eslint/no-shadow
     supabase.auth.getSession().then(({data: {session}}) => {
       setSession(session);
+      // Récupération du profil utilisateur
       profileRepository.getProfile(session?.user.id as string).then(data => {
-        console.log('dataUse', data);
         if (data?.location?.latitude === 0 && data?.location?.longitude === 0) {
-          console.log('profile not complete useEffect1');
           setProfileComplete(false);
           setLoading(false);
         } else {
-          console.log('profile complete useEffect 1');
           setProfileComplete(true);
           setLoading(false);
         }
       });
     });
 
+    // Gestion des changements d'état de la session utilisateur
     // eslint-disable-next-line @typescript-eslint/no-shadow
     supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Hello from App.tsx onAuthStateChange');
       setSession(session);
       if (loading) {
+        // Récupération du profil utilisateur
         // eslint-disable-next-line @typescript-eslint/no-shadow
         supabase.auth.getSession().then(({data: {session}}) => {
           setSession(session);
           profileRepository
             .getProfile(session?.user.id as string)
             .then(data => {
-              console.log('dataUse', data);
               if (
                 data?.location?.latitude === 0 &&
                 data?.location?.longitude === 0
               ) {
-                console.log('profile not complete useEffect');
                 setProfileComplete(false);
                 setLoading(false);
               } else {
-                console.log('profile complete useEffect');
                 setProfileComplete(true);
                 setLoading(false);
               }
@@ -86,6 +82,7 @@ const App = () => {
         });
       }
     });
+    // Activation de la localisation sur Android
     if (Platform.OS === 'android') {
       RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
         interval: 10000,
@@ -110,6 +107,7 @@ const App = () => {
     },
   };
   const Stack = createNativeStackNavigator();
+
   return (
     <NavigationContainer theme={SwapOldTheme}>
       <Stack.Navigator>
