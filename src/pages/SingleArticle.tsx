@@ -42,31 +42,53 @@ export default ({
   const [isLiked, setIsLiked] = React.useState<boolean>(false);
   const [isProposed, setIsProposed] = React.useState<boolean>(false);
   const isFocused = useIsFocused();
+
   useEffect(() => {
+    // Effectue une requête à l'API pour récupérer les détails de l'article avec l'ID spécifié
+    // id correspond à l'ID de l'article à récupérer
+    // session?.user.id est l'ID de l'utilisateur en cours de session, qui est optionnel
+    // si aucun utilisateur n'est en session, cette propriété sera undefined
     articleService
       .getArticleById(id, session?.user.id)
       .then((result: IArticleData | any) => {
+        // Met à jour l'état de l'article avec les résultats de la requête
         setArticle(result as IArticleData);
+        // Met à jour l'état de chargement à true pour indiquer que la requête a réussi
         setLoading(true);
+        // Met à jour l'état du bouton "like" avec la valeur de la propriété isLiked dans le résultat de la requête
         setIsLiked(result.isLiked);
       });
+
+    // Effectue une requête à l'API pour récupérer tous les ID d'articles avec un swap en cours pour l'article spécifié
+    // id correspond à l'ID de l'article à vérifier
     articleRepository.getAllArticlesIdsWithSwap(id).then((result: any) => {
+      // Vérifie si le résultat contient au moins un ID d'article, ce qui signifie qu'il y a un swap en cours pour cet article
       if (result.length > 0) {
+        // Met à jour l'état isProposed à true pour indiquer qu'un swap est en cours pour l'article
         setIsProposed(true);
       }
     });
   }, [isFocused]);
 
+  /**
+   * Fonction qui gère la suppression d'un article
+   * */
   function handleDelete() {
+    // Appelle la méthode `deleteArticle` de `articleService` pour supprimer l'article avec l'ID spécifié
+    // article.id correspond à l'ID de l'article à supprimer
+    // session.user.id est l'ID de l'utilisateur en cours de session
     articleService.deleteArticle(article.id, session.user.id).then(result => {
+      // Vérifie si la requête a réussi (pas d'erreur)
       if (!result.error) {
+        // Si la requête a réussi, navigue vers la page "Profil" de la page d'accueil
         navigation.navigate('HomePageScreen', {screen: 'Profil'});
-      } else {
-        //console.log(result);
       }
     });
   }
 
+  /**
+   * Affiche tout les infos de l'article
+   */
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
@@ -223,7 +245,6 @@ export default ({
                 <Pressable
                   style={styles.Button}
                   onPress={() => {
-                    console.log('edit');
                     setModalChoiceVisible(true);
                   }}>
                   <Text style={styles.ButtonText}>Proposer un échange</Text>
@@ -245,9 +266,9 @@ export default ({
                 <View style={styles.modalView}>
                   <Text style={styles.modalText}>
                     Vous souhaitez proposer un échange pour cet objet. Vous avez
-                    Vous avez la possibilité de proposer un nouvel article
-                    uniquement pour cet échanger, ou de sélectionner un article
-                    parmi ceux que vous avez déjà mis en ligne.
+                    la possibilité de proposer un nouvel article ou de
+                    sélectionner un article parmi ceux que vous avez déjà mis en
+                    ligne.
                   </Text>
                   <Pressable
                     style={[styles.button, styles.buttonSecondary]}
@@ -291,6 +312,9 @@ export default ({
   );
 };
 
+/**
+ * Styles
+ */
 const styles = StyleSheet.create({
   Figure: {
     position: 'absolute',

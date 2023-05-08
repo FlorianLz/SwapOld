@@ -31,15 +31,29 @@ export default function Profil({session}: {session: any}) {
   const isFocused = useIsFocused();
 
   useEffect(() => {
+    // Met à jour le composant sélectionné pour l'utilisateur
     setSelectedComponent('articles');
+
+    // Effectue une requête à l'API pour récupérer tous les articles publiés par l'utilisateur en cours de session
+    // session.user.id correspond à l'identifiant de l'utilisateur en cours de session
     articleService.getAllMyPublishedArticles(session.user.id).then(result => {
+      // Met à jour l'état de la liste d'articles avec les résultats de la requête
       setArticles(result);
     });
+
+    // Effectue une requête à l'API pour récupérer les informations de profil de l'utilisateur en cours de session
+    // session.user.id correspond à l'identifiant de l'utilisateur en cours de session
     profileService.getProfile(session.user.id).then(result => {
-      console.log('res', result);
+      // Affiche les informations de profil récupérées dans la console du navigateur
+      // Met à jour l'état des informations d'utilisateur avec les résultats de la requête
       setUserInfos(result);
     });
   }, [isFocused, session.user.id]);
+
+  /**
+   * Affiche la page profil avec la possibilite de modifier les informations, de se deconnecter,
+   * de voir les articles publies et les propositions (recues , envoyees , acceptees et terminees)
+   */
   return (
     <ScrollView>
       <View style={styles.ContainerTop}>
@@ -135,6 +149,10 @@ export default function Profil({session}: {session: any}) {
     </ScrollView>
   );
 }
+
+/**
+ * Styles
+ */
 const styles = StyleSheet.create({
   Localisation: {
     color: '#696969',

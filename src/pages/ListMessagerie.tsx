@@ -14,6 +14,9 @@ export default function ListMessagerie({
   article_sender?: any;
   notRead?: boolean;
 }) {
+  /**
+   * Affiche un recapitulatif des infos de la conversation
+   */
   return (
     <Pressable
       style={styles.Container}
@@ -48,6 +51,10 @@ export default function ListMessagerie({
     </Pressable>
   );
 }
+
+/**
+ * Styles
+ */
 const styles = StyleSheet.create({
   Container: {
     width: '100%',

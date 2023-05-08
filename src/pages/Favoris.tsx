@@ -1,12 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {Image, SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
 import {
   ParamListBase,
   useIsFocused,
@@ -21,14 +14,26 @@ export default function Favoris({session}: {session: any}) {
   const isFocused = useIsFocused();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const [articles, setArticles] = useState<IArticleData[] | []>([]);
+
+  /**
+   * Utilise le hook useEffect de React pour récupérer les articles favoris de l'utilisateur
+   * à partir de l'ID de l'utilisateur stocké dans la session. Le service articleService est utilisé
+   * pour effectuer la requête.
+   * @param {boolean} isFocused - un booléen indiquant si la page est en cours de visualisation.
+   * @param {string} session.user.id - l'ID de l'utilisateur stocké dans la session.
+   * @returns {void}
+   */
   useEffect(() => {
-    // Refresh the screen when the user comes back to it
     articleService
       .getFavoriteArticles(session.user.id)
       .then((result: IArticleData[]) => {
         setArticles(result as IArticleData[]);
       });
   }, [isFocused, session.user.id]);
+
+  /**
+   * Afficher les articles favoris
+   */
   return (
     <SafeAreaView>
       <ScrollView
@@ -67,6 +72,9 @@ export default function Favoris({session}: {session: any}) {
   );
 }
 
+/**
+ * Styles
+ */
 const styles = StyleSheet.create({
   containerScrollView: {
     height: '100%',
