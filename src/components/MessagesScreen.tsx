@@ -49,7 +49,7 @@ export default function MessagesScreen({
   const [echangeTermine, setEchangeTermine] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
-    console.log(article)
+    console.log(article);
     setEchangeTermine(article.status2);
     messageService
       .getMessagesForArticle(article.id, session.user.id)

@@ -77,7 +77,7 @@ export default function RecapProposition({session, navigation}: any) {
     articleRepository
       .getSwapsByStateAndProfile(session.user.id, 2)
       .then(res => {
-        console.log(res)
+        console.log(res);
         setSwapsAccepted(res.data);
         console.log(res.data);
         let nbPropositionsAccepteesTemp = 0;

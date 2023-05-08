@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View } from "react-native";
+import {SafeAreaView, View} from 'react-native';
 import ListArticles from '../components/articles/ListArticles';
 import {useIsFocused} from '@react-navigation/native';
 import {useEffect, useState} from 'react';
