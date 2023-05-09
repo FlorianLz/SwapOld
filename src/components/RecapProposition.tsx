@@ -212,7 +212,7 @@ export default function RecapProposition({session, navigation}: any) {
               );
             })
           ) : (
-            <Text>Vous n'avez aucune proposition</Text>
+            <Text>Aucune proposition reçue pour le moment.</Text>
           )}
           <Modal
             animationType="fade"
@@ -375,7 +375,7 @@ export default function RecapProposition({session, navigation}: any) {
               );
             })
           ) : (
-            <Text>Vous n'avez pas envoyée de demande</Text>
+            <Text>Aucune demande envoyée.</Text>
           )}
         </ScrollView>
 
@@ -465,7 +465,7 @@ export default function RecapProposition({session, navigation}: any) {
               );
             })
           ) : (
-            <Text>Vous n'avez pas envoyée de demande</Text>
+            <Text>Aucune demande acceptée.</Text>
           )}
         </ScrollView>
 
@@ -555,7 +555,7 @@ export default function RecapProposition({session, navigation}: any) {
               );
             })
           ) : (
-            <Text>Vous n'avez pas envoyée de demande</Text>
+            <Text>Vous n'avez pas encore terminé d'échange.</Text>
           )}
         </ScrollView>
       </View>

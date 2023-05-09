@@ -182,7 +182,7 @@ export default ({
                             <Image
                               key={index}
                               style={styles.ImageMinify}
-                              source={{uri: article.images[1]}}
+                              source={{uri: article.images[index]}}
                             />
                           );
                         }

@@ -74,7 +74,7 @@ export default function SingleArticleCard({
             <Text style={styles.Title}>{article.title}</Text>
             <Text style={styles.Localisation}>
               <Icon name="location" size={14} color="#696969" />
-              {article.location_name} ({article.distance} km)
+              {article.location_name} (&nbsp;{article.distance}&nbsp;km&nbsp;)
             </Text>
           </View>
         </View>
@@ -229,8 +229,8 @@ const styles = StyleSheet.create({
   },
   Infos: {
     alignItems: 'flex-start',
-    justifyContent: 'center',
-    height: 70,
+    justifyContent: 'space-between',
+    height: 'fit-content',
     width: '100%',
     padding: 10,
   },

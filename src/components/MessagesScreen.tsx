@@ -22,6 +22,7 @@ import articleRepository from '../repository/article.repository';
 export default function MessagesScreen({
   route,
 }: {params: {article: object; session: any}} | any) {
+  console.log(route.params.article)
   const {article, session} = route.params;
   const otherId: string = !article.isOwner
     ? article.ownerInfos.id
@@ -144,7 +145,7 @@ export default function MessagesScreen({
   const handleValidate = async () => {
     // Appelle la méthode updateArticleEchangeValide de l'articleRepository pour mettre à jour l'état d'échange de l'article
     const valider = await articleRepository.updateArticleEchangeValide(
-      article.id,
+      !article.isOwner ? article.id2 : article.id,
     );
 
     // Si aucune erreur n'est survenue pendant la mise à jour de l'état d'échange de l'article
@@ -193,10 +194,14 @@ export default function MessagesScreen({
           </Pressable>
           {!echangeTermine ? (
             <Pressable onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.BackSecond}>Valider l'échange</Text>
+              <Text style={[styles.BackSecond, styles.BackSecondValider]}>
+                Valider l'échange
+              </Text>
             </Pressable>
           ) : (
-            <Text style={styles.BackSecond}>Échange terminé</Text>
+            <Text style={[styles.BackSecond, styles.BackSecondTermine]}>
+              Échange terminé
+            </Text>
           )}
         </View>
         <GiftedChat
@@ -315,6 +320,15 @@ const styles = StyleSheet.create({
     color: '#000',
     fontFamily: 'System',
     fontSize: 12,
+    maxWidth: '90%',
+  },
+  BackSecondValider: {
+    maxWidth: '80%',
+    textAlign: 'center',
+  },
+  BackSecondTermine: {
+    width: '20%',
+    textAlign: 'center',
   },
   BackText: {
     color: '#000',

@@ -44,14 +44,14 @@ const SearchBar: React.FC<Props> = ({onSubmit}) => {
           returnKeyType="search"
         />
       </View>
-      <Pressable
+      {/*<Pressable
         onPress={handleFilterToggle}
         style={styles.FilterIconContainer}>
         <Icon
           name="filter"
           style={[styles.FilterIcon, filterEnabled && styles.FilterIconActive]}
         />
-      </Pressable>
+      </Pressable>*/}
     </View>
   );
 };
@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 10,
     paddingVertical: 5,
-    width: '80%',
+    width: '100%',
+    elevation: 2,
   },
   Icon: {
     color: '#000',
