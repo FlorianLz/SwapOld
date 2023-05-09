@@ -8,113 +8,281 @@
  * @format
  */
 
-import React, {type PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const Section: React.FC<
-  PropsWithChildren<{
-    title: string;
-  }>
-> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
-
+import React, {useEffect, useState} from 'react';
+import {supabase} from './src/lib/initSupabase';
+import Auth from './src/components/Auth';
+import {Session} from '@supabase/supabase-js';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
+import Home from './src/pages/Home';
+import Profil from './src/pages/Profil';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Messagerie from './src/pages/Messagerie';
+import Favoris from './src/pages/Favoris';
+import SingleArticle from './src/pages/SingleArticle';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+import IconMat from 'react-native-vector-icons/MaterialCommunityIcons';
+import IconFont from 'react-native-vector-icons/Fontisto';
+import IconFea from 'react-native-vector-icons/Feather';
+import IconOti from 'react-native-vector-icons/Octicons';
+import AddArticle from './src/components/articles/AddArticle';
+import SwapProposition from './src/components/SwapProposition';
+import RecapProposition from './src/components/RecapProposition';
+import MessagesScreen from './src/components/MessagesScreen';
+import Account from './src/components/Account';
+import {Platform} from 'react-native';
+import profileRepository from './src/repository/profile.repository';
+import CompleteProfile from './src/components/auth/CompleteProfile';
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [session, setSession] = useState<Session | null>(null);
+  const [profileComplete, setProfileComplete] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  useEffect(() => {
+    setLoading(true);
+    // Récupération de la session utilisateur
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    supabase.auth.getSession().then(({data: {session}}) => {
+      setSession(session);
+      // Récupération du profil utilisateur
+      profileRepository.getProfile(session?.user.id as string).then(data => {
+        if (data?.location?.latitude === 0 && data?.location?.longitude === 0) {
+          setProfileComplete(false);
+          setLoading(false);
+        } else {
+          setProfileComplete(true);
+          setLoading(false);
+        }
+      });
+    });
+
+    // Gestion des changements d'état de la session utilisateur
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (loading) {
+        // Récupération du profil utilisateur
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        supabase.auth.getSession().then(({data: {session}}) => {
+          setSession(session);
+          profileRepository
+            .getProfile(session?.user.id as string)
+            .then(data => {
+              if (
+                data?.location?.latitude === 0 &&
+                data?.location?.longitude === 0
+              ) {
+                setProfileComplete(false);
+                setLoading(false);
+              } else {
+                setProfileComplete(true);
+                setLoading(false);
+              }
+            });
+        });
+      }
+    });
+    // Activation de la localisation sur Android
+    if (Platform.OS === 'android') {
+      RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
+        interval: 10000,
+        fastInterval: 5000,
+      })
+        .then(data => {
+          console.log(data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  }, []);
+
+  const SwapOldTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: 'rgb(255, 45, 85)',
+      background: '#fff',
+      card: '#fff',
+    },
   };
+  const Stack = createNativeStackNavigator();
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer theme={SwapOldTheme}>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          options={{headerShown: false}}
+          component={
+            profileComplete ? HomeTabs : loading ? HomeTabs : CompleteProfile
+          }
+        />
+        <Stack.Screen
+          name="HomePageScreen"
+          options={{headerShown: false}}
+          component={HomeTabs}
+        />
+        <Stack.Screen
+          name="SingleArticle"
+          initialParams={{session: session}}
+          component={SingleArticle}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CompleteProfile"
+          initialParams={{session: session}}
+          component={CompleteProfile}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AddArticle"
+          initialParams={{session: session}}
+          component={profileComplete ? AddArticle : CompleteProfile}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="SwapProposition"
+          initialParams={{session: session}}
+          component={SwapProposition}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="RecapProposition"
+          initialParams={{session: session}}
+          component={RecapProposition}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="MessagesScreen"
+          initialParams={{session: session}}
+          component={
+            profileComplete
+              ? MessagesScreen
+              : !loading
+              ? MessagesScreen
+              : CompleteProfile
+          }
+          options={{headerShown: false, headerTitle: 'Messages'}}
+        />
+        <Stack.Screen
+          name="UpdateProfil"
+          initialParams={{session: session}}
+          component={Account}
+          options={{headerShown: false}}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
+
+  function HomeTabs() {
+    const Tab = createBottomTabNavigator();
+    return (
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          tabBarShowLabel: false,
+          tabBarIcon: focused => {
+            const icons: any = {
+              HomePage: (
+                <IconOti
+                  name={'home'}
+                  color={focused.focused ? '#5DB075' : '#ccc'}
+                  size={24}
+                />
+              ),
+              Messagerie: (
+                <IconMat
+                  name={'message-processing-outline'}
+                  color={focused.focused ? '#5DB075' : '#ccc'}
+                  size={24}
+                />
+              ),
+              HubPublication: (
+                <IconFont
+                  name={'arrow-swap'}
+                  color={focused.focused ? '#5DB075' : '#ccc'}
+                  size={24}
+                  style={{transform: [{rotateY: '180deg'}]}}
+                />
+              ),
+              Favoris: (
+                <IconFea
+                  name={'bookmark'}
+                  color={focused.focused ? '#5DB075' : '#ccc'}
+                  size={24}
+                />
+              ),
+              Profil: (
+                <IconFea
+                  name={'user'}
+                  color={focused.focused ? '#5DB075' : '#ccc'}
+                  size={24}
+                />
+              ),
+            };
+
+            return icons[route.name];
+          },
+        })}>
+        <Tab.Screen
+          name="HomePage"
+          children={() => <Home session={session} />}
+          options={{unmountOnBlur: true, headerShown: false}}
+        />
+        {session && session.user ? (
+          <>
+            <Tab.Screen
+              name="Messagerie"
+              children={() => <Messagerie session={session} />}
+              options={{headerShown: false}}
+            />
+            <Tab.Screen
+              name="HubPublication"
+              component={AddArticle}
+              initialParams={{session: session, hideRetour: true}}
+              options={{headerShown: false}}
+            />
+            <Tab.Screen
+              name="Favoris"
+              children={() => <Favoris session={session} />}
+              options={{headerShown: false}}
+            />
+            <Tab.Screen
+              name="Profil"
+              children={() => <Profil session={session} />}
+              options={{headerShown: false}}
+            />
+          </>
+        ) : (
+          <>
+            <Tab.Screen
+              name="Messagerie"
+              component={Auth}
+              initialParams={{step: 'Connexion'}}
+              options={{headerShown: false}}
+            />
+            <Tab.Screen
+              name="HubPublication"
+              component={Auth}
+              initialParams={{step: 'Connexion'}}
+              options={{headerShown: false}}
+            />
+            <Tab.Screen
+              name="Favoris"
+              component={Auth}
+              initialParams={{step: 'Connexion'}}
+              options={{headerShown: false}}
+            />
+            <Tab.Screen
+              name="Profil"
+              component={Auth}
+              initialParams={{step: 'Connexion'}}
+              options={{headerShown: false}}
+            />
+          </>
+        )}
+      </Tab.Navigator>
+    );
+  }
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
 export default App;
