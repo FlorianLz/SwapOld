@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Pressable, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {Text} from 'react-native-elements';
 import {useIsFocused} from '@react-navigation/native';
 import Register from './auth/Register';
@@ -16,31 +23,35 @@ export default function Auth({route}: {params: {step: string}} | any) {
    */
 
   return (
-    <ScrollView style={styles.container}>
-      <Text h3 style={styles.title}>
-        {step}
-      </Text>
-      {step === 'Connexion' ? <Login /> : <Register />}
-      {step === 'Connexion' ? (
-        <>
-          <View style={styles.inscription}>
-            <Text style={styles.notRegister}>Pas encore inscrit ?</Text>
-            <Pressable onPress={() => setStep('Inscription')}>
-              <Text style={styles.registerLink}>Inscription</Text>
-            </Pressable>
-          </View>
-        </>
-      ) : (
-        <>
-          <View style={styles.inscription}>
-            <Text style={styles.notRegister}>Déjà inscrit ?</Text>
-            <Pressable onPress={() => setStep('Connexion')}>
-              <Text style={styles.registerLink}>Connexion</Text>
-            </Pressable>
-          </View>
-        </>
-      )}
-    </ScrollView>
+    <SafeAreaView>
+      <ScrollView style={styles.container}>
+        <Text
+          h3
+          style={Platform.OS === 'android' ? styles.title : styles.titleIOS}>
+          {step}
+        </Text>
+        {step === 'Connexion' ? <Login /> : <Register />}
+        {step === 'Connexion' ? (
+          <>
+            <View style={styles.inscription}>
+              <Text style={styles.notRegister}>Pas encore inscrit ?</Text>
+              <Pressable onPress={() => setStep('Inscription')}>
+                <Text style={styles.registerLink}>Inscription</Text>
+              </Pressable>
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={styles.inscription}>
+              <Text style={styles.notRegister}>Déjà inscrit ?</Text>
+              <Pressable onPress={() => setStep('Connexion')}>
+                <Text style={styles.registerLink}>Connexion</Text>
+              </Pressable>
+            </View>
+          </>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -56,6 +67,10 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     marginTop: 20,
+    marginBottom: 20,
+  },
+  titleIOS: {
+    textAlign: 'center',
     marginBottom: 20,
   },
   inscription: {
