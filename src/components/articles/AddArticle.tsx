@@ -304,7 +304,7 @@ export default function AddArticle({
   }, []);
 
   /**
-   * Affiche un formulaire pour ajouter un nouvelle article.
+   * Affiche un formulaire pour ajouter un nouvel article.
    */
 
   return (

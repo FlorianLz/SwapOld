@@ -1,6 +1,6 @@
 export default interface IArticleData {
   /**
-   * creation d'une interface pour les articles
+   * Création d'une interface pour les articles
    */
   id: number;
   id2?: number;

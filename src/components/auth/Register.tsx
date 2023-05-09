@@ -79,7 +79,7 @@ export default function Register() {
   }
 
   /**
-   * Permet de se crée un compte sur l'application
+   * Permet de se créeR un compte sur l'application
    */
 
   return (

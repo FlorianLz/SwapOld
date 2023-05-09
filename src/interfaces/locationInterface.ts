@@ -1,6 +1,6 @@
 export default interface ICoordData {
   /**
-   * creation d'une interface pour les coordonnées
+   * Création d'une interface pour les coordonnées
    */
   coords: {
     latitude: number;

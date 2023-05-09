@@ -56,7 +56,7 @@ export default function Login() {
   }
 
   /**
-   * permet de se connecter sur l'application
+   * Permet de se connecter sur l'application
    */
 
   return (

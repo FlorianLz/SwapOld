@@ -31,7 +31,7 @@ export default function ListArticles({
   const [loading, setLoading] = useState<boolean>(true);
 
   /**
-   * Utilise l'effet d'effet pour initialiser l'état des articles et la position par défaut de l'utilisateur.
+   * Initialise l'état des articles et la position par défaut de l'utilisateur.
    * @param articles Un tableau d'objets d'articles.
    */
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function ListArticles({
   }, [articles]);
 
   /**
-   * affiche une liste d'articles en mode grille ou en mode liste.
+   * Affiche une liste d'articles en mode grille ou en mode liste.
    */
 
   return (

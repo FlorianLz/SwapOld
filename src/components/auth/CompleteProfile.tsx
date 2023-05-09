@@ -77,7 +77,7 @@ export default function CompleteProfile() {
       })
       .eq('id', session.user.id);
 
-    // Si une erreur survient, affiche un message d'erreur correspondant
+    // Si une erreur survient, afficheR un message d'erreur correspondant
     if (errorMessage) {
       if (errorMessage.code === '23505') {
         setError("Ce nom d'utilisateur est déjà utilisé");

@@ -63,8 +63,7 @@ export default function Account({route}: {params: {session: Session}} | any) {
   );
 
   /**
-   * useEffect est un hook qui permet d'exécuter une fonction à chaque fois que des éléments spécifiques dans le tableau de dépendances ont changé.
-   * Dans ce cas, si la session change, le hook appelle la fonction getProfile()
+   * Si la session change, on appelle la fonction getProfile()
    */
 
   useEffect(() => {
@@ -107,10 +106,10 @@ export default function Account({route}: {params: {session: Session}} | any) {
         setAvatarUrl(imagesHelper.getPublicUrlByImageName(data.avatar_url));
         setAvatarName(data.avatar_url);
       }
-    } catch (error) {
-      if (error instanceof Error) {
+    } catch (err) {
+      if (err instanceof Error) {
         // Affiche une alerte avec le message d'erreur
-        Alert.alert(error.message);
+        Alert.alert(err.message);
       }
     } finally {
       setLoading(false);
