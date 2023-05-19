@@ -64,3 +64,5 @@ buck-out/
 /vendor/bundle/
 .env
 
+./src/lib/initSupabase.ts
+
